@@ -1,0 +1,85 @@
+﻿@model VinhuniEvent.Models.User
+
+@{
+    ViewData["Title"] = "Xóa người dùng";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-4">
+    <div class="card shadow-sm border-0">
+        <div class="card-header bg-danger text-white d-flex justify-content-between align-items-center">
+            <h4 class="mb-0"><i class="bi bi-trash"></i> Xác nhận xóa người dùng</h4>
+            <a asp-action="Index" class="btn btn-light btn-sm">← Quay lại danh sách</a>
+        </div>
+
+        <div class="card-body">
+            <p class="text-muted">Bạn có chắc chắn muốn xóa người dùng này không? Hành động này <strong>không thể hoàn tác</strong>.</p>
+            <hr />
+
+            <dl class="row mb-0">
+                <dt class="col-sm-3">Mã sinh viên</dt>
+                <dd class="col-sm-9">@Model.StudentCode ?? "(Không có)"</dd>
+
+                <dt class="col-sm-3">Họ và tên</dt>
+                <dd class="col-sm-9">@Model.FullName</dd>
+
+                <dt class="col-sm-3">Email</dt>
+                <dd class="col-sm-9">@Model.Email</dd>
+
+                <dt class="col-sm-3">Khoa</dt>
+                <dd class="col-sm-9">@Model.Faculty ?? "(Chưa cập nhật)"</dd>
+
+                <dt class="col-sm-3">Ngành học</dt>
+                <dd class="col-sm-9">@Model.Major ?? "(Chưa cập nhật)"</dd>
+
+                <dt class="col-sm-3">Ngày sinh</dt>
+                <dd class="col-sm-9">@Model.BirthDate?.ToString("dd/MM/yyyy") ?? "(Không rõ)"</dd>
+
+                <dt class="col-sm-3">Số điện thoại</dt>
+                <dd class="col-sm-9">@Model.PhoneNumber ?? "(Không có)"</dd>
+
+                <dt class="col-sm-3">Trạng thái</dt>
+                <dd class="col-sm-9">
+                    @if (Model.IsActive)
+                    {
+                        <span class="badge bg-success">Hoạt động</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-secondary">Không hoạt động</span>
+                    }
+                </dd>
+
+                <dt class="col-sm-3">Ngày tạo</dt>
+                <dd class="col-sm-9">@Model.CreatedDate?.ToString("dd/MM/yyyy HH:mm") ?? "(Không rõ)"</dd>
+
+                <dt class="col-sm-3">Vai trò</dt>
+                <dd class="col-sm-9">@Model.Role?.RoleName ?? $"(ID: {Model.RoleId})"</dd>
+
+                <dt class="col-sm-3">Ảnh đại diện</dt>
+                <dd class="col-sm-9">
+                    @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                    {
+                        <img src="@Model.ImageUrl" alt="User image" class="img-thumbnail rounded-circle" style="width:100px;height:100px;object-fit:cover;">
+                    }
+                    else
+                    {
+                        <span class="text-muted">(Chưa có ảnh)</span>
+                    }
+                </dd>
+            </dl>
+        </div>
+
+        <div class="card-footer text-end">
+            <form asp-action="Delete" class="d-inline">
+                <input type="hidden" asp-for="UserId" />
+                <button type="submit" class="btn btn-danger me-2">
+                    <i class="bi bi-trash-fill"></i> Xóa
+                </button>
+            </form>
+            <a asp-action="Index" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i> Hủy
+            </a>
+        </div>
+    </div>
+</div>

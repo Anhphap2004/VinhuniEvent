@@ -1,0 +1,112 @@
+﻿@model IEnumerable<VinhuniEvent.Models.User>
+
+@{
+    ViewData["Title"] = "Quản lý sinh viên";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4 class="fw-bold text-dark mb-0">👤 Quản lý Sinh Viên</h4>
+        <a asp-action="Create" class="btn btn-sm btn-primary px-3">
+            ➕ Thêm mới
+        </a>
+    </div>
+
+    <div class="card shadow-sm border-0">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr class="text-muted small text-uppercase">
+                            <th>Mã SV</th>
+                            <th>Họ tên</th>
+                            <th>Email</th>
+                            <th>Số Điện Thoại</th>
+                            <th>Khoa</th>
+                            <th>Ngành</th>
+                            <th>Trạng thái</th>
+                            <th>Vai trò</th>
+                            <th class="text-end">Hành động</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@(item.StudentCode ?? "-")</td>
+                                <td class="fw-semibold">@item.FullName</td>
+                                <td>@item.Email</td>
+                                <td>@(item.PhoneNumber ?? "-")</td>
+                                <td>@(item.Faculty ?? "-")</td>
+                                <td>@(item.Major ?? "-")</td>
+                                <td>
+                                    @if (item.IsActive)
+                                    {
+                                        <span class="badge bg-success-subtle text-success border border-success-subtle">Hoạt động</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-secondary-subtle text-secondary border border-secondary-subtle">Khóa</span>
+                                    }
+                                </td>
+                                <td>
+                                    <span class="badge bg-info-subtle text-dark border border-info-subtle">
+                                        @item.Role?.RoleName
+                                    </span>
+                                </td>
+                                <td class="text-end">
+                                    <div class="btn-group btn-group-sm" role="group">
+                                        <a asp-controller="Users" asp-action="Edit" asp-route-id="@item.UserId" class="btn btn-light border">
+                                            ✏️
+                                        </a>
+                                        <a asp-controller="Users" asp-action="Details" asp-route-id="@item.UserId" class="btn btn-light border">
+                                            👁️
+                                        </a>
+                                        <a asp-controller="Users" asp-action="Delete" asp-route-id="@item.UserId" class="btn btn-light border text-danger">
+                                            🗑️
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <style>
+        .card {
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .table th, .table td {
+            padding: 0.75rem 1rem;
+            vertical-align: middle;
+        }
+
+        .table thead th {
+            font-weight: 600;
+            letter-spacing: 0.03rem;
+        }
+
+        .btn-group .btn {
+            border-radius: 6px !important;
+            padding: 4px 8px;
+        }
+
+        .badge {
+            font-size: 0.8rem;
+            padding: 4px 8px;
+            border-radius: 6px;
+        }
+
+        .fw-semibold {
+            font-weight: 600;
+        }
+    </style>
+}

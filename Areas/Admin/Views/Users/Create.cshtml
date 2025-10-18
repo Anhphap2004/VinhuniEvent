@@ -1,0 +1,110 @@
+﻿@model VinhuniEvent.Models.User
+
+@{
+    ViewData["Title"] = "Thêm người dùng mới";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-4">
+    <h4 class="fw-bold mb-4 text-success">➕ Thêm người dùng mới</h4>
+
+    <div class="card shadow-sm border-0">
+        <div class="card-body">
+            <form asp-action="Create" method="post" class="row g-3">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                <div class="col-md-6">
+                    <label asp-for="StudentCode" class="form-label">Mã sinh viên</label>
+                    <input asp-for="StudentCode" class="form-control" placeholder="VD: DTC2021001" />
+                    <span asp-validation-for="StudentCode" class="text-danger small"></span>
+                </div>
+
+                <div class="col-md-6">
+                    <label asp-for="FullName" class="form-label">Họ và tên</label>
+                    <input asp-for="FullName" class="form-control" placeholder="Nguyễn Văn A" />
+                    <span asp-validation-for="FullName" class="text-danger small"></span>
+                </div>
+
+                <div class="col-md-6">
+                    <label asp-for="Email" class="form-label">Email</label>
+                    <input asp-for="Email" class="form-control" placeholder="example@gmail.com" />
+                    <span asp-validation-for="Email" class="text-danger small"></span>
+                </div>
+
+                <div class="col-md-6">
+                    <label asp-for="PasswordHash" class="form-label">Mật khẩu</label>
+                    <input asp-for="PasswordHash" class="form-control" type="password" placeholder="Nhập mật khẩu" />
+                    <span asp-validation-for="PasswordHash" class="text-danger small"></span>
+                </div>
+
+                <div class="col-md-6">
+                    <label asp-for="RoleId" class="form-label">Vai trò</label>
+                    <select asp-for="RoleId" class="form-select" asp-items="ViewBag.RoleId"></select>
+                    <span asp-validation-for="RoleId" class="text-danger small"></span>
+                </div>
+
+                <div class="col-md-6">
+                    <label asp-for="Faculty" class="form-label">Khoa</label>
+                    <input asp-for="Faculty" class="form-control" placeholder="VD: CNTT" />
+                    <span asp-validation-for="Faculty" class="text-danger small"></span>
+                </div>
+
+                <div class="col-md-6">
+                    <label asp-for="Major" class="form-label">Ngành học</label>
+                    <input asp-for="Major" class="form-control" placeholder="VD: Khoa học máy tính" />
+                    <span asp-validation-for="Major" class="text-danger small"></span>
+                </div>
+
+                <div class="col-md-6">
+                    <label asp-for="BirthDate" class="form-label">Ngày sinh</label>
+                    <input asp-for="BirthDate" class="form-control" type="date" />
+                    <span asp-validation-for="BirthDate" class="text-danger small"></span>
+                </div>
+
+                <div class="col-md-6">
+                    <label asp-for="PhoneNumber" class="form-label">Số điện thoại</label>
+                    <input asp-for="PhoneNumber" class="form-control" placeholder="VD: 0987654321" />
+                    <span asp-validation-for="PhoneNumber" class="text-danger small"></span>
+                </div>
+
+                <div class="col-md-6">
+                    <label asp-for="ImageUrl" class="form-label">Ảnh đại diện (link)</label>
+                    <input asp-for="ImageUrl" class="form-control" placeholder="/images/avatar.png" />
+                    <span asp-validation-for="ImageUrl" class="text-danger small"></span>
+                </div>
+
+                <div class="col-12 mt-3 d-flex justify-content-end gap-2">
+                    <a asp-action="Index" class="btn btn-outline-secondary px-4">⬅ Quay lại</a>
+                    <button type="submit" class="btn btn-success px-4">💾 Tạo mới</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <style>
+        .card {
+            border-radius: 10px;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .btn {
+            border-radius: 6px;
+        }
+
+        .text-danger.small {
+            font-size: 0.8rem;
+        }
+
+        input::placeholder {
+            font-style: italic;
+            color: #aaa;
+        }
+    </style>
+}
