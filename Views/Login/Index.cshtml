@@ -1,0 +1,270 @@
+﻿@model VinhuniEvent.Models.User;
+<style>
+    .login-container {
+        margin: 80px auto;
+        margin-top: 150px;
+        background: linear-gradient(180deg, #1B5E96 0%, #174A7A 100%);
+        border-radius: 12px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        width: 100%;
+        max-width: 560px;
+        padding: 50px 40px;
+    }
+
+    .logo-section {
+        text-align: center;
+        margin-bottom: 40px;
+    }
+
+    .logo-wrapper {
+        display: inline-flex;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .logo {
+        width: 90px;
+        height: 90px;
+        background: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+    }
+
+    .logo img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .university-info {
+        text-align: left;
+    }
+
+    .university-name {
+        color: white;
+        font-size: 26px;
+        font-weight: 700;
+        margin-bottom: 5px;
+        letter-spacing: 0.5px;
+    }
+
+    .university-subtitle {
+        color: #E8F1F8;
+        font-size: 13px;
+        font-weight: 400;
+        letter-spacing: 0.3px;
+    }
+
+    .form-group {
+        margin-bottom: 25px;
+        position: relative;
+    }
+
+    .form-label {
+        color: white;
+        font-size: 14px;
+        font-weight: 500;
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .form-control {
+        background: rgba(255, 255, 255, 0.15);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        border-radius: 6px;
+        color: white;
+        padding: 12px 45px 12px 15px;
+        font-size: 15px;
+        transition: all 0.3s ease;
+    }
+
+    .form-control:focus {
+        background: rgba(255, 255, 255, 0.2);
+        border-color: rgba(255, 255, 255, 0.5);
+        box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.1);
+        color: white;
+    }
+
+    .form-control::placeholder {
+        color: rgba(255, 255, 255, 0.5);
+    }
+
+    .password-toggle {
+        position: absolute;
+        right: 15px;
+        top: 38px;
+        cursor: pointer;
+        color: rgba(255, 255, 255, 0.7);
+        transition: color 0.3s ease;
+    }
+
+    .password-toggle:hover {
+        color: white;
+    }
+
+    .form-check {
+        margin-bottom: 20px;
+    }
+
+    .form-check-input {
+        background-color: rgba(255, 255, 255, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.4);
+        cursor: pointer;
+    }
+
+    .form-check-input:checked {
+        background-color: #2E75B6;
+        border-color: #2E75B6;
+    }
+
+    .form-check-label {
+        color: white;
+        font-size: 14px;
+        cursor: pointer;
+        user-select: none;
+    }
+
+    .forgot-password {
+        color: white;
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: 500;
+        transition: opacity 0.3s ease;
+    }
+
+    .forgot-password:hover {
+        opacity: 0.8;
+        color: white;
+    }
+
+    .btn-login {
+        background: linear-gradient(135deg, #4A9ACF 0%, #2E75B6 100%);
+        border: none;
+        border-radius: 6px;
+        color: white;
+        font-size: 16px;
+        font-weight: 600;
+        padding: 14px;
+        width: 100%;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .btn-login:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        background: linear-gradient(135deg, #5FA8D3 0%, #3984C5 100%);
+    }
+
+    .btn-login:active {
+        transform: translateY(0);
+    }
+
+    @@media (max-width: 576px) {
+        .login-container {
+            padding: 40px 25px;
+        }
+
+        .logo-wrapper {
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .university-info {
+            text-align: center;
+        }
+
+        .university-name {
+            font-size: 22px;
+        }
+
+        .university-subtitle {
+            font-size: 12px;
+        }
+
+        .logo {
+            width: 80px;
+            height: 80px;
+        }
+    }
+</style>
+<div style="background-image: url(/main/img/bg-login.jpg);" class="container-fluid p-4">
+
+    <div class="login-container">
+        <div class="logo-section">
+            <div class="logo-wrapper">
+                <div class="logo">
+                    <img src="~/main/img/logo-dh-vinh.png" alt="">
+                </div>
+                <div class="university-info">
+                    <div class="university-name">TRƯỜNG ĐẠI HỌC VINH</div>
+                    <div class="university-subtitle">HỆ THỐNG QUẢN TRỊ ĐẠI HỌC THÔNG MINH - USMART</div>
+                </div>
+            </div>
+        </div>
+
+        <form asp-action="Index" asp-controller="Login" method="post">
+            @Html.AntiForgeryToken()
+
+            <div class="form-group">
+                <label class="form-label">
+                    <i class="fas fa-user"></i>
+                    Tên đăng nhập hoặc email
+                </label>
+                <input type="text" name="email" class="form-control mb-2" required />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">
+                    <i class="fas fa-key"></i>
+                    Mật khẩu
+                </label>
+                <input type="password" name="password" class="form-control mb-2" required />
+                <span asp-validation-for="PasswordHash" class="text-danger"></span>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="rememberMe" />
+                    <label class="form-check-label" for="rememberMe">Ghi nhớ đăng nhập</label>
+                </div>
+                <a href="#" class="forgot-password">Quên mật khẩu?</a>
+            </div>
+
+            <button type="submit" class="btn btn-login">Đăng nhập</button>
+        </form>
+
+
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+<script>
+    const togglePassword = document.getElementById('togglePassword');
+    const passwordInput = document.getElementById('password');
+
+    togglePassword.addEventListener('click', function () {
+        const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+        passwordInput.setAttribute('type', type);
+        this.classList.toggle('fa-eye');
+        this.classList.toggle('fa-eye-slash');
+    });
+
+    document.getElementById('loginForm').addEventListener('submit', function (e) {
+        e.preventDefault();
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+
+        if (username && password) {
+            alert('Đăng nhập thành công!\nTên đăng nhập: ' + username);
+        }
+    });
+</script>

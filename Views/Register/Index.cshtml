@@ -1,0 +1,311 @@
+﻿@{
+    ViewData["Title"] = "Đăng ký tài khoản";
+}
+       @model VinhuniEvent.Models.User;
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    .page-wrapper {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 80vh;
+        padding: 40px 20px;
+        margin-top: 80px;
+        background-image: url('/main/img/bg-login.jpg');
+    }
+
+    .register-container {
+        background: #0B4C8C;
+        padding: 50px 60px;
+        border-radius: 5px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        width: 100%;
+        max-width: 700px;
+        margin-top: 40px;
+    }
+
+    .header-section {
+        text-align: center;
+        margin-bottom: 40px;
+    }
+
+    .logo {
+        width: 90px;
+        height: 90px;
+        margin-bottom: 20px;
+    }
+
+    .header-section h2 {
+        color: white;
+        font-size: 24px;
+        font-weight: 600;
+        margin-bottom: 8px;
+    }
+
+    .header-section p {
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 14px;
+        font-weight: 400;
+    }
+
+    .form-group {
+        margin-bottom: 25px;
+    }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 12px 15px;
+            background: transparent;
+            border: none;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.5);
+            color: white;
+            font-size: 15px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+            .form-group input::placeholder {
+                color: rgba(255, 255, 255, 0.7);
+            }
+
+            .form-group input:focus,
+            .form-group select:focus {
+                border-bottom-color: white;
+            }
+
+        .form-group select {
+            color: rgba(255, 255, 255, 0.7);
+            cursor: pointer;
+        }
+
+            .form-group select option {
+                background: #0B4C8C;
+                color: white;
+            }
+
+                .form-group select option:first-child {
+                    color: rgba(255, 255, 255, 0.7);
+                }
+
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 25px;
+    }
+
+    .checkbox-group {
+        display: flex;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+        .checkbox-group input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            margin-right: 10px;
+            cursor: pointer;
+        }
+
+        .checkbox-group label {
+            color: white;
+            font-size: 14px;
+        }
+
+    .btn-submit {
+        width: 100%;
+        padding: 14px;
+        background: #5BA3E8;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.3s;
+    }
+
+        .btn-submit:hover {
+            background: #4A90D5;
+        }
+
+        .btn-submit:disabled {
+            background: #cccccc;
+            cursor: not-allowed;
+        }
+
+    .login-link {
+        text-align: center;
+        margin-top: 25px;
+        color: white;
+        font-size: 14px;
+    }
+
+        .login-link a {
+            color: white;
+            text-decoration: underline;
+            font-weight: 600;
+        }
+
+    @@media (max-width: 768px) {
+        .form-row {
+            grid-template-columns: 1fr;
+        }
+
+        .register-container {
+            padding: 40px 30px;
+            max-width: 500px;
+        }
+    }
+</style>
+
+<!-- FORM ĐĂNG KÝ -->
+<div class="page-wrapper">
+    <div class="register-container">
+        <div class="header-section">
+            <h2>TRƯỜNG ĐẠI HỌC VINH</h2>
+            <p>ĐĂNG KÝ TÀI KHOẢN - VINHUNI EVENTS</p>
+        </div>
+        <form id="registerForm" asp-controller="Register" asp-action="Index" method="post">
+            @Html.AntiForgeryToken()
+
+            <div class="form-group">
+                <input type="text" asp-for="FullName" id="fullName" placeholder="Họ và tên" required>
+                <span asp-validation-for="FullName" class="text-danger"></span>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <input type="email" asp-for="Email" id="email" placeholder="Email" required      />
+                    <span asp-validation-for="Email" class="text-danger"></span>
+
+                </div>
+
+                <div class="form-group">
+                    <input type="text" asp-for="StudentCode" id="studentCode" placeholder="Mã sinh viên" required>
+                    <span asp-validation-for="StudentCode" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <input type="password" asp-for="PasswordHash" id="password" placeholder="Mật khẩu" required>    
+                    <span asp-validation-for="PasswordHash" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <select asp-for="Major" name="major" id="major" required>
+                        <option value="" disabled selected>Chọn ngành học</option>
+                        <option value="Quản lý giáo dục">1. Quản lý giáo dục</option>
+                        <option value="Giáo dục Mầm non">2. Giáo dục Mầm non</option>
+                        <option value="Giáo dục Tiểu học">3. Giáo dục Tiểu học</option>
+                        <option value="Giáo dục Chính trị">4. Giáo dục Chính trị</option>
+                        <option value="Giáo dục Thể chất">5. Giáo dục Thể chất</option>
+                        <option value="Giáo dục Quốc phòng - An ninh">6. Giáo dục Quốc phòng - An ninh</option>
+                        <option value="Sư phạm Toán học">7. Sư phạm Toán học</option>
+                        <option value="Sư phạm Toán học (lớp tài năng)">8. Sư phạm Toán học (Tài năng)</option>
+                        <option value="Sư phạm Tin học">9. Sư phạm Tin học</option>
+                        <option value="Sư phạm Vật lý">10. Sư phạm Vật lý</option>
+                        <option value="Sư phạm Hoá học">11. Sư phạm Hoá học</option>
+                        <option value="Sư phạm Sinh học">12. Sư phạm Sinh học</option>
+                        <option value="Sư phạm Ngữ văn">13. Sư phạm Ngữ văn</option>
+                        <option value="Sư phạm Lịch sử">14. Sư phạm Lịch sử</option>
+                        <option value="Sư phạm Địa lý">15. Sư phạm Địa lý</option>
+                        <option value="Sư phạm Tiếng Anh">16. Sư phạm Tiếng Anh</option>
+                        <option value="Sư phạm Tiếng Anh (lớp tài năng)">17. Sư phạm Tiếng Anh (Tài năng)</option>
+                        <option value="Sư phạm khoa học tự nhiên">18. Sư phạm Khoa học Tự nhiên</option>
+                        <option value="Sư phạm Lịch sử - Địa lí">19. Sư phạm Lịch sử - Địa lí</option>
+                        <option value="Ngôn ngữ Anh">20. Ngôn ngữ Anh</option>
+                        <option value="Ngôn ngữ Trung Quốc">21. Ngôn ngữ Trung Quốc</option>
+                        <option value="Quản lý văn hoá">22. Quản lý văn hoá</option>
+                        <option value="Kinh tế (chuyên ngành: Kinh tế đầu tư và Quản lý kinh tế)">23. Kinh tế</option>
+                        <option value="Kinh tế số">24. Kinh tế số</option>
+                        <option value="Chính trị học">25. Chính trị học</option>
+                        <option value="Quản lý nhà nước">26. Quản lý nhà nước</option>
+                        <option value="Tâm lý học giáo dục">27. Tâm lý học giáo dục</option>
+                        <option value="Quốc tế học">28. Quốc tế học</option>
+                        <option value="Việt Nam học (Chuyên ngành Du lịch)">29. Việt Nam học (Du lịch)</option>
+                        <option value="Quản trị kinh doanh">30. Quản trị kinh doanh</option>
+                        <option value="Quản trị kinh doanh (Chương trình có đào tạo bằng tiếng Anh)">31. Quản trị kinh doanh (Tiếng Anh)</option>
+                        <option value="Thương mại điện tử">32. Thương mại điện tử</option>
+                        <option value="Tài chính - Ngân hàng (chuyên ngành: Tài chính doanh nghiệp và Ngân hàng thương mại)">33. Tài chính - Ngân hàng</option>
+                        <option value="Công nghệ tài chính">34. Công nghệ tài chính</option>
+                        <option value="Kế toán">35. Kế toán</option>
+                        <option value="Luật">36. Luật</option>
+                        <option value="Luật hiến pháp và luật hành chính">37. Luật Hiến pháp/Hành chính</option>
+                        <option value="Luật dân sự và tố tụng dân sự">38. Luật Dân sự/Tố tụng Dân sự</option>
+                        <option value="Luật kinh tế">39. Luật kinh tế</option>
+                        <option value="Công nghệ sinh học (Chuyên ngành: Kỹ thuật xét nghiệm y học và Kỹ thuật xử lí ô nhiễm môi trường)">40. Công nghệ sinh học</option>
+                        <option value="Khoa học máy tính">41. Khoa học máy tính</option>
+                        <option value="Công nghệ thông tin">42. Công nghệ thông tin</option>
+                        <option value="Công nghệ thông tin (Chuyên ngành Trí tuệ nhân tạo)">43. Công nghệ thông tin (AI)</option>
+                        <option value="Công nghệ kỹ thuật ô tô">44. Công nghệ Kỹ thuật Ô tô</option>
+                        <option value="Công nghệ kỹ thuật nhiệt (Chuyên ngành Điện lạnh)">45. Công nghệ Kỹ thuật Nhiệt (Điện lạnh)</option>
+                        <option value="Công nghệ kỹ thuật điện, điện tử">46. Công nghệ Kỹ thuật Điện, Điện tử</option>
+                        <option value="Công nghệ kỹ thuật điện tử - viễn thông (Chuyên ngành Thiết kế vi mạch)">47. Công nghệ KT Điện tử - Viễn thông (Thiết kế vi mạch)</option>
+                        <option value="Công nghệ kỹ thuật điều khiển và tự động hoá">48. Công nghệ KT Điều khiển & Tự động hoá</option>
+                        <option value="Kỹ thuật điện tử - viễn thông (Chuyên ngành kỹ thuật điện tử; chuyên ngành kỹ thuật viễn thông)">49. Kỹ thuật Điện tử - Viễn thông</option>
+                        <option value="Kỹ thuật điều khiển và tự động hoá">50. Kỹ thuật Điều khiển & Tự động hoá</option>
+                        <option value="Công nghệ thực phẩm">51. Công nghệ thực phẩm</option>
+                        <option value="Kiến trúc">52. Kiến trúc</option>
+                        <option value="Kỹ thuật xây dựng (Chuyên ngành: Xây dựng dân dụng và công nghiệp; Kết cấu công trình; Công nghệ kỹ thuật xây dựng)">53. Kỹ thuật Xây dựng</option>
+                        <option value="Kỹ thuật xây dựng công trình giao thông (Chuyên ngành: Kỹ thuật xây dựng cầu đường; Kỹ thuật xây dựng công trình ngầm; Kỹ thuật hạ tầng đô thị)">54. Kỹ thuật Xây dựng Công trình Giao thông</option>
+                        <option value="Kinh tế xây dựng (Chuyên ngành: Kinh tế đầu tư xây dựng, Kinh tế vận tải và logistic, Quản lí dự án công trình xây dựng)">55. Kinh tế Xây dựng</option>
+                        <option value="Chăn nuôi">56. Chăn nuôi</option>
+                        <option value="Nông học - Chuyên ngành Bảo vệ thực vật">57. Nông học (Bảo vệ thực vật)</option>
+                        <option value="Khoa học cây trồng">58. Khoa học cây trồng</option>
+                        <option value="Nuôi trồng thuỷ sản">59. Nuôi trồng thuỷ sản</option>
+                        <option value="Thú y">60. Thú y</option>
+                        <option value="Điều dưỡng">61. Điều dưỡng</option>
+                        <option value="Công tác xã hội">62. Công tác xã hội</option>
+                        <option value="Quản lý tài nguyên và môi trường">63. Quản lý Tài nguyên & Môi trường</option>
+                        <option value="Quản lý đất đai (Chuyên ngành: Quản lý phát triển đô thị & bất động sản)">64. Quản lý Đất đai</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <select asp-for="Faculty" name="Faculty" id="Faculty" required>
+                        <option value="" disabled selected>Chọn khóa học</option>
+                        <option value="k62">Khóa 62</option>
+                        <option value="k63">Khóa 63</option>
+                        <option value="k64">Khóa 64</option>
+                        <option value="k65">Khóa 65</option>
+                        <option value="k66">Khóa 66</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <input asp-for="BirthDate" type="date" name="birthDate" id="birthDate" placeholder="Ngày sinh" required>
+                </div>
+
+                <div class="form-group">
+                    <input type="tel" asp-for="PhoneNumber" name="phone" id="phone" placeholder="Số điện thoại" required>
+                    <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="checkbox-group">
+                <input type="checkbox" id="agree" required>
+                <label for="agree">Tôi đồng ý với điều khoản sử dụng</label>
+            </div>
+
+            <button type="submit" class="btn-submit">Đăng ký</button>
+
+            <div class="login-link">
+                Đã có tài khoản? <a asp-controller="Login" asp-action="Index">Đăng nhập ngay</a>
+            </div>
+        </form>
+    </div>
+</div>
+

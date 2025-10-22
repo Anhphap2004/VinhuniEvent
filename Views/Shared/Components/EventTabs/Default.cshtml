@@ -1,102 +1,150 @@
-@model IEnumerable<VinhuniEvent.Models.EventCategory>
+﻿@model IEnumerable<VinhuniEvent.Models.EventCategory>
 
-<div class="container-fluid event py-6">
+<section class="py-5 bg-light" id="events">
     <div class="container">
-        <div class="text-center wow bounceInUp" data-wow-delay="0.1s">
-            <small
-                class="d-inline-block fw-bold text-dark text-uppercase bg-light border border-primary rounded-pill px-4 py-1 mb-3">Latest
-                Events</small>
-            <h1 class="display-5 mb-5">Our Social & Professional Events Gallery</h1>
+        <!-- Header -->
+        <div class="row justify-content-center mb-5">
+            <div class="col-lg-8 text-center">
+                <h1 class="display-4 fw-bold text-primary mb-3">Our Event Collection</h1>
+                <p class="lead text-muted">Where knowledge meets experience, and memories are made ✨</p>
+            </div>
         </div>
 
-        <div class="tab-class text-center">
-            <!-- Tabs -->
-            <ul class="nav nav-pills d-inline-flex justify-content-center mb-5 wow bounceInUp" data-wow-delay="0.1s">
-                <li class="nav-item p-2">
-                    <a class="d-flex mx-2 py-2 border border-primary bg-light rounded-pill active" data-bs-toggle="pill"
-                        href="#tab-all">
-                        <span class="text-dark" style="width: 150px;">All Events</span>
-                    </a>
-                </li>
-                @foreach (var cat in Model)
+        <!-- Category Filter -->
+        <div class="row justify-content-center mb-5">
+            <div class="col-lg-10">
+                <div class="d-flex flex-wrap justify-content-center gap-2">
+                    <button class="btn btn-primary btn-lg px-4 active" onclick="filterEvents('all')">
+                        All Events
+                    </button>
+                    @foreach (var cat in Model)
+                    {
+                        <button class="btn btn-outline-primary btn-lg px-4" onclick="filterEvents('@cat.CategoryId')">
+                            @cat.CategoryName
+                        </button>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Event Cards -->
+        <div class="row g-4" id="event-list">
+            @foreach (var cat in Model)
+            {
+                if (cat.Events != null && cat.Events.Any())
                 {
-                    <li class="nav-item p-2">
-                        <a class="d-flex mx-2 py-2 border border-primary bg-light rounded-pill" data-bs-toggle="pill"
-                            href="#tab-@cat.CategoryId">
-                            <span class="text-dark" style="width: 150px;">@cat.CategoryName</span>
-                        </a>
-                    </li>
-                }
-            </ul>
+                    foreach (var e in cat.Events)
+                    {
+                        <div class="col-lg-4 col-md-6 single-event" data-category="@cat.CategoryId">
+                            <div class="card h-100 border-0 shadow-sm hover-shadow">
+                                <!-- Image -->
+                                <div class="position-relative overflow-hidden">
+                                    <img class="card-img-top"
+                                         src="@(string.IsNullOrEmpty(e.Image) ? Url.Content("~/main/img/events/cat.jpg") : Url.Content("~/" + e.Image))"
+                                         alt="@e.Title"
+                                         style="height: 240px; object-fit: cover;">
+                                    <span class="position-absolute top-0 start-0 m-3">
+                                        <span class="badge bg-primary fs-6 px-3 py-2">@cat.CategoryName</span>
+                                    </span>
+                                </div>
 
-            <!-- Tab Contents -->
-            <div class="tab-content">
-                <!-- All Events -->
-                <div id="tab-all" class="tab-pane fade show p-0 active">
-                    <div class="row g-4">
-                        @foreach (var cat in Model)
-                        {   
-                            @foreach (var e in cat.Events)
-                            {
-                                <div class="col-md-6 col-lg-3 wow bounceInUp" data-wow-delay="0.1s">
-                                    <div class="event-img position-relative">
-                                        <img class="img-fluid rounded w-100"
-                                            src="@(string.IsNullOrEmpty(e.Image) 
-                                                                                                                                                                                                              ? Url.Content("~/main/img/events/cat.jpg") 
-                                                                                                                                                                                                              : Url.Content("~/" + e.Image))"
-                                            alt="@e.Title">
+                                <!-- Content -->
+                                <div class="card-body d-flex flex-column">
+                                    <h5 class="card-title fw-bold mb-3">@e.Title</h5>
 
-                                        <div class="event-overlay d-flex flex-column p-4">
-                                            <h4 class="me-auto">@cat.CategoryName</h4>
-                                            <a href="@(Url.Content("~/" + (string.IsNullOrEmpty(e.Image) ? "main/img/events/cat.jpg" : e.Image)))"
-                                                data-lightbox="event-all" class="my-auto">
-                                                <i class="fas fa-search-plus text-dark fa-2x"></i>
-                                            </a>
+                                    <!-- Info List -->
+                                    <ul class="list-unstyled small mb-3">
+                                        <li class="mb-2">
+                                            <i class="fas fa-map-marker-alt text-danger me-2"></i>
+                                            <span class="text-muted">@(string.IsNullOrEmpty(e.Location) ? "Updating..." : e.Location)</span>
+                                        </li>
+                                      
+                                        <li class="mb-2">
+                                            <i class="far fa-calendar-alt text-success me-2"></i>
+                                            <span class="text-muted">Created: @(e.CreatedDate?.ToString("dd/MM/yyyy") ?? "N/A")</span>
+                                        </li>
+                                        <li class="mb-2">
+                                            <i class="far fa-user text-info me-2"></i>
+                                            <span class="text-muted">By: @(e.CreatedByNavigation?.FullName ?? "Admin")</span>
+                                        </li>
+                                    </ul>
 
-                                        </div>
+                                    <!-- Description -->
+                                    <p class="card-text text-secondary flex-grow-1">
+                                        @(string.IsNullOrEmpty(e.Description)
+                                                                    ? "No description available for this event."
+                                                                    : (e.Description.Length > 100 ? e.Description.Substring(0, 100) + "..." : e.Description))
+                                    </p>
+
+                                    <!-- Actions -->
+                                    <div class="d-flex justify-content-between align-items-center mt-auto pt-3 border-top">
+                                        <a href="#" class="btn btn-primary btn-sm px-4">View Details</a>
+                                        <a href="@(string.IsNullOrEmpty(e.Image) ? "#" : Url.Content("~/" + e.Image))"
+                                           data-lightbox="event-gallery"
+                                           title="@e.Title"
+                                           class="btn btn-outline-secondary btn-sm">
+                                            <i class="fas fa-search-plus"></i>
+                                        </a>
                                     </div>
                                 </div>
-                            }
-                        }
-
-                    </div>
-                </div>
-
-                <!-- Tabs by Category -->
-                @foreach (var cat in Model)
-                {
-                    <div id="tab-@cat.CategoryId" class="tab-pane fade show p-0">
-                        <div class="row g-4">
-                            @if (cat.Events == null || !cat.Events.Any())
-                            {
-                                <p class="text-muted">No events found in this category.</p>
-                            }
-                            else
-                            {
-                                @foreach (var e in cat.Events)
-                                {
-                                    <div class="col-md-6 col-lg-3 wow bounceInUp" data-wow-delay="0.1s">
-                                        <div class="event-img position-relative">
-                                            <img class="img-fluid rounded w-100"
-                                                src="@(string.IsNullOrEmpty(e.Image) 
-                                                                                                                                                                                                                  ? Url.Content("~/main/img/events/cat.jpg") 
-                                                                                                                                                                                                                  : Url.Content("~/" + e.Image))"
-                                                alt="@e.Title">
-                                            <div class="event-overlay d-flex flex-column p-4">
-                                                <h4 class="me-auto">@cat.CategoryName</h4>
-                                                <a href="@(string.IsNullOrEmpty(e.Image) ? "#" : $"/images/events/{e.Image}")"
-                                                    data-lightbox="event-@cat.CategoryId" class="my-auto">
-                                                    <i class="fas fa-search-plus text-dark fa-2x"></i>
-                                                </a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                }
-                            }
+                            </div>
                         </div>
-                    </div>
+                    }
                 }
+            }
+        </div>
+
+        <!-- Empty State -->
+        <div class="row d-none" id="empty-state">
+            <div class="col-12 text-center py-5">
+                <i class="fas fa-calendar-times fa-4x text-muted mb-3"></i>
+                <h4 class="text-muted">No events found in this category</h4>
             </div>
         </div>
     </div>
-</div>
+</section>
+
+<style>
+    .hover-shadow {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+        .hover-shadow:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+        }
+</style>
+
+<script>
+    function filterEvents(category) {
+        const events = document.querySelectorAll('.single-event');
+        const buttons = document.querySelectorAll('.btn-outline-primary, .btn-primary');
+        const emptyState = document.getElementById('empty-state');
+        let visibleCount = 0;
+
+        // Update button states
+        buttons.forEach(btn => {
+            btn.classList.remove('btn-primary', 'active');
+            btn.classList.add('btn-outline-primary');
+        });
+        event.target.classList.remove('btn-outline-primary');
+        event.target.classList.add('btn-primary', 'active');
+
+        // Filter events with animation
+        events.forEach(ev => {
+            if (category === 'all' || ev.getAttribute('data-category') === category) {
+                ev.classList.remove('d-none');
+                visibleCount++;
+            } else {
+                ev.classList.add('d-none');
+            }
+        });
+
+        // Show/hide empty state
+        if (visibleCount === 0) {
+            emptyState.classList.remove('d-none');
+        } else {
+            emptyState.classList.add('d-none');
+        }
+    }
+</script>
