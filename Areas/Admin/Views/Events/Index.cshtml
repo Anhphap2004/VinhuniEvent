@@ -5,85 +5,294 @@
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
 }
 
-<div class="container-fluid px-4 mt-4">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h2 class="fw-bold text-primary">
-            <i class="bi bi-calendar-event me-2"></i> Danh sách sự kiện
-        </h2>
-        <a asp-action="Create" class="btn btn-success shadow-sm">
-            <i class="bi bi-plus-circle me-1"></i> Thêm mới
-        </a>
+<div class="content-wrapper">
+    <!-- Header -->
+    <div class="page-header">
+        <h5>Quản lý sự kiện</h5>
     </div>
 
-    <div class="card shadow-sm border-0">
-        <div class="card-body">
-            <div class="table-responsive">
-                <table class="table table-hover align-middle">
-                    <thead class="table-primary">
-                        <tr>
-                            <th>Tiêu đề</th>
-                            <th>Mô tả</th>
-                            <th>Địa điểm</th>
-                            <th>Bắt đầu</th>
-                            <th>Kết thúc</th>
-                            <th>Giới hạn</th>
-                            <th>Ảnh</th>
-                            <th>Hoạt động</th>
-                            <th>Ngày tạo</th>
-                            <th>Danh mục</th>
-                            <th>Người tạo</th>
-                            <th class="text-center">Hành động</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var item in Model)
-                        {
-                            <tr>
-                                <td>@item.Title</td>
-                                <td class="text-truncate" style="max-width: 200px;">@item.Description</td>
-                                <td>@item.Location</td>
-                                <td>@item.StartTime.ToString("dd/MM/yyyy HH:mm")</td>
-                                <td>@item.EndTime.ToString("dd/MM/yyyy HH:mm")</td>
-                                <td>@item.MaxParticipants</td>
-                                <td>
-                                    @if (!string.IsNullOrEmpty(item.Image))
-                                    {
-                                        <img src="~/main/img/events/@item.Image" alt="@item.Title" class="rounded" width="60" height="50" style="object-fit:cover;" />
-                                    }
-                                    else
-                                    {
-                                        <span class="text-muted">Chưa có</span>
-                                    }
-                                </td>
-                                <td>
-                                    @if (item.IsActive == true)
-                                    {
-                                        <span class="badge bg-success">Hoạt động</span>
-                                    }
-                                    else
-                                    {
-                                        <span class="badge bg-secondary">Ẩn</span>
-                                    }
-                                </td>
-                                <td>@item.CreatedDate?.ToString("dd/MM/yyyy")</td>
-                                <td>@item.Category?.CategoryName</td>
-                                <td>@item.CreatedByNavigation?.FullName</td>
-                                <td class="text-center">
-                                    <a asp-action="Edit" asp-route-id="@item.EventId" class="btn btn-sm btn-warning me-1">
-                                        <i class="bi bi-pencil-square">Sửa</i>
-                                    </a>
-                                    <a asp-action="Details" asp-route-id="@item.EventId" class="btn btn-sm btn-info me-1 text-white">
-                                        <i class="bi bi-eye">Xem</i>
-                                    </a>
-                                    <a asp-action="Delete" asp-route-id="@item.EventId" class="btn btn-sm btn-danger">
-                                        <i class="bi bi-trash">Xóa</i>
-                                    </a>
-                                </td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-            </div>
-        </div>
+    <!-- Search & Add Button -->
+    <div class="toolbar">
+        <input type="text"
+               id="searchInput"
+               class="search-input"
+               placeholder="Tìm kiếm theo tiêu đề hoặc địa điểm...">
+        <a asp-action="Create" class="btn-add">Thêm mới</a>
+    </div>
+
+    <!-- Table -->
+    <div class="table-container">
+        <table class="data-table" id="eventTable">
+            <thead>
+                <tr>
+                    <th>Tiêu đề</th>
+                    <th>Mô tả</th>
+                    <th>Địa điểm</th>
+                    <th>Bắt đầu</th>
+                    <th>Kết thúc</th>
+                    <th>Giới hạn</th>
+                    <th>Ảnh</th>
+                    <th>Trạng thái</th>
+                    <th>Ngày tạo</th>
+                    <th>Danh mục</th>
+                    <th>Người tạo</th>
+                    <th>Hành động</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td class="title-col">@item.Title</td>
+                        <td class="desc-col">@item.Description</td>
+                        <td>@item.Location</td>
+                        <td>@item.StartTime.ToString("dd/MM/yyyy HH:mm")</td>
+                        <td>@item.EndTime.ToString("dd/MM/yyyy HH:mm")</td>
+                        <td>@item.MaxParticipants</td>
+                        <td>
+                            @if (!string.IsNullOrEmpty(item.Image))
+                            {
+                                <img src="~/main/img/events/@item.Image" alt="@item.Title" class="event-img" />
+                            }
+                            else
+                            {
+                                <span class="text-muted">-</span>
+                            }
+                        </td>
+                        <td>
+                            @if (item.IsActive == true)
+                            {
+                                <span class="status-badge status-active">Hoạt động</span>
+                            }
+                            else
+                            {
+                                <span class="status-badge status-inactive">Ẩn</span>
+                            }
+                        </td>
+                        <td>@item.CreatedDate?.ToString("dd/MM/yyyy")</td>
+                        <td>@item.Category?.CategoryName</td>
+                        <td>@item.CreatedByNavigation?.FullName</td>
+                        <td>
+                            <div class="action-buttons">
+                                <a asp-action="Edit" asp-route-id="@item.EventId" class="btn-action">Sửa</a>
+                                <a asp-action="Details" asp-route-id="@item.EventId" class="btn-action">Xem</a>
+                                <a asp-action="Delete" asp-route-id="@item.EventId" class="btn-action btn-delete">Xóa</a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        document.getElementById('searchInput').addEventListener('keyup', function() {
+            var searchValue = this.value.toLowerCase();
+            var table = document.getElementById('eventTable');
+            var rows = table.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+
+            for (var i = 0; i < rows.length; i++) {
+                var title = rows[i].cells[0].textContent.toLowerCase();
+                var location = rows[i].cells[2].textContent.toLowerCase();
+
+                if (title.indexOf(searchValue) > -1 || location.indexOf(searchValue) > -1) {
+                    rows[i].style.display = '';
+                } else {
+                    rows[i].style.display = 'none';
+                }
+            }
+        });
+    </script>
+
+    <style>
+        .content-wrapper {
+            padding: 24px;
+            max-width: 100%;
+        }
+
+        .page-header {
+            margin-bottom: 20px;
+        }
+
+            .page-header h5 {
+                margin: 0;
+                font-size: 18px;
+                font-weight: 600;
+                color: #1a1a1a;
+            }
+
+        .toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            gap: 12px;
+        }
+
+        .search-input {
+            flex: 1;
+            max-width: 400px;
+            padding: 7px 12px;
+            border: 1px solid #ddd;
+            font-size: 14px;
+            color: #333;
+        }
+
+            .search-input:focus {
+                outline: none;
+                border-color: #007bff;
+            }
+
+        .btn-add {
+            padding: 7px 18px;
+            background: #007bff;
+            color: #fff;
+            border: none;
+            font-size: 14px;
+            text-decoration: none;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+            .btn-add:hover {
+                background: #0056b3;
+                color: #fff;
+            }
+
+        .table-container {
+            background: #fff;
+            border: 1px solid #ddd;
+            overflow-x: auto;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+            .data-table thead {
+                background: #f8f9fa;
+                border-bottom: 2px solid #ddd;
+            }
+
+            .data-table th {
+                padding: 10px 12px;
+                text-align: left;
+                font-weight: 600;
+                color: #1a1a1a;
+                white-space: nowrap;
+            }
+
+            .data-table td {
+                padding: 8px 12px;
+                color: #333;
+                border-bottom: 1px solid #e9ecef;
+            }
+
+            .data-table tbody tr:hover {
+                background: #f8f9fa;
+            }
+
+        .title-col {
+            font-weight: 500;
+            color: #1a1a1a;
+            max-width: 200px;
+        }
+
+        .desc-col {
+            max-width: 180px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .event-img {
+            width: 50px;
+            height: 40px;
+            object-fit: cover;
+            border: 1px solid #ddd;
+        }
+
+        .text-muted {
+            color: #999;
+            font-size: 13px;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 3px 8px;
+            font-size: 12px;
+            white-space: nowrap;
+        }
+
+        .status-active {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-inactive {
+            background: #e2e3e5;
+            color: #383d41;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 6px;
+            white-space: nowrap;
+        }
+
+        .btn-action {
+            padding: 4px 10px;
+            font-size: 13px;
+            border: 1px solid #6c757d;
+            background: #fff;
+            color: #6c757d;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+            .btn-action:hover {
+                background: #6c757d;
+                color: #fff;
+            }
+
+        .btn-delete {
+            border-color: #dc3545;
+            color: #dc3545;
+        }
+
+            .btn-delete:hover {
+                background: #dc3545;
+                color: #fff;
+            }
+
+        /* Responsive */
+        @@media (max-width: 1400px) {
+            .content-wrapper {
+                padding: 20px;
+            }
+
+            .data-table {
+                font-size: 13px;
+            }
+
+                .data-table th,
+                .data-table td {
+                    padding: 8px 10px;
+                }
+
+            .title-col {
+                max-width: 150px;
+            }
+
+            .desc-col {
+                max-width: 120px;
+            }
+        }
+    </style>
+}
