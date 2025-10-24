@@ -25,70 +25,76 @@
 	<div class="wrapper">
 		<nav id="sidebar" class="sidebar js-sidebar">
 			<div class="sidebar-content js-simplebar">
-				<a class="sidebar-brand" href="index.html">
-          <span class="align-middle">VinhUni</span>
-        </a>
+				<a href="index.html" style="text-decoration: none; display: block; padding: 16px 12px; border-bottom: 1px solid rgba(255,255,255,0.1);">
+					<div style="display: flex; align-items: center; gap: 12px;">
+						<img src="https://login.vinhuni.edu.vn/assets/images/logo-dh-vinh.png" alt="VinhUni Logo" style="width: 45px; height: 45px; object-fit: contain;">
+						<div style="display: flex; flex-direction: column; line-height: 1.3;">
+							<span style="color: #B8C5D6; font-weight: 500; font-size: 9px; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 2px;">Trường Đại Học Vinh</span>
+							<span style="color: #4A9EFF; font-weight: 700; font-size: 16px; letter-spacing: 0.5px;">VINH EVENTS</span>
+						</div>
+					</div>
+				</a>
 
 				<ul class="sidebar-nav">
 					<li class="sidebar-header">
-						Pages
+						Tổng Quan Sự Kiện VinhUni
 					</li>
 
 					<li class="sidebar-item active">
-						<a class="sidebar-link" href="index.html">
-              <i class="align-middle" data-feather="sliders"></i> <span class="align-middle">Dashboard</span>
+						<a class="sidebar-link" asp-controller="Users" asp-action="Index">
+              <i class="align-middle" data-feather="sliders"></i> <span class="align-middle">Quản lý người dùng</span>
             </a>
 					</li>
 
 					<li class="sidebar-item">
-						<a class="sidebar-link" href="pages-profile.html">
-              <i class="align-middle" data-feather="user"></i> <span class="align-middle">Profile</span>
-            </a>
+						<a class="sidebar-link" asp-controller="Student" asp-action="Index">
+					   <i class="align-middle" data-feather="user"></i> <span class="align-middle">Quản lý sinh viên</span>
+					   </a>
 					</li>
 
 					<li class="sidebar-item">
 						<a class="sidebar-link" href="pages-sign-in.html">
-              <i class="align-middle" data-feather="log-in"></i> <span class="align-middle">Sign In</span>
+              <i class="align-middle" data-feather="log-in"></i> <span class="align-middle"> Danh mục sự kiện</span>
             </a>
 					</li>
 
 					<li class="sidebar-item">
 						<a class="sidebar-link" href="pages-sign-up.html">
-              <i class="align-middle" data-feather="user-plus"></i> <span class="align-middle">Sign Up</span>
+              <i class="align-middle" data-feather="user-plus"></i> <span class="align-middle">Quản lý sự kiện</span>
             </a>
 					</li>
 
 					<li class="sidebar-item">
 						<a class="sidebar-link" href="pages-blank.html">
-              <i class="align-middle" data-feather="book"></i> <span class="align-middle">Blank</span>
+              <i class="align-middle" data-feather="book"></i> <span class="align-middle">Đăng ký/ Tham gia</span>
             </a>
 					</li>
 
 					<li class="sidebar-header">
-						Tools & Components
+						Bảng Điều Khiển
 					</li>
 
 					<li class="sidebar-item">
 						<a class="sidebar-link" href="ui-buttons.html">
-              <i class="align-middle" data-feather="square"></i> <span class="align-middle">Buttons</span>
+              <i class="align-middle" data-feather="square"></i> <span class="align-middle">Điểm danh</span>
             </a>
 					</li>
 
 					<li class="sidebar-item">
 						<a class="sidebar-link" href="ui-forms.html">
-              <i class="align-middle" data-feather="check-square"></i> <span class="align-middle">Forms</span>
+              <i class="align-middle" data-feather="check-square"></i> <span class="align-middle">Thống kê</span>
             </a>
 					</li>
 
 					<li class="sidebar-item">
 						<a class="sidebar-link" href="ui-cards.html">
-              <i class="align-middle" data-feather="grid"></i> <span class="align-middle">Cards</span>
+              <i class="align-middle" data-feather="grid"></i> <span class="align-middle">Phân quyền</span>
             </a>
 					</li>
 
 					<li class="sidebar-item">
 						<a class="sidebar-link" href="ui-typography.html">
-              <i class="align-middle" data-feather="align-left"></i> <span class="align-middle">Typography</span>
+              <i class="align-middle" data-feather="align-left"></i> <span class="align-middle">Nhà tài trợ</span>
             </a>
 					</li>
 
@@ -275,7 +281,7 @@
               </a>
 
 							<a class="nav-link dropdown-toggle d-none d-sm-inline-block" href="#" data-bs-toggle="dropdown">
-                <img src="~/admin/img/avatars/avatar.jpg" class="avatar img-fluid rounded me-1" alt="Charles Hall" /> <span class="text-dark">Anhh Phapp</span>
+                <img src="~/admin/img/avatars/avatar.jpg" class="avatar img-fluid rounded me-1" alt="Charles Hall" /> <span class="text-dark">User</span>
               </a>
 							<div class="dropdown-menu dropdown-menu-end">
 								<a class="dropdown-item" href="pages-profile.html"><i class="align-middle me-1" data-feather="user"></i> Profile</a>

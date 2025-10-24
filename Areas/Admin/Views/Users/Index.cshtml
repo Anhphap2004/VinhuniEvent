@@ -5,108 +5,262 @@
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
 }
 
-<div class="container mt-4">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h4 class="fw-bold text-dark mb-0">👤 Quản lý người dùng</h4>
-        <a asp-action="Create" class="btn btn-sm btn-primary px-3">
-            ➕ Thêm mới
-        </a>
+<div class="content-wrapper">
+    <!-- Header -->
+    <div class="page-header">
+        <h5>Quản lý người dùng</h5>
     </div>
 
-    <div class="card shadow-sm border-0">
-        <div class="card-body p-0">
-            <div class="table-responsive">
-                <table class="table table-hover align-middle mb-0">
-                    <thead class="table-light">
-                        <tr class="text-muted small text-uppercase">
-                            <th>Mã SV</th>
-                            <th>Họ tên</th>
-                            <th>Email</th>
-                            <th>Số Điện Thoại</th>
-                            <th>Khoa</th>
-                            <th>Ngành</th>
-                            <th>Trạng thái</th>
-                            <th>Vai trò</th>
-                            <th class="text-end">Hành động</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var item in Model)
-                        {
-                            <tr>
-                                <td>@(item.StudentCode ?? "-")</td>
-                                <td class="fw-semibold">@item.FullName</td>
-                                <td>@item.Email</td>
-                                <td>@(item.PhoneNumber ?? "-")</td>
-                                <td>@(item.Faculty ?? "-")</td>
-                                <td>@(item.Major ?? "-")</td>
-                                <td>
-                                    @if (item.IsActive)
-                                    {
-                                        <span class="badge bg-success-subtle text-success border border-success-subtle">Hoạt động</span>
-                                    }
-                                    else
-                                    {
-                                        <span class="badge bg-secondary-subtle text-secondary border border-secondary-subtle">Khóa</span>
-                                    }
-                                </td>
-                                <td>
-                                    <span class="badge bg-info-subtle text-dark border border-info-subtle">
-                                        @item.Role?.RoleName
-                                    </span>
-                                </td>
-                                <td class="text-end">
-                                    <div class="btn-group btn-group-sm" role="group">
-                                        <a asp-action="Edit" asp-route-id="@item.UserId" class="btn btn-light border">
-                                            ✏️
-                                        </a>
-                                        <a asp-action="Details" asp-route-id="@item.UserId" class="btn btn-light border">
-                                            👁️
-                                        </a>
-                                        <a asp-action="Delete" asp-route-id="@item.UserId" class="btn btn-light border text-danger">
-                                            🗑️
-                                        </a>
-                                    </div>
-                                </td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-            </div>
-        </div>
+    <!-- Search & Add Button -->
+    <div class="toolbar">
+        <input type="text"
+               id="searchInput"
+               class="search-input"
+               placeholder="Tìm kiếm theo tên hoặc mã sinh viên...">
+        <a asp-action="Create" class="btn-add">Thêm mới</a>
+    </div>
+
+    <!-- Table -->
+    <div class="table-container">
+        <table class="data-table" id="userTable">
+            <thead>
+                <tr>
+                    <th>Mã SV</th>
+                    <th>Họ tên</th>
+                    <th>Email</th>
+                    <th>Số điện thoại</th>
+                    <th>Khoa</th>
+                    <th>Ngành</th>
+                    <th>Trạng thái</th>
+                    <th>Vai trò</th>
+                    <th>Hành động</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@(item.StudentCode ?? "-")</td>
+                        <td class="name-col">@item.FullName</td>
+                        <td>@item.Email</td>
+                        <td>@(item.PhoneNumber ?? "-")</td>
+                        <td>@(item.Faculty ?? "-")</td>
+                        <td>@(item.Major ?? "-")</td>
+                        <td>
+                            @if (item.IsActive)
+                            {
+                                <span class="status-badge status-active">Hoạt động</span>
+                            }
+                            else
+                            {
+                                <span class="status-badge status-inactive">Khóa</span>
+                            }
+                        </td>
+                        <td>
+                            <span class="role-badge">@item.Role?.RoleName</span>
+                        </td>
+                        <td>
+                            <div class="action-buttons">
+                                <a asp-action="Edit" asp-route-id="@item.UserId" class="btn-action">Sửa</a>
+                                <a asp-action="Details" asp-route-id="@item.UserId" class="btn-action">Xem</a>
+                                <a asp-action="Delete" asp-route-id="@item.UserId" class="btn-action btn-delete">Xóa</a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
     </div>
 </div>
 
 @section Scripts {
+    <script>
+        document.getElementById('searchInput').addEventListener('keyup', function() {
+            var searchValue = this.value.toLowerCase();
+            var table = document.getElementById('userTable');
+            var rows = table.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+
+            for (var i = 0; i < rows.length; i++) {
+                var studentCode = rows[i].cells[0].textContent.toLowerCase();
+                var fullName = rows[i].cells[1].textContent.toLowerCase();
+
+                if (studentCode.indexOf(searchValue) > -1 || fullName.indexOf(searchValue) > -1) {
+                    rows[i].style.display = '';
+                } else {
+                    rows[i].style.display = 'none';
+                }
+            }
+        });
+    </script>
+
     <style>
-        .card {
-            border-radius: 10px;
-            overflow: hidden;
+        .content-wrapper {
+            padding: 24px;
+            max-width: 100%;
         }
 
-        .table th, .table td {
-            padding: 0.75rem 1rem;
-            vertical-align: middle;
+        .page-header {
+            margin-bottom: 20px;
         }
 
-        .table thead th {
-            font-weight: 600;
-            letter-spacing: 0.03rem;
+            .page-header h5 {
+                margin: 0;
+                font-size: 18px;
+                font-weight: 600;
+                color: #1a1a1a;
+            }
+
+        .toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            gap: 12px;
         }
 
-        .btn-group .btn {
-            border-radius: 6px !important;
-            padding: 4px 8px;
+        .search-input {
+            flex: 1;
+            max-width: 400px;
+            padding: 7px 12px;
+            border: 1px solid #ddd;
+            font-size: 14px;
+            color: #333;
         }
 
-        .badge {
-            font-size: 0.8rem;
-            padding: 4px 8px;
-            border-radius: 6px;
+            .search-input:focus {
+                outline: none;
+                border-color: #007bff;
+            }
+
+        .btn-add {
+            padding: 7px 18px;
+            background: #007bff;
+            color: #fff;
+            border: none;
+            font-size: 14px;
+            text-decoration: none;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: background 0.2s;
         }
 
-        .fw-semibold {
-            font-weight: 600;
+            .btn-add:hover {
+                background: #0056b3;
+                color: #fff;
+            }
+
+        .table-container {
+            background: #fff;
+            border: 1px solid #ddd;
+            overflow-x: auto;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+            .data-table thead {
+                background: #f8f9fa;
+                border-bottom: 2px solid #ddd;
+            }
+
+            .data-table th {
+                padding: 10px 12px;
+                text-align: left;
+                font-weight: 600;
+                color: #1a1a1a;
+                white-space: nowrap;
+            }
+
+            .data-table td {
+                padding: 8px 12px;
+                color: #333;
+                border-bottom: 1px solid #e9ecef;
+            }
+
+            .data-table tbody tr:hover {
+                background: #f8f9fa;
+            }
+
+        .name-col {
+            font-weight: 500;
+            color: #1a1a1a;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 3px 8px;
+            font-size: 12px;
+            white-space: nowrap;
+        }
+
+        .status-active {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-inactive {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .role-badge {
+            display: inline-block;
+            padding: 3px 8px;
+            background: #d1ecf1;
+            color: #0c5460;
+            font-size: 12px;
+            white-space: nowrap;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 6px;
+            white-space: nowrap;
+        }
+
+        .btn-action {
+            padding: 4px 10px;
+            font-size: 13px;
+            border: 1px solid #6c757d;
+            background: #fff;
+            color: #6c757d;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+            .btn-action:hover {
+                background: #6c757d;
+                color: #fff;
+            }
+
+        .btn-delete {
+            border-color: #dc3545;
+            color: #dc3545;
+        }
+
+            .btn-delete:hover {
+                background: #dc3545;
+                color: #fff;
+            }
+
+        /* Responsive */
+        @@media (max-width: 1400px) {
+            .content-wrapper {
+                padding: 20px;
+            }
+
+            .data-table {
+                font-size: 13px;
+            }
+
+                .data-table th,
+                .data-table td {
+                    padding: 8px 10px;
+                }
         }
     </style>
 }
