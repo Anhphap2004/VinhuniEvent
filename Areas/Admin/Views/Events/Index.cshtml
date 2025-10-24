@@ -1,0 +1,89 @@
+﻿@model IEnumerable<VinhuniEvent.Models.Event>
+
+@{
+    ViewData["Title"] = "Quản lý sự kiện";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid px-4 mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="fw-bold text-primary">
+            <i class="bi bi-calendar-event me-2"></i> Danh sách sự kiện
+        </h2>
+        <a asp-action="Create" class="btn btn-success shadow-sm">
+            <i class="bi bi-plus-circle me-1"></i> Thêm mới
+        </a>
+    </div>
+
+    <div class="card shadow-sm border-0">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead class="table-primary">
+                        <tr>
+                            <th>Tiêu đề</th>
+                            <th>Mô tả</th>
+                            <th>Địa điểm</th>
+                            <th>Bắt đầu</th>
+                            <th>Kết thúc</th>
+                            <th>Giới hạn</th>
+                            <th>Ảnh</th>
+                            <th>Hoạt động</th>
+                            <th>Ngày tạo</th>
+                            <th>Danh mục</th>
+                            <th>Người tạo</th>
+                            <th class="text-center">Hành động</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@item.Title</td>
+                                <td class="text-truncate" style="max-width: 200px;">@item.Description</td>
+                                <td>@item.Location</td>
+                                <td>@item.StartTime.ToString("dd/MM/yyyy HH:mm")</td>
+                                <td>@item.EndTime.ToString("dd/MM/yyyy HH:mm")</td>
+                                <td>@item.MaxParticipants</td>
+                                <td>
+                                    @if (!string.IsNullOrEmpty(item.Image))
+                                    {
+                                        <img src="~/main/img/events/@item.Image" alt="@item.Title" class="rounded" width="60" height="50" style="object-fit:cover;" />
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">Chưa có</span>
+                                    }
+                                </td>
+                                <td>
+                                    @if (item.IsActive == true)
+                                    {
+                                        <span class="badge bg-success">Hoạt động</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-secondary">Ẩn</span>
+                                    }
+                                </td>
+                                <td>@item.CreatedDate?.ToString("dd/MM/yyyy")</td>
+                                <td>@item.Category?.CategoryName</td>
+                                <td>@item.CreatedByNavigation?.FullName</td>
+                                <td class="text-center">
+                                    <a asp-action="Edit" asp-route-id="@item.EventId" class="btn btn-sm btn-warning me-1">
+                                        <i class="bi bi-pencil-square">Sửa</i>
+                                    </a>
+                                    <a asp-action="Details" asp-route-id="@item.EventId" class="btn btn-sm btn-info me-1 text-white">
+                                        <i class="bi bi-eye">Xem</i>
+                                    </a>
+                                    <a asp-action="Delete" asp-route-id="@item.EventId" class="btn btn-sm btn-danger">
+                                        <i class="bi bi-trash">Xóa</i>
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
