@@ -47,7 +47,7 @@
                         <td>@(item.Faculty ?? "-")</td>
                         <td>@(item.Major ?? "-")</td>
                         <td>
-                            @if (item.IsActive)
+                            @if (item.IsActive == true)
                             {
                                 <span class="status-badge status-active">Hoạt động</span>
                             }

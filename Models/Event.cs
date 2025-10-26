@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace VinhuniEvent.Models;
 
@@ -24,6 +25,9 @@ public partial class Event
     public int? MaxParticipants { get; set; }
 
     public string? Image { get; set; }
+
+    [NotMapped]
+    public IFormFile? ImageFile { get; set; }
 
     public bool? IsActive { get; set; }
 

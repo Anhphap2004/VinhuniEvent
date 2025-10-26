@@ -25,7 +25,7 @@ public partial class User
 
     public string? Major { get; set; }
 
-    public DateOnly? BirthDate { get; set; }
+    public DateTime? BirthDate { get; set; }
 
     public string? PhoneNumber { get; set; }
 
@@ -37,5 +37,5 @@ public partial class User
 
     public virtual ICollection<Event> Events { get; set; } = new List<Event>();
 
-    public virtual Role Role { get; set; } = null!;
+    public virtual Role? Role { get; set; }
 }

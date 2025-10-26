@@ -32,6 +32,7 @@ public partial class ApplicationDbContext : DbContext
     public virtual DbSet<VwThongKeSuKien> VwThongKeSuKiens { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+
         => optionsBuilder.UseSqlServer("Server=DESKTOP-ENPLV0I;Database=VinhuniEvent;Trusted_Connection=True;TrustServerCertificate=True");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -166,6 +167,7 @@ public partial class ApplicationDbContext : DbContext
 
             entity.HasIndex(e => e.Email, "UQ__Users__A9D105346F7C03B6").IsUnique();
 
+            entity.Property(e => e.BirthDate).HasColumnType("datetime");
             entity.Property(e => e.CreatedDate)
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime");

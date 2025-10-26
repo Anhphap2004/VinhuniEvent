@@ -1,46 +1,47 @@
 ﻿@model VinhuniEvent.Models.User
-
 @{
-    ViewData["Title"] = "Xóa người dùng";
+    ViewData["Title"] = "Xóa người dùng - sinh viên";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
 }
 
 <div class="container mt-4">
-    <div class="card shadow-sm border-0">
-        <div class="card-header bg-danger text-white d-flex justify-content-between align-items-center">
-            <h4 class="mb-0"><i class="bi bi-trash"></i> Xác nhận xóa người dùng</h4>
-            <a asp-action="Index" class="btn btn-light btn-sm">← Quay lại danh sách</a>
+    <div class="card">
+        <div class="card-header bg-white border-bottom">
+            <div class="d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Xác nhận xóa người dùng - sinh viên</h5>
+                <a asp-action="Index" class="btn btn-outline-secondary btn-sm">Quay lại</a>
+            </div>
         </div>
-
         <div class="card-body">
-            <p class="text-muted">Bạn có chắc chắn muốn xóa người dùng này không? Hành động này <strong>không thể hoàn tác</strong>.</p>
-            <hr />
+            <div class="alert alert-warning border-0 mb-4">
+                <strong>Cảnh báo:</strong> Bạn có chắc chắn muốn xóa người dùng này không? Hành động này không thể hoàn tác.
+            </div>
 
-            <dl class="row mb-0">
-                <dt class="col-sm-3">Mã sinh viên</dt>
-                <dd class="col-sm-9">@Model.StudentCode ?? "(Không có)"</dd>
+            <dl class="row">
+                <dt class="col-sm-3 text-muted mb-3">Mã sinh viên</dt>
+                <dd class="col-sm-9 mb-3">@Model.StudentCode  </dd>
 
-                <dt class="col-sm-3">Họ và tên</dt>
-                <dd class="col-sm-9">@Model.FullName</dd>
+                <dt class="col-sm-3 text-muted mb-3">Họ và tên</dt>
+                <dd class="col-sm-9 mb-3">@Model.FullName</dd>
 
-                <dt class="col-sm-3">Email</dt>
-                <dd class="col-sm-9">@Model.Email</dd>
+                <dt class="col-sm-3 text-muted mb-3">Email</dt>
+                <dd class="col-sm-9 mb-3">@Model.Email</dd>
 
-                <dt class="col-sm-3">Khoa</dt>
-                <dd class="col-sm-9">@Model.Faculty ?? "(Chưa cập nhật)"</dd>
+                <dt class="col-sm-3 text-muted mb-3">Khoa</dt>
+                <dd class="col-sm-9 mb-3">@Model.Faculty  </dd>
 
-                <dt class="col-sm-3">Ngành học</dt>
-                <dd class="col-sm-9">@Model.Major ?? "(Chưa cập nhật)"</dd>
+                <dt class="col-sm-3 text-muted mb-3">Ngành học</dt>
+                <dd class="col-sm-9 mb-3">@Model.Major  </dd>
 
-                <dt class="col-sm-3">Ngày sinh</dt>
-                <dd class="col-sm-9">@Model.BirthDate?.ToString("dd/MM/yyyy") ?? "(Không rõ)"</dd>
+                <dt class="col-sm-3 text-muted mb-3">Ngày sinh</dt>
+                <dd class="col-sm-9 mb-3">@Model.BirthDate?.ToString("dd/MM/yyyy")  </dd>
 
-                <dt class="col-sm-3">Số điện thoại</dt>
-                <dd class="col-sm-9">@Model.PhoneNumber ?? "(Không có)"</dd>
+                <dt class="col-sm-3 text-muted mb-3">Số điện thoại</dt>
+                <dd class="col-sm-9 mb-3">@Model.PhoneNumber </dd>
 
-                <dt class="col-sm-3">Trạng thái</dt>
-                <dd class="col-sm-9">
-                    @if (Model.IsActive)
+                <dt class="col-sm-3 text-muted mb-3">Trạng thái</dt>
+                <dd class="col-sm-9 mb-3">
+                    @if (Model.IsActive == true)
                     {
                         <span class="badge bg-success">Hoạt động</span>
                     }
@@ -50,17 +51,17 @@
                     }
                 </dd>
 
-                <dt class="col-sm-3">Ngày tạo</dt>
-                <dd class="col-sm-9">@Model.CreatedDate?.ToString("dd/MM/yyyy HH:mm") ?? "(Không rõ)"</dd>
+                <dt class="col-sm-3 text-muted mb-3">Ngày tạo</dt>
+                <dd class="col-sm-9 mb-3">@Model.CreatedDate?.ToString("dd/MM/yyyy HH:mm") </dd>
 
-                <dt class="col-sm-3">Vai trò</dt>
-                <dd class="col-sm-9">@Model.Role?.RoleName ?? $"(ID: {Model.RoleId})"</dd>
+                <dt class="col-sm-3 text-muted mb-3">Vai trò</dt>
+                <dd class="col-sm-9 mb-3">@Model.Role?.RoleName </dd>
 
-                <dt class="col-sm-3">Ảnh đại diện</dt>
-                <dd class="col-sm-9">
+                <dt class="col-sm-3 text-muted mb-3">Ảnh đại diện</dt>
+                <dd class="col-sm-9 mb-3">
                     @if (!string.IsNullOrEmpty(Model.ImageUrl))
                     {
-                        <img src="@Model.ImageUrl" alt="User image" class="img-thumbnail rounded-circle" style="width:100px;height:100px;object-fit:cover;">
+                        <img src="@Model.ImageUrl" alt="Ảnh đại diện" class="img-thumbnail" style="width:80px;height:80px;object-fit:cover;">
                     }
                     else
                     {
@@ -69,17 +70,14 @@
                 </dd>
             </dl>
         </div>
-
-        <div class="card-footer text-end">
-            <form asp-action="Delete" class="d-inline">
-                <input type="hidden" asp-for="UserId" />
-                <button type="submit" class="btn btn-danger me-2">
-                    <i class="bi bi-trash-fill"></i> Xóa
-                </button>
-            </form>
-            <a asp-action="Index" class="btn btn-secondary">
-                <i class="bi bi-arrow-left"></i> Hủy
-            </a>
+        <div class="card-footer bg-white border-top">
+            <div class="d-flex justify-content-end gap-2">
+                <a asp-action="Index" class="btn btn-outline-secondary">Hủy</a>
+                <form asp-action="Delete" method="post" class="d-inline">
+                    <input type="hidden" asp-for="UserId" />
+                    <button type="submit" class="btn btn-danger">Xóa người dùng</button>
+                </form>
+            </div>
         </div>
     </div>
 </div>
