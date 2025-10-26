@@ -7,17 +7,17 @@ namespace VinhuniEvent.Models
     {
         public int UserId { get; set; }
 
-        public string? StudentCode { get; set; }     // Mã sinh viên (có thể null)
+        public string? StudentCode { get; set; }     
         public string FullName { get; set; } = null!;
         public string Email { get; set; } = null!;
         public string PasswordHash { get; set; } = null!;
         public int RoleId { get; set; }
 
-        public string? Faculty { get; set; }         // Khoa
-        public string? Major { get; set; }           // Ngành học
-        public DateTime? BirthDate { get; set; }     // Ngày sinh
-        public string? PhoneNumber { get; set; }     // Số điện thoại
-        public string? ImageUrl { get; set; }        // Ảnh đại diện
+        public string? Faculty { get; set; }         
+        public string? Major { get; set; }           
+        public DateTime? BirthDate { get; set; }    
+        public string? PhoneNumber { get; set; }     
+        public string? ImageUrl { get; set; }       
 
         public bool IsActive { get; set; }
         public DateTime? CreatedDate { get; set; }

@@ -21,35 +21,33 @@ namespace VinhuniEvent.Controllers
         [HttpPost]
         public async Task<IActionResult> Index(User user)
         {
-            if (!ModelState.IsValid)
-            {
-                return View(user);
-            }
-            var existingUser = _context.Users.FirstOrDefault(u => u.Email == user.Email || u.PhoneNumber == user.PhoneNumber);
-            if (existingUser != null)
-            {
-                if (existingUser.Email == user.Email)
-                {
-                    ModelState.AddModelError("Email", "⚠ Email đã tồn tại.");
-                }
+           
+            var existingEmail = _context.Users.FirstOrDefault(u => u.Email == user.Email);
+            var existingPhone = _context.Users.FirstOrDefault(u => u.PhoneNumber == user.PhoneNumber);
+            var existingStudentCode = _context.Users.FirstOrDefault(u => u.StudentCode == user.StudentCode);
 
-                if (existingUser.PhoneNumber == user.PhoneNumber)
-                {
-                    ModelState.AddModelError("PhoneNumber", "⚠ Số điện thoại đã được sử dụng.");
-                }
-                if(existingUser.StudentCode == user.StudentCode)
-                {
-                    ModelState.AddModelError("StudentCode", "⚠ Mã sinh viên đã được sử dụng.");
-                }
-                return View(user);
-
+            if (existingEmail != null)
+            {
+                ModelState.AddModelError("Email", "⚠ Email đã tồn tại.");
             }
+            if (existingPhone != null)
+            {
+                ModelState.AddModelError("PhoneNumber", "⚠ Số điện thoại đã được sử dụng.");
+            }
+            if (existingStudentCode != null)
+            {
+                ModelState.AddModelError("StudentCode", "⚠ Mã sinh viên đã được sử dụng.");
+            }
+
             if (string.IsNullOrWhiteSpace(user.PasswordHash))
             {
                 ModelState.AddModelError("PasswordHash", "⚠ Mật khẩu không hợp lệ!");
                 return View(user);
             }
-
+            if (!ModelState.IsValid)
+            {
+                return View(user);
+            }
             user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(user.PasswordHash);
             user.RoleId = 2; 
             user.IsActive = true;
