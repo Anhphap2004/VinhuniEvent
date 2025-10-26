@@ -1,7 +1,7 @@
 ﻿@{
     ViewData["Title"] = "Đăng ký tài khoản";
 }
-       @model VinhuniEvent.Models.User;
+@model VinhuniEvent.Models.User
 <style>
     * {
         margin: 0;
@@ -183,7 +183,7 @@
 
             <div class="form-row">
                 <div class="form-group">
-                    <input type="email" asp-for="Email" id="email" placeholder="Email" required      />
+                    <input type="email" asp-for="Email" id="email" placeholder="Email" required />
                     <span asp-validation-for="Email" class="text-danger"></span>
 
                 </div>
@@ -196,14 +196,14 @@
 
             <div class="form-row">
                 <div class="form-group">
-                    <input type="password" asp-for="PasswordHash" id="password" placeholder="Mật khẩu" required>    
+                    <input type="password" asp-for="PasswordHash" id="password" placeholder="Mật khẩu" required>
                     <span asp-validation-for="PasswordHash" class="text-danger"></span>
                 </div>
             </div>
 
             <div class="form-row">
                 <div class="form-group">
-                    <select asp-for="Major" name="major" id="major" required>
+                    <select asp-for="Major"  id="major" required>
                         <option value="" disabled selected>Chọn ngành học</option>
                         <option value="Quản lý giáo dục">1. Quản lý giáo dục</option>
                         <option value="Giáo dục Mầm non">2. Giáo dục Mầm non</option>
@@ -273,7 +273,7 @@
                 </div>
 
                 <div class="form-group">
-                    <select asp-for="Faculty" name="Faculty" id="Faculty" required>
+                    <select asp-for="Faculty" id="Faculty" required>
                         <option value="" disabled selected>Chọn khóa học</option>
                         <option value="k62">Khóa 62</option>
                         <option value="k63">Khóa 63</option>

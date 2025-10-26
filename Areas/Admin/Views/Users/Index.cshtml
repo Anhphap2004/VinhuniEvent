@@ -8,7 +8,7 @@
 <div class="content-wrapper">
     <!-- Header -->
     <div class="page-header">
-        <h5>Quản lý người dùng</h5>
+        <h5 style="margin: 0; font-size: 18px; font-weight: 600; color: #1a1a1a; text-transform: uppercase;">Quản lý người dùng</h5>
     </div>
 
     <!-- Search & Add Button -->
@@ -47,7 +47,7 @@
                         <td>@(item.Faculty ?? "-")</td>
                         <td>@(item.Major ?? "-")</td>
                         <td>
-                            @if (item.IsActive)
+                            @if (item.IsActive == true)
                             {
                                 <span class="status-badge status-active">Hoạt động</span>
                             }
