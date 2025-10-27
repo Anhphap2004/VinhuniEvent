@@ -15,7 +15,7 @@
         <div class="card-body">
             <dl class="row mb-0">
                 <dt class="col-sm-3">Mã sinh viên</dt>
-                <dd class="col-sm-9">@Model.StudentCode ?? "(Không có)"</dd>
+                <dd class="col-sm-9">@Model.StudentCode</dd>
 
                 <dt class="col-sm-3">Họ và tên</dt>
                 <dd class="col-sm-9">@Model.FullName</dd>
@@ -24,20 +24,20 @@
                 <dd class="col-sm-9">@Model.Email</dd>
 
                 <dt class="col-sm-3">Khoa</dt>
-                <dd class="col-sm-9">@Model.Faculty ?? "(Chưa cập nhật)"</dd>
+                <dd class="col-sm-9">@Model.Faculty </dd>
 
                 <dt class="col-sm-3">Ngành học</dt>
-                <dd class="col-sm-9">@Model.Major ?? "(Chưa cập nhật)"</dd>
+                <dd class="col-sm-9">@Model.Major </dd>
 
                 <dt class="col-sm-3">Ngày sinh</dt>
-                <dd class="col-sm-9">@Model.BirthDate?.ToString("dd/MM/yyyy") ?? "(Chưa rõ)"</dd>
+                <dd class="col-sm-9">@Model.BirthDate?.ToString("dd/MM/yyyy") </dd>
 
                 <dt class="col-sm-3">Số điện thoại</dt>
-                <dd class="col-sm-9">@Model.PhoneNumber ?? "(Chưa có)"</dd>
+                <dd class="col-sm-9">@Model.PhoneNumber </dd>
 
                 <dt class="col-sm-3">Trạng thái</dt>
                 <dd class="col-sm-9">
-                    @if (Model.IsActive == true)
+                    @if (Model.IsActive)
                     {
                         <span class="badge bg-success">Hoạt động</span>
                     }
@@ -48,16 +48,16 @@
                 </dd>
 
                 <dt class="col-sm-3">Ngày tạo</dt>
-                <dd class="col-sm-9">@Model.CreatedDate?.ToString("dd/MM/yyyy HH:mm") ?? "(Không rõ)"</dd>
+                <dd class="col-sm-9">@Model.CreatedDate?.ToString("dd/MM/yyyy HH:mm")</dd>
 
                 <dt class="col-sm-3">Vai trò</dt>
-                <dd class="col-sm-9">@Model.Role?.RoleName ?? $"(ID: {Model.RoleId})"</dd>
+                <dd class="col-sm-9">@Model.Role?.RoleName</dd>
 
                 <dt class="col-sm-3">Ảnh đại diện</dt>
                 <dd class="col-sm-9">
                     @if (!string.IsNullOrEmpty(Model.ImageUrl))
                     {
-                        <img src="@Model.ImageUrl" alt="User image" class="img-thumbnail rounded-circle" style="width:120px;height:120px;object-fit:cover;">
+                        <img src="~/main/img/users/@Model.ImageUrl" alt="User image" class="img-thumbnail rounded-circle" style="width:120px;height:120px;object-fit:cover;">
                     }
                     else
                     {

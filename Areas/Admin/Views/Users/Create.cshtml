@@ -6,76 +6,167 @@
 }
 
 <div class="container mt-4">
-    <h4 class="fw-bold mb-4 text-success">➕ Thêm người dùng mới</h4>
+    <h4 class="mb-4">Thêm người dùng mới</h4>
 
-    <div class="card shadow-sm border-0">
+    <div class="card">
         <div class="card-body">
-            <form asp-action="Create" method="post" class="row g-3">
-                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <form asp-action="Create" method="post" enctype="multipart/form-data">
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
-                <div class="col-md-6">
-                    <label asp-for="StudentCode" class="form-label">Mã sinh viên</label>
-                    <input asp-for="StudentCode" class="form-control" placeholder="VD: DTC2021001" />
-                    <span asp-validation-for="StudentCode" class="text-danger small"></span>
+                <!-- Hàng 1: Mã SV, Họ tên, Email -->
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        <label asp-for="StudentCode" class="form-label">Mã sinh viên</label>
+                        <input asp-for="StudentCode" class="form-control" placeholder="VD: DTC2021001" />
+                        <span asp-validation-for="StudentCode" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-4">
+                        <label asp-for="FullName" class="form-label">Họ và tên</label>
+                        <input asp-for="FullName" class="form-control" placeholder="Nguyễn Văn A" />
+                        <span asp-validation-for="FullName" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-4">
+                        <label asp-for="Email" class="form-label">Email</label>
+                        <input asp-for="Email" class="form-control" placeholder="example@gmail.com" />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
                 </div>
 
-                <div class="col-md-6">
-                    <label asp-for="FullName" class="form-label">Họ và tên</label>
-                    <input asp-for="FullName" class="form-control" placeholder="Nguyễn Văn A" />
-                    <span asp-validation-for="FullName" class="text-danger small"></span>
+                <!-- Hàng 2: Mật khẩu, Vai trò, Ngày sinh -->
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        <label asp-for="PasswordHash" class="form-label">Mật khẩu</label>
+                        <input asp-for="PasswordHash" class="form-control" type="password" placeholder="Nhập mật khẩu" />
+                        <span asp-validation-for="PasswordHash" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-4">
+                        <label asp-for="RoleId" class="form-label">Vai trò</label>
+                        <select asp-for="RoleId" class="form-select" asp-items="ViewBag.RoleId"></select>
+                        <span asp-validation-for="RoleId" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-4">
+                        <label asp-for="BirthDate" class="form-label">Ngày sinh</label>
+                        <input asp-for="BirthDate" class="form-control" type="date" />
+                        <span asp-validation-for="BirthDate" class="text-danger"></span>
+                    </div>
                 </div>
 
-                <div class="col-md-6">
-                    <label asp-for="Email" class="form-label">Email</label>
-                    <input asp-for="Email" class="form-control" placeholder="example@gmail.com" />
-                    <span asp-validation-for="Email" class="text-danger small"></span>
+                <!-- Hàng 3: Ngành học, Khóa học, SĐT -->
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        <label asp-for="Major" class="form-label">Ngành học</label>
+                        <select asp-for="Major" class="form-select" required>
+                            <option value="" disabled selected>Chọn ngành học</option>
+                            <option value="Quản lý giáo dục">Quản lý giáo dục</option>
+                            <option value="Giáo dục Mầm non">Giáo dục Mầm non</option>
+                            <option value="Giáo dục Tiểu học">Giáo dục Tiểu học</option>
+                            <option value="Giáo dục Chính trị">Giáo dục Chính trị</option>
+                            <option value="Giáo dục Thể chất">Giáo dục Thể chất</option>
+                            <option value="Giáo dục Quốc phòng - An ninh">Giáo dục Quốc phòng - An ninh</option>
+                            <option value="Sư phạm Toán học">Sư phạm Toán học</option>
+                            <option value="Sư phạm Toán học (lớp tài năng)">Sư phạm Toán học (Tài năng)</option>
+                            <option value="Sư phạm Tin học">Sư phạm Tin học</option>
+                            <option value="Sư phạm Vật lý">Sư phạm Vật lý</option>
+                            <option value="Sư phạm Hoá học">Sư phạm Hoá học</option>
+                            <option value="Sư phạm Sinh học">Sư phạm Sinh học</option>
+                            <option value="Sư phạm Ngữ văn">Sư phạm Ngữ văn</option>
+                            <option value="Sư phạm Lịch sử">Sư phạm Lịch sử</option>
+                            <option value="Sư phạm Địa lý">Sư phạm Địa lý</option>
+                            <option value="Sư phạm Tiếng Anh">Sư phạm Tiếng Anh</option>
+                            <option value="Sư phạm Tiếng Anh (lớp tài năng)">Sư phạm Tiếng Anh (Tài năng)</option>
+                            <option value="Sư phạm khoa học tự nhiên">Sư phạm Khoa học Tự nhiên</option>
+                            <option value="Sư phạm Lịch sử - Địa lí">Sư phạm Lịch sử - Địa lí</option>
+                            <option value="Ngôn ngữ Anh">Ngôn ngữ Anh</option>
+                            <option value="Ngôn ngữ Trung Quốc">Ngôn ngữ Trung Quốc</option>
+                            <option value="Quản lý văn hoá">Quản lý văn hoá</option>
+                            <option value="Kinh tế (chuyên ngành: Kinh tế đầu tư và Quản lý kinh tế)">Kinh tế</option>
+                            <option value="Kinh tế số">Kinh tế số</option>
+                            <option value="Chính trị học">Chính trị học</option>
+                            <option value="Quản lý nhà nước">Quản lý nhà nước</option>
+                            <option value="Tâm lý học giáo dục">Tâm lý học giáo dục</option>
+                            <option value="Quốc tế học">Quốc tế học</option>
+                            <option value="Việt Nam học (Chuyên ngành Du lịch)">Việt Nam học (Du lịch)</option>
+                            <option value="Quản trị kinh doanh">Quản trị kinh doanh</option>
+                            <option value="Quản trị kinh doanh (Chương trình có đào tạo bằng tiếng Anh)">Quản trị kinh doanh (Tiếng Anh)</option>
+                            <option value="Thương mại điện tử">Thương mại điện tử</option>
+                            <option value="Tài chính - Ngân hàng (chuyên ngành: Tài chính doanh nghiệp và Ngân hàng thương mại)">Tài chính - Ngân hàng</option>
+                            <option value="Công nghệ tài chính">Công nghệ tài chính</option>
+                            <option value="Kế toán">Kế toán</option>
+                            <option value="Luật">Luật</option>
+                            <option value="Luật hiến pháp và luật hành chính">Luật Hiến pháp/Hành chính</option>
+                            <option value="Luật dân sự và tố tụng dân sự">Luật Dân sự/Tố tụng Dân sự</option>
+                            <option value="Luật kinh tế">Luật kinh tế</option>
+                            <option value="Công nghệ sinh học (Chuyên ngành: Kỹ thuật xét nghiệm y học và Kỹ thuật xử lí ô nhiễm môi trường)">Công nghệ sinh học</option>
+                            <option value="Khoa học máy tính">Khoa học máy tính</option>
+                            <option value="Công nghệ thông tin">Công nghệ thông tin</option>
+                            <option value="Công nghệ thông tin (Chuyên ngành Trí tuệ nhân tạo)">Công nghệ thông tin (AI)</option>
+                            <option value="Công nghệ kỹ thuật ô tô">Công nghệ Kỹ thuật Ô tô</option>
+                            <option value="Công nghệ kỹ thuật nhiệt (Chuyên ngành Điện lạnh)">Công nghệ Kỹ thuật Nhiệt (Điện lạnh)</option>
+                            <option value="Công nghệ kỹ thuật điện, điện tử">Công nghệ Kỹ thuật Điện, Điện tử</option>
+                            <option value="Công nghệ kỹ thuật điện tử - viễn thông (Chuyên ngành Thiết kế vi mạch)">Công nghệ KT Điện tử - Viễn thông (Thiết kế vi mạch)</option>
+                            <option value="Công nghệ kỹ thuật điều khiển và tự động hoá">Công nghệ KT Điều khiển & Tự động hoá</option>
+                            <option value="Kỹ thuật điện tử - viễn thông (Chuyên ngành kỹ thuật điện tử; chuyên ngành kỹ thuật viễn thông)">Kỹ thuật Điện tử - Viễn thông</option>
+                            <option value="Kỹ thuật điều khiển và tự động hoá">Kỹ thuật Điều khiển & Tự động hoá</option>
+                            <option value="Công nghệ thực phẩm">Công nghệ thực phẩm</option>
+                            <option value="Kiến trúc">Kiến trúc</option>
+                            <option value="Kỹ thuật xây dựng (Chuyên ngành: Xây dựng dân dụng và công nghiệp; Kết cấu công trình; Công nghệ kỹ thuật xây dựng)">Kỹ thuật Xây dựng</option>
+                            <option value="Kỹ thuật xây dựng công trình giao thông (Chuyên ngành: Kỹ thuật xây dựng cầu đường; Kỹ thuật xây dựng công trình ngầm; Kỹ thuật hạ tầng đô thị)">Kỹ thuật Xây dựng Công trình Giao thông</option>
+                            <option value="Kinh tế xây dựng (Chuyên ngành: Kinh tế đầu tư xây dựng, Kinh tế vận tải và logistic, Quản lí dự án công trình xây dựng)">Kinh tế Xây dựng</option>
+                            <option value="Chăn nuôi">Chăn nuôi</option>
+                            <option value="Nông học - Chuyên ngành Bảo vệ thực vật">Nông học (Bảo vệ thực vật)</option>
+                            <option value="Khoa học cây trồng">Khoa học cây trồng</option>
+                            <option value="Nuôi trồng thuỷ sản">Nuôi trồng thuỷ sản</option>
+                            <option value="Thú y">Thú y</option>
+                            <option value="Điều dưỡng">Điều dưỡng</option>
+                            <option value="Công tác xã hội">Công tác xã hội</option>
+                            <option value="Quản lý tài nguyên và môi trường">Quản lý Tài nguyên & Môi trường</option>
+                            <option value="Quản lý đất đai (Chuyên ngành: Quản lý phát triển đô thị & bất động sản)">Quản lý Đất đai</option>
+                        </select>
+                        <span asp-validation-for="Major" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-4">
+                        <label asp-for="Faculty" class="form-label">Khóa học</label>
+                        <select asp-for="Faculty" class="form-select" required>
+                            <option value="" disabled selected>Chọn khóa học</option>
+                            <option value="k62">Khóa 62</option>
+                            <option value="k63">Khóa 63</option>
+                            <option value="k64">Khóa 64</option>
+                            <option value="k65">Khóa 65</option>
+                            <option value="k66">Khóa 66</option>
+                        </select>
+                        <span asp-validation-for="Faculty" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-4">
+                        <label asp-for="PhoneNumber" class="form-label">Số điện thoại</label>
+                        <input asp-for="PhoneNumber" class="form-control" placeholder="VD: 0987654321" />
+                        <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                    </div>
                 </div>
 
-                <div class="col-md-6">
-                    <label asp-for="PasswordHash" class="form-label">Mật khẩu</label>
-                    <input asp-for="PasswordHash" class="form-control" type="password" placeholder="Nhập mật khẩu" />
-                    <span asp-validation-for="PasswordHash" class="text-danger small"></span>
+                <!-- Ảnh đại diện -->
+                <div class="row mb-3">
+                    <div class="col-md-12">
+                        <label asp-for="ImageFile" class="form-label">Ảnh đại diện</label>
+                        <div class="d-flex align-items-center gap-3">
+                            <img id="previewImage"
+                                 src="@(Model != null && !string.IsNullOrEmpty(Model.ImageUrl) ? Url.Content("~/main/img/users/" + Model.ImageUrl) : "https://via.placeholder.com/100?text=No+Image")"
+                                 alt="Avatar"
+                                 class="img-thumbnail"
+                                 style="width: 100px; height: 100px; object-fit: cover;" />
+                            <div class="flex-grow-1">
+                                <input asp-for="ImageFile" type="file" accept="image/*" class="form-control" id="imageInput" />
+                                <span asp-validation-for="ImageFile" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="col-md-6">
-                    <label asp-for="RoleId" class="form-label">Vai trò</label>
-                    <select asp-for="RoleId" class="form-select" asp-items="ViewBag.RoleId"></select>
-                    <span asp-validation-for="RoleId" class="text-danger small"></span>
-                </div>
-
-                <div class="col-md-6">
-                    <label asp-for="Faculty" class="form-label">Khoa</label>
-                    <input asp-for="Faculty" class="form-control" placeholder="VD: CNTT" />
-                    <span asp-validation-for="Faculty" class="text-danger small"></span>
-                </div>
-
-                <div class="col-md-6">
-                    <label asp-for="Major" class="form-label">Ngành học</label>
-                    <input asp-for="Major" class="form-control" placeholder="VD: Khoa học máy tính" />
-                    <span asp-validation-for="Major" class="text-danger small"></span>
-                </div>
-
-                <div class="col-md-6">
-                    <label asp-for="BirthDate" class="form-label">Ngày sinh</label>
-                    <input asp-for="BirthDate" class="form-control" type="date" />
-                    <span asp-validation-for="BirthDate" class="text-danger small"></span>
-                </div>
-
-                <div class="col-md-6">
-                    <label asp-for="PhoneNumber" class="form-label">Số điện thoại</label>
-                    <input asp-for="PhoneNumber" class="form-control" placeholder="VD: 0987654321" />
-                    <span asp-validation-for="PhoneNumber" class="text-danger small"></span>
-                </div>
-
-                <div class="col-md-6">
-                    <label asp-for="ImageUrl" class="form-label">Ảnh đại diện (link)</label>
-                    <input asp-for="ImageUrl" class="form-control" placeholder="/images/avatar.png" />
-                    <span asp-validation-for="ImageUrl" class="text-danger small"></span>
-                </div>
-
-                <div class="col-12 mt-3 d-flex justify-content-end gap-2">
-                    <a asp-action="Index" class="btn btn-outline-secondary px-4">⬅ Quay lại</a>
-                    <button type="submit" class="btn btn-success px-4">💾 Tạo mới</button>
+                <!-- Buttons -->
+                <div class="row">
+                    <div class="col-md-12 d-flex justify-content-end gap-2">
+                        <a asp-action="Index" class="btn btn-secondary">Quay lại</a>
+                        <button type="submit" class="btn btn-primary">Tạo mới</button>
+                    </div>
                 </div>
             </form>
         </div>
@@ -83,28 +174,57 @@
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        document.getElementById("imageInput").addEventListener("change", function (event) {
+            const file = event.target.files[0];
+            const preview = document.getElementById("previewImage");
+
+            if (file && preview) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    preview.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            } else {
+                preview.src = "https://via.placeholder.com/100?text=No+Image";
+            }
+        });
+    </script>
+
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
     <style>
         .card {
-            border-radius: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
         }
 
         .form-label {
-            font-weight: 600;
-            color: #333;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-control,
+        .form-select {
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+        }
+
+            .form-control:focus,
+            .form-select:focus {
+                border-color: #80bdff;
+                box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+            }
+
+        .text-danger {
+            font-size: 0.875rem;
         }
 
         .btn {
-            border-radius: 6px;
-        }
-
-        .text-danger.small {
-            font-size: 0.8rem;
-        }
-
-        input::placeholder {
-            font-style: italic;
-            color: #aaa;
+            padding: 0.5rem 1.5rem;
+            border-radius: 4px;
         }
     </style>
 }

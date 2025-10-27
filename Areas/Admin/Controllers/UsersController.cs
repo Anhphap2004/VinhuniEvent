@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using VinhuniEvent.Models;
-
+using BCrypt.Net;
 namespace VinhuniEvent.Areas.Admin.Controllers
 {
     [Area("Admin")]
@@ -57,18 +57,59 @@ namespace VinhuniEvent.Areas.Admin.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("UserId,StudentCode,FullName,Email,PasswordHash,RoleId,Faculty,Major,BirthDate,PhoneNumber,ImageUrl,IsActive,CreatedDate")] User user)
+        public async Task<IActionResult> Create([Bind("UserId,StudentCode,FullName,Email,PasswordHash,RoleId,Faculty,Major,BirthDate,PhoneNumber,ImageUrl,IsActive,CreatedDate,ImageFile")] User user)
         {
             if (ModelState.IsValid)
             {
+                // Xử lý upload ảnh
+                if (user.ImageFile != null)
+                {
+                    string uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "main", "img", "users");
+                    Directory.CreateDirectory(uploadsFolder); // tạo thư mục nếu chưa có
+
+                    string fileName = Guid.NewGuid().ToString() + Path.GetExtension(user.ImageFile.FileName);
+                    string filePath = Path.Combine(uploadsFolder, fileName);
+
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await user.ImageFile.CopyToAsync(stream);
+                    }
+
+                    // Lưu đường dẫn tương đối để hiển thị trên web
+                    user.ImageUrl = fileName;
+                }
+                var existingEmail = _context.Users.FirstOrDefault(u => u.Email == user.Email);
+                var existingPhone = _context.Users.FirstOrDefault(u => u.PhoneNumber == user.PhoneNumber);
+                var existingStudentCode = _context.Users.FirstOrDefault(u => u.StudentCode == user.StudentCode);
+                if (existingEmail != null)
+                {
+                    ModelState.AddModelError("Email", "⚠ Email đã tồn tại.");
+                }
+                if (existingPhone != null)
+                {
+                    ModelState.AddModelError("PhoneNumber", "⚠ Số điện thoại đã được sử dụng.");
+                }
+                if (existingStudentCode != null)
+                {
+                    ModelState.AddModelError("StudentCode", "⚠ Mã sinh viên đã được sử dụng.");
+                }
+                if (string.IsNullOrWhiteSpace(user.PasswordHash))
+                {
+                    ModelState.AddModelError("PasswordHash", "⚠ Mật khẩu không hợp lệ!");
+                    return View(user);
+                }
+                user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(user.PasswordHash);
                 user.IsActive = true;
+                user.CreatedDate = DateTime.Now;
                 _context.Add(user);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+
             ViewData["RoleId"] = new SelectList(_context.Roles, "RoleId", "RoleName", user.RoleId);
             return View(user);
         }
+
 
         // GET: Admin/Users/Edit/5
         public async Task<IActionResult> Edit(int? id)
@@ -92,36 +133,95 @@ namespace VinhuniEvent.Areas.Admin.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("UserId,StudentCode,FullName,Email,PasswordHash,RoleId,Faculty,Major,BirthDate,PhoneNumber,ImageUrl,IsActive,CreatedDate")] User user)
+        public async Task<IActionResult> Edit(int id, [Bind("UserId,StudentCode,FullName,Email,RoleId,Faculty,Major,BirthDate,PhoneNumber,ImageUrl,IsActive,CreatedDate,ImageFile,PasswordHash")] User user)
         {
             if (id != user.UserId)
-            {
                 return NotFound();
+
+            if (!ModelState.IsValid)
+            {
+                ViewData["RoleId"] = new SelectList(_context.Roles, "RoleId", "RoleName", user.RoleId);
+                return View(user);
             }
 
-            if (ModelState.IsValid)
+            var existingUser = await _context.Users.AsNoTracking().FirstOrDefaultAsync(u => u.UserId == id);
+            if (existingUser == null)
+                return NotFound();
+
+            try
             {
-                try
+                // Xử lý ảnh
+                if (user.ImageFile != null)
                 {
-                    _context.Update(user);
-                    await _context.SaveChangesAsync();
+                    string uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "main", "img", "users");
+                    Directory.CreateDirectory(uploadsFolder);
+
+                    // Xóa ảnh cũ nếu có
+                    if (!string.IsNullOrEmpty(existingUser.ImageUrl))
+                    {
+                        string oldImagePath = Path.Combine(uploadsFolder, existingUser.ImageUrl);
+                        if (System.IO.File.Exists(oldImagePath))
+                            System.IO.File.Delete(oldImagePath);
+                    }
+
+                    // Lưu ảnh mới
+                    string fileName = Guid.NewGuid().ToString() + Path.GetExtension(user.ImageFile.FileName);
+                    string filePath = Path.Combine(uploadsFolder, fileName);
+
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await user.ImageFile.CopyToAsync(stream);
+                    }
+
+                    user.ImageUrl = fileName;
                 }
-                catch (DbUpdateConcurrencyException)
+                else
                 {
-                    if (!UserExists(user.UserId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    user.ImageUrl = existingUser.ImageUrl;
                 }
+
+                // Kiểm tra trùng thông tin nhưng bỏ qua chính user hiện tại
+                if (_context.Users.Any(u => u.Email == user.Email && u.UserId != id))
+                {
+                    ModelState.AddModelError("Email", "⚠ Email đã tồn tại.");
+                    return View(user);
+                }
+                if (_context.Users.Any(u => u.PhoneNumber == user.PhoneNumber && u.UserId != id))
+                {
+                    ModelState.AddModelError("PhoneNumber", "⚠ Số điện thoại đã được sử dụng.");
+                    return View(user);
+                }
+                if (_context.Users.Any(u => u.StudentCode == user.StudentCode && u.UserId != id))
+                {
+                    ModelState.AddModelError("StudentCode", "⚠ Mã sinh viên đã được sử dụng.");
+                    return View(user);
+                }
+
+                // Xử lý mật khẩu
+                if (string.IsNullOrWhiteSpace(user.PasswordHash))
+                {
+                    // Giữ nguyên mật khẩu cũ
+                    user.PasswordHash = existingUser.PasswordHash;
+                }
+                else
+                {
+                    // Hash lại mật khẩu mới
+                    user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(user.PasswordHash);
+                }
+
+                _context.Entry(user).State = EntityState.Modified;
+                await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["RoleId"] = new SelectList(_context.Roles, "RoleId", "RoleName", user.RoleId);
-            return View(user);
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!UserExists(user.UserId))
+                    return NotFound();
+                throw;
+            }
         }
+
+
 
         // GET: Admin/Users/Delete/5
         public async Task<IActionResult> Delete(int? id)

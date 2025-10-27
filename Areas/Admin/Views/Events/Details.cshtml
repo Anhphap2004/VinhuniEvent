@@ -1,85 +1,85 @@
 ﻿@model VinhuniEvent.Models.Event
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Chi tiết sự kiện";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Details</h1>
+<div class="content-wrapper">
+    <div class="page-header mb-4 d-flex align-items-center justify-content-between">
+        <h4 class="fw-bold mb-0">📜 Chi tiết sự kiện</h4>
+        <a asp-action="Index" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left-circle me-1"></i> Quay lại
+        </a>
+    </div>
 
-<div>
-    <h4>Event</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Title)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Title)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Description)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Description)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Location)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Location)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.StartTime)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.StartTime)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.EndTime)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.EndTime)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.MaxParticipants)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.MaxParticipants)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Image)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Image)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.IsActive)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.IsActive)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.CreatedDate)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.CreatedDate)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Category)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Category.CategoryId)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.CreatedByNavigation)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.CreatedByNavigation.UserId)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.EventId">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    ```
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-md-10">
+            <div class="card shadow-sm border-0 rounded-3 p-4">
+                <h5 class="fw-semibold mb-3 text-primary">@Model.Title</h5>
+                <hr />
+
+                <dl class="row mb-0">
+                    <dt class="col-sm-3 fw-semibold text-secondary">Mô tả</dt>
+                    <dd class="col-sm-9">@Html.Raw(Model.Description)</dd>
+
+                    <dt class="col-sm-3 fw-semibold text-secondary">Địa điểm</dt>
+                    <dd class="col-sm-9">@Model.Location</dd>
+
+                    <dt class="col-sm-3 fw-semibold text-secondary">Thời gian bắt đầu</dt>
+                    <dd class="col-sm-9">@Model.StartTime.ToString("dd/MM/yyyy HH:mm")</dd>
+
+                    <dt class="col-sm-3 fw-semibold text-secondary">Thời gian kết thúc</dt>
+                    <dd class="col-sm-9">@Model.EndTime.ToString("dd/MM/yyyy HH:mm")</dd>
+
+                    <dt class="col-sm-3 fw-semibold text-secondary">Số người tối đa</dt>
+                    <dd class="col-sm-9">@Model.MaxParticipants</dd>
+
+                    <dt class="col-sm-3 fw-semibold text-secondary">Ảnh sự kiện</dt>
+                    <dd class="col-sm-9">
+                        @if (!string.IsNullOrEmpty(Model.Image))
+                        {
+                            <img src="~/main/img/events/@Model.Image" alt="Event image"
+                                 class="rounded border shadow-sm"
+                                 style="max-width:250px; height:auto; object-fit:cover;" />
+                        }
+                        else
+                        {
+                            <span class="text-muted fst-italic">Chưa có ảnh</span>
+                        }
+                    </dd>
+
+                    <dt class="col-sm-3 fw-semibold text-secondary">Trạng thái</dt>
+                    <dd class="col-sm-9">
+                        @if (Model.IsActive)
+                        {
+                            <span class="badge bg-success">Hoạt động</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-secondary">Ngừng</span>
+                        }
+                    </dd>
+
+                    <dt class="col-sm-3 fw-semibold text-secondary">Ngày tạo</dt>
+                    <dd class="col-sm-9">@Model.CreatedDate?.ToString("dd/MM/yyyy HH:mm")</dd>
+
+                    <dt class="col-sm-3 fw-semibold text-secondary">Người tạo</dt>
+                    <dd class="col-sm-9">@Model.CreatedByNavigation?.FullName</dd>
+                </dl>
+
+                <div class="d-flex justify-content-start gap-2 mt-4">
+                    <a asp-action="Edit" asp-route-id="@Model.EventId" class="btn btn-warning">
+                        <i class="bi bi-pencil-square me-1"></i> Chỉnh sửa
+                    </a>
+                    <a asp-action="Index" class="btn btn-secondary">
+                        <i class="bi bi-arrow-left-short me-1"></i> Quay lại
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    ```
+
 </div>

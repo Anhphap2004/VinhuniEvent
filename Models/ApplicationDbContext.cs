@@ -31,15 +31,13 @@ public partial class ApplicationDbContext : DbContext
 
     public virtual DbSet<VwThongKeSuKien> VwThongKeSuKiens { get; set; }
 
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-
-        => optionsBuilder.UseSqlServer("Server=DESKTOP-ENPLV0I;Database=VinhuniEvent;Trusted_Connection=True;TrustServerCertificate=True");
+   
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Attendance>(entity =>
         {
-            entity.HasKey(e => e.AttendanceId).HasName("PK__Attendan__8B69261CFC623F97");
+            entity.HasKey(e => e.AttendanceId).HasName("PK__Attendan__8B69261C1BDD755F");
 
             entity.Property(e => e.AttendanceTime)
                 .HasDefaultValueSql("(getdate())")
@@ -59,7 +57,7 @@ public partial class ApplicationDbContext : DbContext
 
         modelBuilder.Entity<Event>(entity =>
         {
-            entity.HasKey(e => e.EventId).HasName("PK__Events__7944C810D858D29E");
+            entity.HasKey(e => e.EventId).HasName("PK__Events__7944C810369AC17F");
 
             entity.Property(e => e.ApprovalStatus)
                 .HasMaxLength(50)
@@ -79,21 +77,23 @@ public partial class ApplicationDbContext : DbContext
             entity.Property(e => e.Status).HasMaxLength(50);
             entity.Property(e => e.Title).HasMaxLength(200);
             entity.Property(e => e.UpdatedDate).HasColumnType("datetime");
-
+            entity.Property(e => e.Slug).HasMaxLength(250);
             entity.HasOne(d => d.Category).WithMany(p => p.Events)
                 .HasForeignKey(d => d.CategoryId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Events_Category");
 
-            entity.HasOne(d => d.CreatedByNavigation).WithMany(p => p.Events)
-                .HasForeignKey(d => d.CreatedBy)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Events_User");
+            entity.HasOne(d => d.CreatedByNavigation)
+     .WithMany(p => p.Events)
+     .HasForeignKey(d => d.CreatedBy)
+     .OnDelete(DeleteBehavior.SetNull) // 👈 đổi ClientSetNull thành SetNull
+     .HasConstraintName("FK_Events_CreatedBy");
+
         });
 
         modelBuilder.Entity<EventCategory>(entity =>
         {
-            entity.HasKey(e => e.CategoryId).HasName("PK__EventCat__19093A0BC546784B");
+            entity.HasKey(e => e.CategoryId).HasName("PK__EventCat__19093A0B9248681A");
 
             entity.Property(e => e.CategoryName).HasMaxLength(100);
             entity.Property(e => e.Description).HasMaxLength(255);
@@ -102,7 +102,7 @@ public partial class ApplicationDbContext : DbContext
 
         modelBuilder.Entity<EventRegistration>(entity =>
         {
-            entity.HasKey(e => e.RegistrationId).HasName("PK__EventReg__6EF58810A2D12267");
+            entity.HasKey(e => e.RegistrationId).HasName("PK__EventReg__6EF5881006D80E4D");
 
             entity.HasIndex(e => new { e.EventId, e.UserId }, "UQ_Event_User").IsUnique();
 
@@ -116,17 +116,17 @@ public partial class ApplicationDbContext : DbContext
             entity.HasOne(d => d.Event).WithMany(p => p.EventRegistrations)
                 .HasForeignKey(d => d.EventId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_EventRegistrations_Event");
+                .HasConstraintName("FK_Registration_Event");
 
             entity.HasOne(d => d.User).WithMany(p => p.EventRegistrations)
                 .HasForeignKey(d => d.UserId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_EventRegistrations_User");
+                .HasConstraintName("FK_Registration_User");
         });
 
         modelBuilder.Entity<Permission>(entity =>
         {
-            entity.HasKey(e => e.PermissionId).HasName("PK__Permissi__EFA6FB2F67E50B93");
+            entity.HasKey(e => e.PermissionId).HasName("PK__Permissi__EFA6FB2F20A197FE");
 
             entity.Property(e => e.Description).HasMaxLength(200);
             entity.Property(e => e.PermissionName).HasMaxLength(100);
@@ -134,7 +134,7 @@ public partial class ApplicationDbContext : DbContext
 
         modelBuilder.Entity<Role>(entity =>
         {
-            entity.HasKey(e => e.RoleId).HasName("PK__Roles__8AFACE1A3295DB2E");
+            entity.HasKey(e => e.RoleId).HasName("PK__Roles__8AFACE1A135DF777");
 
             entity.Property(e => e.Description).HasMaxLength(200);
             entity.Property(e => e.RoleName).HasMaxLength(50);
@@ -159,15 +159,14 @@ public partial class ApplicationDbContext : DbContext
 
         modelBuilder.Entity<User>(entity =>
         {
-            entity.HasKey(e => e.UserId).HasName("PK__Users__1788CC4CD3DDC1A1");
+            entity.HasKey(e => e.UserId).HasName("PK__Users__1788CC4C05177D54");
 
-            entity.HasIndex(e => e.StudentCode, "IX_Users_StudentCode")
+            entity.HasIndex(e => e.StudentCode, "UQ_Users_StudentCode")
                 .IsUnique()
                 .HasFilter("([StudentCode] IS NOT NULL)");
 
-            entity.HasIndex(e => e.Email, "UQ__Users__A9D105346F7C03B6").IsUnique();
+            entity.HasIndex(e => e.Email, "UQ__Users__A9D105340BF0F082").IsUnique();
 
-            entity.Property(e => e.BirthDate).HasColumnType("datetime");
             entity.Property(e => e.CreatedDate)
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime");

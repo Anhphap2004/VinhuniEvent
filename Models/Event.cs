@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
-
+using Microsoft.AspNetCore.Http;
 namespace VinhuniEvent.Models;
 
 public partial class Event
@@ -20,16 +20,13 @@ public partial class Event
 
     public DateTime EndTime { get; set; }
 
-    public int CreatedBy { get; set; }
+    public int? CreatedBy { get; set; }
 
     public int? MaxParticipants { get; set; }
 
     public string? Image { get; set; }
 
-    [NotMapped]
-    public IFormFile? ImageFile { get; set; }
-
-    public bool? IsActive { get; set; }
+    public bool IsActive { get; set; }
 
     public DateTime? CreatedDate { get; set; }
 
@@ -51,11 +48,16 @@ public partial class Event
 
     public string? Note { get; set; }
 
+    public string? Slug { get; set; }
+
+    [NotMapped]
+    public IFormFile? ImageFile { get; set; }
+
     public virtual ICollection<Attendance> Attendances { get; set; } = new List<Attendance>();
 
-    public virtual EventCategory Category { get; set; } = null!;
+    public virtual EventCategory? Category { get; set; } 
 
-    public virtual User CreatedByNavigation { get; set; } = null!;
+    public virtual User? CreatedByNavigation { get; set; } 
 
     public virtual ICollection<EventRegistration> EventRegistrations { get; set; } = new List<EventRegistration>();
 }

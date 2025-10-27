@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using VinhuniEvent.Models;
+using Microsoft.AspNetCore.Http;
 
 namespace VinhuniEvent.Areas.Admin.Controllers
 {
@@ -63,37 +64,34 @@ namespace VinhuniEvent.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
-                // Nếu người dùng upload ảnh mới
                 if (@event.ImageFile != null && @event.ImageFile.Length > 0)
                 {
-                    // Đường dẫn thư mục lưu ảnh
-                    var uploadDir = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/main/img/events");
+                    // Tạo đường dẫn chuẩn
+                    var uploadDir = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "main", "img", "events");
 
-                    // Tạo thư mục nếu chưa tồn tại
                     if (!Directory.Exists(uploadDir))
                         Directory.CreateDirectory(uploadDir);
 
                     // Tạo tên file duy nhất
                     var uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(@event.ImageFile.FileName);
 
-                    // Đường dẫn đầy đủ
+                    // Đường dẫn đầy đủ để lưu file
                     var filePath = Path.Combine(uploadDir, uniqueFileName);
 
-                    // Lưu file
                     using (var fileStream = new FileStream(filePath, FileMode.Create))
                     {
                         await @event.ImageFile.CopyToAsync(fileStream);
                     }
 
-                    // Gán tên file vào DB
+                    // Gán tên file vào cột Image
                     @event.Image = uniqueFileName;
                 }
 
-                // Gán ngày tạo nếu chưa có
                 @event.CreatedDate = DateTime.Now;
-
+                @event.IsActive = true;
                 _context.Add(@event);
                 await _context.SaveChangesAsync();
+
                 return RedirectToAction(nameof(Index));
             }
 

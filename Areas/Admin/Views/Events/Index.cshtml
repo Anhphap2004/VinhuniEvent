@@ -8,16 +8,13 @@
 <div class="content-wrapper">
     <!-- Header -->
     <div class="page-header">
-        <h5>Quản lý sự kiện</h5>
+        <h4>📅 Quản lý sự kiện</h4>
     </div>
 
-    <!-- Search & Add Button -->
+    <!-- Toolbar -->
     <div class="toolbar">
-        <input type="text"
-               id="searchInput"
-               class="search-input"
-               placeholder="Tìm kiếm theo tiêu đề hoặc địa điểm...">
-        <a asp-action="Create" class="btn-add">Thêm mới</a>
+        <input type="text" id="searchInput" class="search-input" placeholder="🔍 Tìm kiếm theo tiêu đề hoặc địa điểm...">
+        <a asp-action="Create" class="btn-add">+ Thêm mới</a>
     </div>
 
     <!-- Table -->
@@ -36,7 +33,7 @@
                     <th>Ngày tạo</th>
                     <th>Danh mục</th>
                     <th>Người tạo</th>
-                    <th>Hành động</th>
+                    <th class="text-center">Hành động</th>
                 </tr>
             </thead>
             <tbody>
@@ -60,7 +57,7 @@
                             }
                         </td>
                         <td>
-                            @if (item.IsActive == true)
+                            @if (item.IsActive)
                             {
                                 <span class="status-badge status-active">Hoạt động</span>
                             }
@@ -72,11 +69,11 @@
                         <td>@item.CreatedDate?.ToString("dd/MM/yyyy")</td>
                         <td>@item.Category?.CategoryName</td>
                         <td>@item.CreatedByNavigation?.FullName</td>
-                        <td>
+                        <td class="text-center">
                             <div class="action-buttons">
-                                <a asp-action="Edit" asp-route-id="@item.EventId" class="btn-action">Sửa</a>
-                                <a asp-action="Details" asp-route-id="@item.EventId" class="btn-action">Xem</a>
-                                <a asp-action="Delete" asp-route-id="@item.EventId" class="btn-action btn-delete">Xóa</a>
+                                <a asp-action="Edit" asp-route-id="@item.EventId" class="btn-action edit">Sửa</a>
+                                <a asp-action="Details" asp-route-id="@item.EventId" class="btn-action view">Xem</a>
+                                <a asp-action="Delete" asp-route-id="@item.EventId" class="btn-action delete">Xóa</a>
                             </div>
                         </td>
                     </tr>
@@ -88,83 +85,81 @@
 
 @section Scripts {
     <script>
-        document.getElementById('searchInput').addEventListener('keyup', function() {
+        document.getElementById('searchInput').addEventListener('keyup', function () {
             var searchValue = this.value.toLowerCase();
-            var table = document.getElementById('eventTable');
-            var rows = table.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+            var rows = document.querySelectorAll('#eventTable tbody tr');
 
-            for (var i = 0; i < rows.length; i++) {
-                var title = rows[i].cells[0].textContent.toLowerCase();
-                var location = rows[i].cells[2].textContent.toLowerCase();
-
-                if (title.indexOf(searchValue) > -1 || location.indexOf(searchValue) > -1) {
-                    rows[i].style.display = '';
-                } else {
-                    rows[i].style.display = 'none';
-                }
-            }
+            rows.forEach(row => {
+                var title = row.cells[0].textContent.toLowerCase();
+                var location = row.cells[2].textContent.toLowerCase();
+                row.style.display = (title.includes(searchValue) || location.includes(searchValue)) ? '' : 'none';
+            });
         });
     </script>
 
     <style>
         .content-wrapper {
-            padding: 24px;
-            max-width: 100%;
+            padding: 32px;
+            background: #f5f6fa;
+            border-radius: 10px;
         }
 
         .page-header {
-            margin-bottom: 20px;
+            margin-bottom: 24px;
+            text-align: center;
         }
 
-            .page-header h5 {
+            .page-header h4 {
                 margin: 0;
-                font-size: 18px;
-                font-weight: 600;
-                color: #1a1a1a;
+                font-size: 22px;
+                font-weight: 700;
+                color: #222;
+                letter-spacing: 0.5px;
             }
 
         .toolbar {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 16px;
+            margin-bottom: 18px;
             gap: 12px;
         }
 
         .search-input {
             flex: 1;
-            max-width: 400px;
-            padding: 7px 12px;
-            border: 1px solid #ddd;
+            max-width: 420px;
+            padding: 10px 14px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
             font-size: 14px;
-            color: #333;
+            transition: all 0.3s;
         }
 
             .search-input:focus {
-                outline: none;
                 border-color: #007bff;
+                box-shadow: 0 0 4px rgba(0, 123, 255, 0.3);
+                outline: none;
             }
 
         .btn-add {
-            padding: 7px 18px;
+            padding: 9px 18px;
             background: #007bff;
+            border-radius: 8px;
             color: #fff;
-            border: none;
             font-size: 14px;
             text-decoration: none;
-            white-space: nowrap;
-            cursor: pointer;
-            transition: background 0.2s;
+            font-weight: 500;
+            transition: 0.3s;
         }
 
             .btn-add:hover {
                 background: #0056b3;
-                color: #fff;
             }
 
         .table-container {
             background: #fff;
-            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
             overflow-x: auto;
         }
 
@@ -175,58 +170,60 @@
         }
 
             .data-table thead {
-                background: #f8f9fa;
-                border-bottom: 2px solid #ddd;
+                background: #f1f3f6;
             }
 
             .data-table th {
-                padding: 10px 12px;
+                padding: 12px 14px;
                 text-align: left;
                 font-weight: 600;
-                color: #1a1a1a;
+                color: #222;
+                border-bottom: 2px solid #dee2e6;
                 white-space: nowrap;
             }
 
             .data-table td {
-                padding: 8px 12px;
+                padding: 10px 14px;
+                border-bottom: 1px solid #f0f0f0;
                 color: #333;
-                border-bottom: 1px solid #e9ecef;
+                vertical-align: middle;
             }
 
             .data-table tbody tr:hover {
-                background: #f8f9fa;
+                background: #f9fbfd;
             }
 
         .title-col {
             font-weight: 500;
-            color: #1a1a1a;
-            max-width: 200px;
+            color: #111;
+            max-width: 180px;
         }
 
         .desc-col {
-            max-width: 180px;
+            max-width: 200px;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
         }
 
         .event-img {
-            width: 50px;
-            height: 40px;
+            width: 55px;
+            height: 45px;
+            border-radius: 6px;
             object-fit: cover;
             border: 1px solid #ddd;
         }
 
         .text-muted {
-            color: #999;
-            font-size: 13px;
+            color: #aaa;
         }
 
         .status-badge {
             display: inline-block;
-            padding: 3px 8px;
+            padding: 5px 10px;
+            border-radius: 20px;
             font-size: 12px;
-            white-space: nowrap;
+            font-weight: 500;
         }
 
         .status-active {
@@ -235,63 +232,61 @@
         }
 
         .status-inactive {
-            background: #e2e3e5;
-            color: #383d41;
+            background: #f8d7da;
+            color: #721c24;
         }
 
         .action-buttons {
             display: flex;
+            justify-content: center;
             gap: 6px;
-            white-space: nowrap;
         }
 
         .btn-action {
-            padding: 4px 10px;
+            padding: 5px 10px;
             font-size: 13px;
-            border: 1px solid #6c757d;
-            background: #fff;
-            color: #6c757d;
+            border-radius: 6px;
             text-decoration: none;
-            cursor: pointer;
+            border: 1px solid transparent;
             transition: all 0.2s;
         }
 
-            .btn-action:hover {
-                background: #6c757d;
-                color: #fff;
+            .btn-action.edit {
+                background: #eaf4ff;
+                color: #007bff;
+                border-color: #007bff;
             }
 
-        .btn-delete {
-            border-color: #dc3545;
-            color: #dc3545;
+            .btn-action.view {
+                background: #fffbea;
+                color: #ffc107;
+                border-color: #ffc107;
+            }
+
+            .btn-action.delete {
+                background: #fdeaea;
+                color: #dc3545;
+                border-color: #dc3545;
+            }
+
+            .btn-action:hover {
+                opacity: 0.85;
+                transform: scale(1.02);
+            }
+
+        .text-center {
+            text-align: center;
         }
 
-            .btn-delete:hover {
-                background: #dc3545;
-                color: #fff;
-            }
-
         /* Responsive */
-        @@media (max-width: 1400px) {
-            .content-wrapper {
-                padding: 20px;
+        @@media (max-width: 1200px) {
+            .data-table th,
+            .data-table td {
+                padding: 8px 10px;
             }
 
-            .data-table {
-                font-size: 13px;
-            }
-
-                .data-table th,
-                .data-table td {
-                    padding: 8px 10px;
-                }
-
-            .title-col {
-                max-width: 150px;
-            }
-
-            .desc-col {
-                max-width: 120px;
+            .search-input {
+                max-width: 100%;
             }
         }
     </style>

@@ -15,7 +15,7 @@ public partial class EventRegistration
 
     public string? Status { get; set; }
 
-    public virtual Event Event { get; set; } = null!;
+    public virtual Event? Event { get; set; } 
 
-    public virtual User User { get; set; } = null!;
+    public virtual User? User { get; set; } 
 }

@@ -79,35 +79,28 @@
                     <div class="col-md-4">
                         <label asp-for="IsActive" class="form-label fw-semibold">Trạng thái</label>
                         <select asp-for="IsActive" class="form-select">
-                            <option value="true" selected>Hoạt động</option>
+                            <option value="true">Hoạt động</option>
                             <option value="false">Không hoạt động</option>
                         </select>
                         <span asp-validation-for="IsActive" class="text-danger"></span>
                     </div>
 
+                    <!-- Ảnh sự kiện -->
+                    <div class="col-md-6">
+                        <label asp-for="ImageFile" class="form-label fw-semibold">Ảnh sự kiện</label>
+                        <input asp-for="ImageFile" type="file" class="form-control" id="ImageFileInput" />
+                        <span asp-validation-for="ImageFile" class="text-danger"></span>
 
-                        <div class="row">
-                            <div class="col-md-6">
-                                <label asp-for="ImageFile" class="form-label fw-semibold">Ảnh sự kiện</label>
-                                <input asp-for="ImageFile" type="file" class="form-control" />
-                                <span asp-validation-for="ImageFile" class="text-danger"></span>
-                            </div>
-
-                            <div class="col-md-6">
-                                @if (!string.IsNullOrEmpty(Model.Image))
-                                {
-                                    <label class="form-label fw-semibold d-block">Ảnh hiện tại</label>
-                                    <img src="~/main/img/events/@Model.Image" class="rounded border" width="150" height="120" style="object-fit:cover;" alt="Event image" />
-                                }
-                                else
-                                {
-                                    <label class="form-label d-block text-muted">Chưa có ảnh</label>
-                                }
-                            </div>
+                        <div class="mt-3">
+                            <img id="previewImage"
+                                 src="@(string.IsNullOrEmpty(Model.Image) ? "" : Url.Content("~/main/img/events/" + Model.Image))"
+                                 class="rounded border"
+                                 width="150"
+                                 height="120"
+                                 style="object-fit:cover; @(string.IsNullOrEmpty(Model.Image) ? "display:none;" : "")"
+                                 alt="Event preview" />
                         </div>
-
-                 
-
+                    </div>
                 </div>
 
                 <div class="mt-4 text-end">
@@ -125,4 +118,22 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script>
+        document.getElementById('ImageFileInput').addEventListener('change', function (event) {
+            const file = event.target.files[0];
+            const preview = document.getElementById('previewImage');
+
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            } else {
+                preview.style.display = 'none';
+                preview.src = '';
+            }
+        });
+    </script>
 }
