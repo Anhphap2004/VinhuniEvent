@@ -1,12 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using VinhuniEvent.Models;
-using Microsoft.AspNetCore.Http;
 
 namespace VinhuniEvent.Areas.Admin.Controllers
 {
@@ -64,6 +65,7 @@ namespace VinhuniEvent.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
+                @event.Slug = GenerateSlug(@event.Title);
                 if (@event.ImageFile != null && @event.ImageFile.Length > 0)
                 {
                     // Tạo đường dẫn chuẩn
@@ -99,7 +101,23 @@ namespace VinhuniEvent.Areas.Admin.Controllers
             ViewData["CreatedBy"] = new SelectList(_context.Users, "UserId", "FullName", @event.CreatedBy);
             return View(@event);
         }
+        private string GenerateSlug(string title)
+        {
+            string str = title.ToLowerInvariant();
 
+            // Bỏ dấu tiếng Việt
+            str = System.Text.RegularExpressions.Regex.Replace(str, @"\p{IsCombiningDiacriticalMarks}+", string.Empty)
+                .Normalize(NormalizationForm.FormD);
+
+            // Chuyển ký tự đặc biệt thành dấu -
+            str = System.Text.RegularExpressions.Regex.Replace(str, @"[^a-z0-9\s-]", "");
+
+            // Thay khoảng trắng bằng dấu -
+            str = System.Text.RegularExpressions.Regex.Replace(str, @"\s+", "-").Trim('-');
+
+            // Cắt bớt nếu quá dài
+            return str.Length <= 100 ? str : str.Substring(0, 100);
+        } 
 
         // GET: Admin/Events/Edit/5
         public async Task<IActionResult> Edit(int? id)
@@ -133,8 +151,13 @@ public async Task<IActionResult> Edit(int id, Event @event)
     {
         try
         {
-            // 🔹 Lấy dữ liệu cũ từ DB để giữ ảnh cũ
-            var existingEvent = await _context.Events.AsNoTracking()
+                    // Nếu slug rỗng => tạo lại từ Title
+                    if (string.IsNullOrEmpty(@event.Slug))
+                    {
+                        @event.Slug = GenerateSlug(@event.Title);
+                    }
+                    // 🔹 Lấy dữ liệu cũ từ DB để giữ ảnh cũ
+                    var existingEvent = await _context.Events.AsNoTracking()
                 .FirstOrDefaultAsync(e => e.EventId == id);
 
             if (existingEvent == null)

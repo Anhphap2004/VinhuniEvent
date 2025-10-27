@@ -176,7 +176,7 @@
 									</div>
 									<h4 style="font-size: 14px; font-weight: 600; color: #333; margin-bottom: 7px; line-height: 1.3; height: 38px; overflow: hidden;">@p.Title</h4>
 									<p style="color: #666; font-size: 10px; margin-bottom: 9px;">Địa Điểm @p.Location</p>
-									<a href="#" style="display: inline-block; color: #667eea; font-weight: 600; font-size: 11px; text-decoration: none;">Chi tiết</a>
+									<a href="@Url.Action("Details", "Events", new { slug = p.Slug, id = p.EventId })" style="display: inline-block; color: #667eea; font-weight: 600; font-size: 11px; text-decoration: none;">Chi tiết</a>
 								</div>
 							</div>
 						}
