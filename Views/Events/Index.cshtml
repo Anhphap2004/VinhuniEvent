@@ -2,6 +2,7 @@
 @{
 	List<EventCategory> category = ViewBag.category;
 	List<Event> eventnew = ViewBag.eventnew;
+	List<Event> eventhighlight = ViewBag.EventHightLight;
 }
 <!-- Start Events Page -->
 <section class="vinhuni-events-page" style="padding: 40px 20px; background: #f8f9fa;">
@@ -80,73 +81,36 @@
 
 					<div class="vinhuni-events-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px;">
 
-						<!-- Featured Event 1 -->
-						<div class="vinhuni-event-card" style="background: white; overflow: hidden; box-shadow: 0 2px 5px rgba(0,0,0,0.06);">
-							<div style="position: relative; height: 150px; overflow: hidden;">
-								<img src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=400" alt="Event" style="width: 100%; height: 100%; object-fit: cover;">
-								<div style="position: absolute; top: 8px; right: 8px; background: #FF6B35; color: white; padding: 4px 9px; font-size: 10px; font-weight: 600;">NỔI BẬT</div>
-							</div>
-							<div style="padding: 14px;">
-								<div style="display: flex; justify-content: space-between; margin-bottom: 9px; font-size: 10px; color: #666;">
-									<span>15/11/2025</span>
-									<span>250/300</span>
+						@foreach (var p in eventhighlight)
+						{
+							<div class="vinhuni-event-card"
+								 style="background: #fff; overflow: hidden; border-radius: 10px; box-shadow: 0 3px 8px rgba(0,0,0,0.08); transition: transform 0.2s ease, box-shadow 0.2s ease;">
+								<div style="position: relative; height: 160px; overflow: hidden;">
+									<img src="~/main/img/events/@p.Image"
+										 alt="Event"
+										 style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s ease;">
+									<div style="position: absolute; top: 10px; right: 10px; background: #ff6b35; color: #fff; padding: 4px 10px; font-size: 10px; font-weight: 600; border-radius: 4px;">
+										NỔI BẬT
+									</div>
 								</div>
-								<h4 style="font-size: 14px; font-weight: 600; color: #333; margin-bottom: 7px; line-height: 1.3; height: 38px; overflow: hidden;">Hội thảo khoa học sinh viên toàn quốc</h4>
-								<p style="color: #666; font-size: 10px; margin-bottom: 9px;">Hội trường A</p>
-								<a href="#" style="display: inline-block; color: #667eea; font-weight: 600; font-size: 11px; text-decoration: none;">Chi tiết</a>
+								<div style="padding: 14px 16px;">
+									<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; font-size: 11px; color: #777;">
+										<span>🕒 @p.CreatedDate?.ToString("dd/MM/yyyy")</span>
+										<span>👥 @p.CurrentParticipants / @p.MaxParticipants</span>
+									</div>
+									<h4 style="font-size: 16px; font-weight: 700; color: #222; margin-bottom: 6px; line-height: 1.35; height: 42px; overflow: hidden;">
+										@p.Title
+									</h4>
+									<p style="color: #666; font-size: 14px; margin-bottom: 10px;">📍 @p.Location</p>
+									<a href="@Url.Action("Details", "Events", new { slug = p.Slug, id = p.EventId })"
+									   style="display: inline-block; color: #667eea; font-weight: 600; font-size: 12px; text-decoration: none;">
+										Chi Tiết →
+									</a>
+								</div>
 							</div>
-						</div>
 
-						<!-- Featured Event 2 -->
-						<div class="vinhuni-event-card" style="background: white; overflow: hidden; box-shadow: 0 2px 5px rgba(0,0,0,0.06);">
-							<div style="position: relative; height: 150px; overflow: hidden;">
-								<img src="https://images.unsplash.com/photo-1511578314322-379afb476865?w=400" alt="Event" style="width: 100%; height: 100%; object-fit: cover;">
-								<div style="position: absolute; top: 8px; right: 8px; background: #FF6B35; color: white; padding: 4px 9px; font-size: 10px; font-weight: 600;">NỔI BẬT</div>
-							</div>
-							<div style="padding: 14px;">
-								<div style="display: flex; justify-content: space-between; margin-bottom: 9px; font-size: 10px; color: #666;">
-									<span>20/11/2025</span>
-									<span>180/200</span>
-								</div>
-								<h4 style="font-size: 14px; font-weight: 600; color: #333; margin-bottom: 7px; line-height: 1.3; height: 38px; overflow: hidden;">Ngày hội văn hóa các dân tộc</h4>
-								<p style="color: #666; font-size: 10px; margin-bottom: 9px;">Sân vận động</p>
-								<a href="#" style="display: inline-block; color: #667eea; font-weight: 600; font-size: 11px; text-decoration: none;">Chi tiết</a>
-							</div>
-						</div>
 
-						<!-- Featured Event 3 -->
-						<div class="vinhuni-event-card" style="background: white; overflow: hidden; box-shadow: 0 2px 5px rgba(0,0,0,0.06);">
-							<div style="position: relative; height: 150px; overflow: hidden;">
-								<img src="https://images.viblo.asia/996edaad-af89-4d96-a598-682e81024190.jpg" alt="Event" style="width: 100%; height: 100%; object-fit: cover;">
-								<div style="position: absolute; top: 8px; right: 8px; background: #FF6B35; color: white; padding: 4px 9px; font-size: 10px; font-weight: 600;">NỔI BẬT</div>
-							</div>
-							<div style="padding: 14px;">
-								<div style="display: flex; justify-content: space-between; margin-bottom: 9px; font-size: 10px; color: #666;">
-									<span>25/11/2025</span>
-									<span>150/150</span>
-								</div>
-								<h4 style="font-size: 14px; font-weight: 600; color: #333; margin-bottom: 7px; line-height: 1.3; height: 38px; overflow: hidden;">Workshop: Kỹ năng mềm IT</h4>
-								<p style="color: #666; font-size: 10px; margin-bottom: 9px;">Phòng B201</p>
-								<a href="#" style="display: inline-block; color: #667eea; font-weight: 600; font-size: 11px; text-decoration: none;">Chi tiết</a>
-							</div>
-						</div>
-
-						<!-- Featured Event 4 -->
-						<div class="vinhuni-event-card" style="background: white; overflow: hidden; box-shadow: 0 2px 5px rgba(0,0,0,0.06);">
-							<div style="position: relative; height: 150px; overflow: hidden;">
-								<img src="https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?w=400" alt="Event" style="width: 100%; height: 100%; object-fit: cover;">
-								<div style="position: absolute; top: 8px; right: 8px; background: #FF6B35; color: white; padding: 4px 9px; font-size: 10px; font-weight: 600;">NỔI BẬT</div>
-							</div>
-							<div style="padding: 14px;">
-								<div style="display: flex; justify-content: space-between; margin-bottom: 9px; font-size: 10px; color: #666;">
-									<span>28/11/2025</span>
-									<span>200/250</span>
-								</div>
-								<h4 style="font-size: 14px; font-weight: 600; color: #333; margin-bottom: 7px; line-height: 1.3; height: 38px; overflow: hidden;">Giải bóng đá Vinhuni Cup</h4>
-								<p style="color: #666; font-size: 10px; margin-bottom: 9px;">Sân bóng</p>
-								<a href="#" style="display: inline-block; color: #667eea; font-weight: 600; font-size: 11px; text-decoration: none;">Chi tiết</a>
-							</div>
-						</div>
+						}
 
 					</div>
 				</div>
@@ -160,27 +124,46 @@
 						<p style="color: #666; font-size: 13px;">Các sự kiện vừa được đăng tải</p>
 					</div>
 
-					<div class="vinhuni-events-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px;">
+					<div class="vinhuni-events-grid"
+						 style="display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 16px; padding: 8px;">
 						@foreach (var p in eventnew)
 						{
-							<!-- Latest Event  -->
-							<div class="vinhuni-event-card" style="background: white; overflow: hidden; box-shadow: 0 2px 5px rgba(0,0,0,0.06);">
-								<div style="position: relative; height: 150px; overflow: hidden;">
-									<img src="~/main/img/events/@p.Image" alt="Event" style="width: 100%; height: 100%; object-fit: cover;">
-									<div style="position: absolute; top: 8px; right: 8px; background: #4CAF50; color: white; padding: 4px 9px; font-size: 10px; font-weight: 600;">MỚI</div>
-								</div>
-								<div style="padding: 14px;">
-									<div style="display: flex; justify-content: space-between; margin-bottom: 9px; font-size: 10px; color: #666;">
-										<span>Thời Gian: @p.CreatedDate?.ToString("dd/MM/yyyy")</span>
-										<span>Số Lượng Tham Gia: @p.MaxParticipants</span>
+							<div class="vinhuni-event-card"
+								 style="background: #fff; border-radius: 10px; overflow: hidden; box-shadow: 0 3px 8px rgba(0,0,0,0.06); transition: all 0.25s ease-in-out;">
+
+								<!-- Hình sự kiện -->
+								<div style="position: relative; height: 135px; overflow: hidden;">
+									<img src="~/main/img/events/@p.Image" alt="Event"
+										 style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s ease;">
+									<div style="position: absolute; top: 8px; right: 8px; background: linear-gradient(90deg,#4CAF50,#5edc8a); color: #fff; padding: 3px 8px; font-size: 9px; font-weight: 600; border-radius: 5px;">
+										MỚI
 									</div>
-									<h4 style="font-size: 14px; font-weight: 600; color: #333; margin-bottom: 7px; line-height: 1.3; height: 38px; overflow: hidden;">@p.Title</h4>
-									<p style="color: #666; font-size: 10px; margin-bottom: 9px;">Địa Điểm @p.Location</p>
-									<a href="@Url.Action("Details", "Events", new { slug = p.Slug, id = p.EventId })" style="display: inline-block; color: #667eea; font-weight: 600; font-size: 11px; text-decoration: none;">Chi tiết</a>
+								</div>
+
+								<!-- Nội dung sự kiện -->
+								<div style="padding: 10px 12px;">
+									<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; font-size: 10px; color: #777;">
+										<span>🕒 @p.CreatedDate?.ToString("dd/MM/yyyy")</span>
+										<span>👥 @p.MaxParticipants</span>
+									</div>
+
+									<h4 style="font-size: 16px; font-weight: 700; color: #222; margin-bottom: 5px; line-height: 1.3; height: 38px; overflow: hidden;">
+										@p.Title
+									</h4>
+
+									<p style="color: #555; font-size: 14px; margin-bottom: 10px;">📍 @p.Location</p>
+
+									<a href="@Url.Action("Details", "Events", new { slug = p.Slug, id = p.EventId })"
+									   style="display: inline-block; color: #5b6cfb; font-weight: 600; font-size: 12px; text-decoration: none;">
+										Chi tiết →
+									</a>
 								</div>
 							</div>
 						}
 					</div>
+
+
+
 				</div>
 
 				<!-- Tất cả sự kiện -->
@@ -208,14 +191,23 @@
 								<div style="height: 150px; overflow: hidden;">
 									<img src="~/main/img/events/@p.Image" alt="Event" style="width: 100%; height: 100%; object-fit: cover;">
 								</div>
-								<div style="padding: 14px;">
-									<div style="display: flex; justify-content: space-between; margin-bottom: 9px; font-size: 10px; color: #666;">
-										<span>15/12/2025</span>
-										<span>120/150</span>
+								<!-- Nội dung sự kiện -->
+								<div style="padding: 10px 12px;">
+									<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; font-size: 10px; color: #777;">
+										<span>🕒 @p.CreatedDate?.ToString("dd/MM/yyyy")</span>
+										<span>👥 @p.MaxParticipants</span>
 									</div>
-									<h4 style="font-size: 14px; font-weight: 600; color: #333; margin-bottom: 7px; line-height: 1.3; height: 38px; overflow: hidden;">@p.Title</h4>
-									<p style="color: #666; font-size: 10px; margin-bottom: 9px;">@p.Location</p>
-									<a href="@Url.Action("Details", "Events", new { slug = p.Slug, id = p.EventId })" style="display: inline-block; color: #667eea; font-weight: 600; font-size: 11px; text-decoration: none;">Chi tiết</a>
+
+									<h4 style="font-size: 16px; font-weight: 700; color: #222; margin-bottom: 5px; line-height: 1.3; height: 38px; overflow: hidden;">
+										@p.Title
+									</h4>
+
+									<p style="color: #555; font-size: 14px; margin-bottom: 10px;">📍 @p.Location</p>
+
+									<a href="@Url.Action("Details", "Events", new { slug = p.Slug, id = p.EventId })"
+									   style="display: inline-block; color: #5b6cfb; font-weight: 600; font-size: 12px; text-decoration: none;">
+										Chi tiết →
+									</a>
 								</div>
 							</div>
 						}

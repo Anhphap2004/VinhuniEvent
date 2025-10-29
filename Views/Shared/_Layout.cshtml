@@ -1,4 +1,12 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Http;
+@using Microsoft.AspNetCore.Http.Extensions;
+@{
+	var userId = Context.Session.GetInt32("UserId");
+	var FullName = Context.Session.GetString("FullName");
+	var RoleId = Context.Session.GetInt32("RoleId");
+	@* var cartItemCount = Context.Session.GetInt32("CartItemCount") ?? 0; *@
+}
+<!DOCTYPE html>
 <html lang="zxx" class="no-js">
 
 <head>
@@ -53,7 +61,6 @@
 					<ul class="nav-menu">
 						<li><a style="color: blue; font-size:15px" asp-controller="Home" asp-action="Index">TRANG CHỦ</a></li>
 						<li><a style="color: blue; font-size:15px" asp-controller="Events" asp-action="Index">SỰ KIỆN</a></li>
-						<li><a style="color: blue; font-size:15px" asp-controller="Register" asp-action="Index">ĐĂNG KÝ/ THAM GIA</a></li>
 						<li><a style="color: blue; font-size:15px" href="events.html">ẢNH</a></li>
 						<li class="menu-has-children">
 							<a style="color: blue; font-size:15px" href="">TRANG</a>
@@ -73,6 +80,22 @@
 							</ul>
 						</li>
 						<li><a style="color: blue; font-size:15px" href="contact.html">LIÊN HỆ</a></li>
+						@if(!string.IsNullOrEmpty(FullName))
+						{
+							<li class="menu-has-children">
+								<a style="color: blue; font-size:15px" href="#">Xin chào, @FullName</a>
+								<ul>
+									<li><a style="color: blue; font-size:15px" asp-controller="Profile" asp-action="Index">Hồ sơ cá nhân</a></li>
+									<li><a style="color: blue; font-size:15px" asp-controller="Login" asp-action="Logout">Đăng xuất</a></li>
+								</ul>
+							</li>
+						}
+						else
+						{
+							<li><a style="color: blue; font-size:15px" asp-controller="Login" asp-action="Index">ĐĂNG NHẬP</a></li>
+						}
+)
+			
 					</ul>
 				</nav><!-- #nav-menu-container -->
 			</div>

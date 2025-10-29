@@ -47,23 +47,27 @@ namespace VinhuniEvent.Controllers
             var role = _context.Roles.FirstOrDefault(r => r.RoleId == user.RoleId);
             string roleName = role?.RoleName ?? "Unknown";
 
-            TempData["SuccessMessage"] = $"Xin chào {user.FullName} 💖 ({roleName})";
+            //  Điều hướng theo RoleId
+            switch (user.RoleId)
+            {
+                case 1: // Admin
+                    return RedirectToAction("Index", "Home", new { area = "Admin" });
 
-            //  Điều hướng theo quyền
-            if (roleName == "Admin")
-                return RedirectToAction("Index", "Admin");
-            else if (roleName == "Student")
-                return RedirectToAction("Index", "Student");
-            else if (roleName == "Giảng viên")
-                return RedirectToAction("Index", "Teacher");
-            else
-                return RedirectToAction("Index", "Home");
+                case 2: // Student
+                    return RedirectToAction("Index", "Home");
+
+                case 3: // Giảng viên
+                    return RedirectToAction("Index", "Teacher");
+
+                default:
+                    return RedirectToAction("Index", "Home");
+            }
         }
 
         public IActionResult Logout()
         {
             HttpContext.Session.Clear();
-            return RedirectToAction("Index", "Login");
+            return RedirectToAction("Index", "Home");
         }
     }
 }
