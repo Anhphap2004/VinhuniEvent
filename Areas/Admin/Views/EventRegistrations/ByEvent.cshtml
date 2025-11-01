@@ -1,0 +1,124 @@
+﻿@model IEnumerable<VinhuniEvent.Models.EventRegistration>
+@{
+    ViewData["Title"] = "Danh sách sinh viên đăng ký";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<div class="content-wrapper p-4">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h4 class="fw-bold text-primary mb-0">
+            <i class="fa-solid fa-users me-2"></i>
+            Danh sách sinh viên đăng ký sự kiện:
+            <span class="text-dark">@ViewBag.EventTitle</span>
+        </h4>
+        <span class="badge bg-info text-dark fs-6">
+            <i class="fa-solid fa-user-check me-1"></i>
+            Tổng số: <strong>@ViewBag.Count</strong> sinh viên
+        </span>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="mb-3">
+        <a asp-action="Attendance" asp-route-eventId="@ViewBag.EventId"
+           class="btn btn-primary">
+            <i class="fa-solid fa-clipboard-check me-1"></i> Điểm danh sinh viên
+        </a>
+    </div>
+
+    <!-- Table -->
+    <div class="card border-0 shadow-sm">
+        <div class="card-body p-0">
+            <table class="table table-hover table-bordered align-middle mb-0">
+                <thead class="table-light text-center">
+                    <tr>
+                        <th style="width:5%">STT</th>
+                        <th style="width:20%">Họ tên</th>
+                        <th style="width:15%">Mã sinh viên</th>
+                        <th style="width:15%">Ngày đăng ký</th>
+                        <th style="width:12%">Trạng thái ĐK</th>
+                        <th style="width:15%">Điểm danh</th>
+                        <th style="width:10%">Hành động</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        int stt = 1;
+                    }
+                    @if (Model != null && Model.Any())
+                    {
+                        foreach (var item in Model)
+                        {
+                            // ✅ Kiểm tra trạng thái điểm danh
+                            var attendance = item.Event?.Attendances
+                            ?.FirstOrDefault(a => a.UserId == item.UserId && a.EventId == item.EventId);
+
+                            var isPresent = attendance?.IsPresent;
+                            var attendanceStatus = isPresent == true ? "Có mặt" :
+                            isPresent == false ? "Vắng" : "Chưa điểm danh";
+                            var attendanceBadge = isPresent == true ? "bg-success" :
+                            isPresent == false ? "bg-danger" : "bg-secondary";
+
+                            <tr class="text-center">
+                                <td>@(stt++)</td>
+                                <td class="text-start fw-semibold">@item.User?.FullName</td>
+                                <td>@item.User?.StudentCode</td>
+                                <td>@item.RegistrationDate?.ToString("dd/MM/yyyy HH:mm")</td>
+                                <td>
+                                    <span class="badge rounded-pill px-3 py-2 @(item.Status == "Đã Đăng Ký" ? "bg-info" : "bg-secondary")">
+                                        @item.Status
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="badge rounded-pill px-3 py-2 @attendanceBadge">
+                                        <i class="fa-solid @(isPresent == true ? "fa-check" : isPresent == false ? "fa-xmark" : "fa-clock") me-1"></i>
+                                        @attendanceStatus
+                                    </span>
+                                </td>
+                                <td>
+                                    <a asp-action="Delete"
+                                       asp-route-id="@item.RegistrationId"
+                                       class="btn btn-sm btn-outline-danger"
+                                       title="Xóa đăng ký"
+                                       onclick="return confirm('Bạn có chắc chắn muốn xóa đăng ký này?')">
+                                        <i class="fa-solid fa-trash">Xoá</i>
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="7" class="text-center text-muted py-4">
+                                <i class="fa-regular fa-face-frown me-2"></i>
+                                Chưa có sinh viên nào đăng ký sự kiện này.
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Back Button -->
+    <div class="mt-4">
+        <a asp-action="Index" class="btn btn-outline-secondary">
+            <i class="fa-solid fa-arrow-left me-2"></i> Quay lại danh sách sự kiện
+        </a>
+    </div>
+</div>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <script>
+        toastr.success('@TempData["SuccessMessage"]');
+    </script>
+}
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <script>
+        toastr.error('@TempData["ErrorMessage"]');
+    </script>
+}

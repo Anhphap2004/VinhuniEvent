@@ -91,6 +91,12 @@ namespace VinhuniEvent.Controllers
             _context.EventRegistrations.Add(join);
             await _context.SaveChangesAsync();
             var eventItem = await _context.Events.FindAsync(eventId);
+            if (eventItem != null)
+            {
+                eventItem.CurrentParticipants = (eventItem.CurrentParticipants ?? 0) + 1;
+                _context.Events.Update(eventItem);
+                await _context.SaveChangesAsync();
+            }
             return RedirectToAction("Details", "Events", new { slug = eventItem?.Slug, id = eventId });
         }
 

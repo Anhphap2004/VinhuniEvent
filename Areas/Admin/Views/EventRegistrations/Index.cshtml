@@ -1,0 +1,85 @@
+﻿@model IEnumerable<VinhuniEvent.Models.EventRegistration>
+
+@{
+    ViewData["Title"] = "Danh sách sự kiện";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<div class="content-wrapper p-4">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h4 class="fw-bold text-primary">
+            <i class="fa-solid fa-calendar-days me-2"></i> Danh sách sự kiện
+        </h4>
+    </div>
+
+    <!-- Table -->
+    <div class="card shadow-sm border-0">
+        <div class="card-body p-0">
+            <table class="table table-striped table-hover align-middle mb-0">
+                <thead class="table-light text-center">
+                    <tr>
+                        <th style="width:5%">STT</th>
+                        <th style="width:25%">Tên sự kiện</th>
+                        <th style="width:10%">Hình ảnh</th>
+                        <th style="width:15%">Ngày tổ chức</th>
+                        <th style="width:10%">Trạng thái</th>
+                        <th style="width:15%">Hành động</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        int stt = 1;
+                        var groupedEvents = Model
+                        .Where(e => e.Event != null)
+                        .GroupBy(e => e.Event)
+                        .Select(g => g.Key)
+                        .ToList();
+                    }
+
+                    @foreach (var ev in groupedEvents)
+                    {
+                        <tr class="text-center">
+                            <td>@(stt++)</td>
+                            <td>
+                                <a asp-action="ByEvent"
+                                   asp-route-id="@ev?.EventId"
+                                   class="text-decoration-none text-primary fw-semibold">
+                                    @ev?.Title
+                                </a>
+                            </td>
+                            <td>
+                                <img src="~/main/img/events/@ev?.Image"
+                                     alt="Event Image"
+                                     class="img-fluid rounded"
+                                     style="max-height: 80px;" />
+                            </td>
+                            <td>@ev?.CreatedDate?.ToString("dd/MM/yyyy")</td>
+                            <td>
+                                @if (ev?.IsActive == true)
+                                {
+                                    <span class="badge bg-success">Đang diễn ra</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-secondary">Đã kết thúc</span>
+                                }
+                            </td>
+                            <td>
+                                <div class="d-flex justify-content-center gap-2">
+                                    <a asp-action="ByEvent"
+                                       asp-route-id="@ev?.EventId"
+                                       class="btn btn-sm btn-outline-info">
+                                        <i class="fa-solid fa-users me-1"></i> Xem SV
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+    ```
+
+</div>
