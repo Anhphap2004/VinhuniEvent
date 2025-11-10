@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using VinhuniEvent.Models;
 
 namespace VinhuniEvent.Controllers
@@ -17,6 +18,9 @@ namespace VinhuniEvent.Controllers
 
         public IActionResult Index()
         {
+            ViewBag.EventNew = _context.Events
+                .Where(e => e.IsActive == true)
+                .OrderByDescending(e => e.CreatedDate).Take(10).ToList();
             return View();
         }
 

@@ -3,6 +3,9 @@
 @{
     ViewData["Title"] = "Quản lý người dùng";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+
+    // Lấy vai trò đang lọc (nếu có)
+    string currentRole = Context.Request.Query["role"];
 }
 
 <div class="container-fluid py-4">
@@ -10,8 +13,23 @@
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h4 class="text-uppercase fw-bold text-dark mb-0">Quản lý người dùng</h4>
         <a asp-action="Create" class="btn btn-primary">
-            <i class="fa fa-plus me-1"></i> Thêm mới
+            <i class="fa fa-plus me-1"></i> Thêm mới người dùng
         </a>
+    </div>
+
+    <!-- Bộ lọc vai trò -->
+    <div class="mb-3">
+        <a asp-action="Index" asp-route-role=""
+           class="btn btn-outline-dark @(string.IsNullOrEmpty(currentRole) ? "active" : "")">Tất cả</a>
+
+        <a asp-action="Index" asp-route-role="Student"
+           class="btn btn-outline-success @(currentRole == "Student" ? "active" : "")">Sinh viên</a>
+
+        <a asp-action="Index" asp-route-role="Organizer"
+           class="btn btn-outline-warning @(currentRole == "Organizer" ? "active" : "")">Ban tổ chức</a>
+
+        <a asp-action="Index" asp-route-role="Admin"
+           class="btn btn-outline-danger @(currentRole == "Admin" ? "active" : "")">Quản trị viên</a>
     </div>
 
     <!-- Search -->
@@ -27,72 +45,110 @@
         <table class="table table-bordered table-hover align-middle text-center" id="userTable">
             <thead class="table-light">
                 <tr>
-                    <th>Mã SV</th>
-                    <th>Họ tên</th>
-                    <th>Ảnh</th>
-                    <th>Email</th>
-                    <th>Số điện thoại</th>
-                    <th>Khoa</th>
-                    <th>Ngành</th>
-                    <th>Trạng thái</th>
-                    <th>Vai trò</th>
-                    <th>Hành động</th>
+                    @if (currentRole == "Admin")
+                    {
+                        <th>Họ tên</th>
+                        <th>Email</th>
+                        <th>Số điện thoại</th>
+                        <th>Trạng thái</th>
+                        <th>Vai trò</th>
+                        <th>Hành động</th>
+                    }
+                    else
+                    {
+                        <th>Mã SV</th>
+                        <th>Họ tên</th>
+                        <th>Email</th>
+                        <th>Khoa</th>
+                        <th>Ngành</th>
+                        <th>Vai trò</th>
+                        <th>Trạng thái</th>
+                        <th>Hành động</th>
+                    }
                 </tr>
             </thead>
+
             <tbody>
                 @foreach (var item in Model)
                 {
                     <tr>
-                        <td>@(item.StudentCode ?? "-")</td>
-                        <td class="fw-semibold text-start">@item.FullName</td>
-                        <td>
-                            @if (!string.IsNullOrEmpty(item.ImageUrl))
-                            {
-                                <img src="~/main/img/users/@item.ImageUrl" alt="Ảnh đại diện" class="rounded-circle" style="width: 40px; height: 40px; object-fit: cover;" />
-                            }
-                            else
-                            {
-                                <span>-</span>
-							}
-                        <td>@item.Email</td>
-                        <td>@(item.PhoneNumber ?? "-")</td>
-                        <td>@(item.Faculty ?? "-")</td>
-                        <td>@(item.Major ?? "-")</td>
-                        <td>
-                            @if (item.IsActive)
-                            {
-                                <span>✔</span>
-                            }
-                            else
-                            {
-                                <span>❌</span>
-                            }
-                        </td>
-                        <td>
-                            <span class="badge bg-info text-dark">@item.Role?.RoleName</span>
-                        </td>
-                        <td>
-                            <div class="btn-group btn-group-sm" role="group">
-                                <a asp-action="Edit" asp-route-id="@item.UserId" class="btn btn-outline-secondary">
-                                    <i class="fa fa-edit">Sửa</i>
-                                </a>
-                                <a asp-action="Details" asp-route-id="@item.UserId" class="btn btn-outline-primary">
-                                    <i class="fa fa-eye">Chi tiết</i>
-                                </a>
-                                <a asp-action="Delete" asp-route-id="@item.UserId" class="btn btn-outline-danger">
-                                    <i class="fa fa-trash">Xóa</i>
-                                </a>
-                            </div>
-                        </td>
+                        @if (currentRole == "Admin")
+                        {
+                            <td class="fw-semibold text-start">@item.FullName</td>
+                            <td>@item.Email</td>
+                            <td>@(item.PhoneNumber ?? "-")</td>
+                            <td>
+                                @if (item.IsActive)
+                                {
+                                    <span class="text-success fw-bold">✔</span>
+                                }
+                                else
+                                {
+                                    <span class="text-danger fw-bold">✖</span>
+                                }
+                            </td>
+                            <td>
+                                <span class="badge bg-info text-dark">@item.Role?.RoleName</span>
+                            </td>
+                            <td>
+                                <div class="btn-group btn-group-sm" role="group">
+                                    <a asp-action="Edit" asp-route-id="@item.UserId" class="btn btn-outline-secondary">
+                                        <i class="fa fa-edit"></i> Sửa
+                                    </a>
+                                    <a asp-action="Details" asp-route-id="@item.UserId" class="btn btn-outline-primary">
+                                        <i class="fa fa-eye"></i> Xem
+                                    </a>
+                                    <a asp-action="Delete" asp-route-id="@item.UserId" class="btn btn-outline-danger">
+                                        <i class="fa fa-trash"></i> Xóa
+                                    </a>
+                                </div>
+                            </td>
+                        }
+                        else
+                        {
+                            <td>@(item.StudentCode ?? "-")</td>
+                            <td class="fw-semibold text-start">@item.FullName</td>
+                            <td>@item.Email</td>
+                            <td>@(item.Faculty ?? "-")</td>
+                            <td>@(item.Major ?? "-")</td>
+                            <td>
+                                <span class="badge bg-info text-dark">@item.Role?.RoleName</span>
+                            </td>
+                            <td>
+                                @if (item.IsActive)
+                                {
+                                    <span class="text-success fw-bold">✔</span>
+                                }
+                                else
+                                {
+                                    <span class="text-danger fw-bold">✖</span>
+                                }
+                            </td>
+                            <td>
+                                <div class="btn-group btn-group-sm" role="group">
+                                    <a asp-action="Edit" asp-route-id="@item.UserId" class="btn btn-outline-secondary">
+                                        <i class="fa fa-edit"></i> Sửa
+                                    </a>
+                                    <a asp-action="Details" asp-route-id="@item.UserId" class="btn btn-outline-primary">
+                                        <i class="fa fa-eye"></i> Xem
+                                    </a>
+                                    <a asp-action="Delete" asp-route-id="@item.UserId" class="btn btn-outline-danger">
+                                        <i class="fa fa-trash"></i> Xóa
+                                    </a>
+                                </div>
+                            </td>
+                        }
                     </tr>
                 }
             </tbody>
+
         </table>
     </div>
 </div>
 
 @section Scripts {
     <script>
+        // 🔎 Tìm kiếm theo tên hoặc mã sinh viên
         document.getElementById('searchInput').addEventListener('keyup', function() {
             var searchValue = this.value.toLowerCase();
             var rows = document.querySelectorAll('#userTable tbody tr');
@@ -100,7 +156,6 @@
             rows.forEach(row => {
                 var studentCode = row.cells[0].textContent.toLowerCase();
                 var fullName = row.cells[1].textContent.toLowerCase();
-
                 row.style.display = (studentCode.includes(searchValue) || fullName.includes(searchValue)) ? '' : 'none';
             });
         });

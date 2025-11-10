@@ -20,11 +20,21 @@ namespace VinhuniEvent.Areas.Admin.Controllers
         }
 
         // GET: Admin/Users
-        public async Task<IActionResult> Index()
+        public IActionResult Index(string? role)
         {
-            var applicationDbContext = _context.Users.Include(u => u.Role);
-            return View(await applicationDbContext.ToListAsync());
+            var users = _context.Users
+                .Include(u => u.Role)
+                .AsQueryable();
+
+            if (!string.IsNullOrEmpty(role))
+            {
+                users = users.Where(u => u.Role.RoleName == role);
+            }
+
+            return View(users.ToList());
         }
+
+
 
         // GET: Admin/Users/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -45,27 +55,23 @@ namespace VinhuniEvent.Areas.Admin.Controllers
             return View(user);
         }
 
-        // GET: Admin/Users/Create
         public IActionResult Create()
         {
             ViewData["RoleId"] = new SelectList(_context.Roles, "RoleId", "RoleName");
             return View();
         }
 
-        // POST: Admin/Users/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("UserId,StudentCode,FullName,Email,PasswordHash,RoleId,Faculty,Major,BirthDate,PhoneNumber,ImageUrl,IsActive,CreatedDate,ImageFile")] User user)
         {
             if (ModelState.IsValid)
             {
-                // Xử lý upload ảnh
                 if (user.ImageFile != null)
                 {
                     string uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "main", "img", "users");
-                    Directory.CreateDirectory(uploadsFolder); // tạo thư mục nếu chưa có
+                    Directory.CreateDirectory(uploadsFolder); 
 
                     string fileName = Guid.NewGuid().ToString() + Path.GetExtension(user.ImageFile.FileName);
                     string filePath = Path.Combine(uploadsFolder, fileName);
@@ -75,7 +81,6 @@ namespace VinhuniEvent.Areas.Admin.Controllers
                         await user.ImageFile.CopyToAsync(stream);
                     }
 
-                    // Lưu đường dẫn tương đối để hiển thị trên web
                     user.ImageUrl = fileName;
                 }
                 var existingEmail = _context.Users.FirstOrDefault(u => u.Email == user.Email);
