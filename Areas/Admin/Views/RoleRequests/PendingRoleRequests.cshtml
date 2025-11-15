@@ -1,0 +1,49 @@
+﻿@{
+    ViewData["Title"] = "Quản lý yêu cầu nâng quyền";
+    var pending = ViewBag.Pending as List<VinhuniEvent.Models.RoleRequest>;
+    var approved = ViewBag.Approved as List<VinhuniEvent.Models.RoleRequest>;
+    var rejected = ViewBag.Rejected as List<VinhuniEvent.Models.RoleRequest>;
+}
+
+<h2 class="mb-4">Yêu cầu nâng quyền</h2>
+
+@if (TempData["Msg"] != null)
+{
+    <div class="alert alert-success">@TempData["Msg"]</div>
+}
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+
+<!-- NAV TABS -->
+<ul class="nav nav-tabs mb-3" id="roleTabs">
+    <li class="nav-item">
+        <a class="nav-link active" data-bs-toggle="tab" href="#pending">⏳ Pending</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" data-bs-toggle="tab" href="#approved">✔ Approved</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" data-bs-toggle="tab" href="#rejected">✖ Rejected</a>
+    </li>
+</ul>
+
+<!-- TAB CONTENT -->
+<div class="tab-content">
+
+    <div class="tab-pane fade show active" id="pending">
+        <partial name="_RequestTable" model="pending" />
+    </div>
+
+    <div class="tab-pane fade" id="approved">
+        <partial name="_RequestTable" model="approved" />
+    </div>
+
+    <div class="tab-pane fade" id="rejected">
+        <partial name="_RequestTable" model="rejected" />
+    </div>
+
+</div>
+

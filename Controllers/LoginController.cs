@@ -56,8 +56,8 @@ namespace VinhuniEvent.Controllers
                 case 2: // Student
                     return RedirectToAction("Index", "Home");
 
-                case 3: // Giảng viên
-                    return RedirectToAction("Index", "Teacher");
+                case 3: // Organizer
+                    return RedirectToAction("Index", "Home", new { area = "Admin" });
 
                 default:
                     return RedirectToAction("Index", "Home");

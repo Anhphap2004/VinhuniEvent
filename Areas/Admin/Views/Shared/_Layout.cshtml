@@ -1,4 +1,5 @@
 ﻿@using Microsoft.AspNetCore.Http
+@using VinhuniEvent.Filters;
 
 <!DOCTYPE html>
 <html lang="en">
@@ -28,7 +29,7 @@
 	<div class="wrapper">
 		<nav id="sidebar" class="sidebar js-sidebar">
 			<div class="sidebar-content js-simplebar">
-				<a href="index.html" style="text-decoration: none; display: block; padding: 16px 12px; border-bottom: 1px solid rgba(255,255,255,0.1);">
+				<a asp-action="Index" asp-controller="Home" style="text-decoration: none; display: block; padding: 16px 12px; border-bottom: 1px solid rgba(255,255,255,0.1);">
 					<div style="display: flex; align-items: center; gap: 12px;">
 						<img src="https://login.vinhuni.edu.vn/assets/images/logo-dh-vinh.png" alt="VinhUni Logo" style="width: 45px; height: 45px; object-fit: contain;">
 						<div style="display: flex; flex-direction: column; line-height: 1.3;">
@@ -45,32 +46,32 @@
 
 					<li class="sidebar-item active">
 						<a class="sidebar-link" asp-controller="Users" asp-action="Index">
-              <i class="align-middle" data-feather="sliders"></i> <span class="align-middle">Quản lý người dùng</span>
-            </a>
+							<i class="align-middle" data-feather="sliders"></i> <span class="align-middle">Quản lý người dùng</span>
+						</a>
 					</li>
 
 					<li class="sidebar-item">
-						<a class="sidebar-link" asp-controller="Student" asp-action="Index">
-					   <i class="align-middle" data-feather="user"></i> <span class="align-middle">Quản lý sinh viên</span>
-					   </a>
+						<a class="sidebar-link" asp-controller="RoleRequests" asp-action="PendingRoleRequests">
+							<i class="align-middle" data-feather="user"></i> <span class="align-middle">Phê Duyệt Quyền</span>
+						</a>
 					</li>
 
 					<li class="sidebar-item">
 						<a class="sidebar-link" asp-controller="EventCategories" asp-action="Index">
-              <i class="align-middle" data-feather="log-in"></i> <span class="align-middle"> Danh mục sự kiện</span>
-            </a>
+							<i class="align-middle" data-feather="log-in"></i> <span class="align-middle"> Danh mục sự kiện</span>
+						</a>
 					</li>
 
 					<li class="sidebar-item">
 						<a class="sidebar-link" asp-controller="Events" asp-action="Index">
-              <i class="align-middle" data-feather="user-plus"></i> <span class="align-middle">Quản lý sự kiện</span>
-            </a>
+							<i class="align-middle" data-feather="user-plus"></i> <span class="align-middle">Quản lý sự kiện</span>
+						</a>
 					</li>
 
 					<li class="sidebar-item">
 						<a class="sidebar-link" asp-controller="EventRegistrations" asp-action="Index">
-              <i class="align-middle" data-feather="book"></i> <span class="align-middle">Đăng ký/ Tham gia</span>
-            </a>
+							<i class="align-middle" data-feather="book"></i> <span class="align-middle">Đăng ký/ Tham gia</span>
+						</a>
 					</li>
 
 					<li class="sidebar-header">
@@ -79,32 +80,32 @@
 
 					<li class="sidebar-item">
 						<a class="sidebar-link" href="ui-buttons.html">
-              <i class="align-middle" data-feather="square"></i> <span class="align-middle">Điểm danh</span>
-            </a>
+							<i class="align-middle" data-feather="square"></i> <span class="align-middle">Điểm danh</span>
+						</a>
 					</li>
 
 					<li class="sidebar-item">
 						<a class="sidebar-link" href="ui-forms.html">
-              <i class="align-middle" data-feather="check-square"></i> <span class="align-middle">Thống kê</span>
-            </a>
+							<i class="align-middle" data-feather="check-square"></i> <span class="align-middle">Thống kê</span>
+						</a>
 					</li>
 
 					<li class="sidebar-item">
 						<a class="sidebar-link" href="ui-cards.html">
-              <i class="align-middle" data-feather="grid"></i> <span class="align-middle">Phân quyền</span>
-            </a>
+							<i class="align-middle" data-feather="grid"></i> <span class="align-middle">Phân quyền</span>
+						</a>
 					</li>
 
 					<li class="sidebar-item">
 						<a class="sidebar-link" href="ui-typography.html">
-              <i class="align-middle" data-feather="align-left"></i> <span class="align-middle">Nhà tài trợ</span>
-            </a>
+							<i class="align-middle" data-feather="align-left"></i> <span class="align-middle">Nhà tài trợ</span>
+						</a>
 					</li>
 
 					<li class="sidebar-item">
 						<a class="sidebar-link" href="icons-feather.html">
-              <i class="align-middle" data-feather="coffee"></i> <span class="align-middle">Icons</span>
-            </a>
+							<i class="align-middle" data-feather="coffee"></i> <span class="align-middle">Icons</span>
+						</a>
 					</li>
 
 					<li class="sidebar-header">
@@ -113,14 +114,14 @@
 
 					<li class="sidebar-item">
 						<a class="sidebar-link" href="charts-chartjs.html">
-              <i class="align-middle" data-feather="bar-chart-2"></i> <span class="align-middle">Charts</span>
-            </a>
+							<i class="align-middle" data-feather="bar-chart-2"></i> <span class="align-middle">Charts</span>
+						</a>
 					</li>
 
 					<li class="sidebar-item">
 						<a class="sidebar-link" href="maps-google.html">
-              <i class="align-middle" data-feather="map"></i> <span class="align-middle">Maps</span>
-            </a>
+							<i class="align-middle" data-feather="map"></i> <span class="align-middle">Maps</span>
+						</a>
 					</li>
 				</ul>
 
@@ -141,8 +142,8 @@
 		<div class="main">
 			<nav class="navbar navbar-expand navbar-light navbar-bg">
 				<a class="sidebar-toggle js-sidebar-toggle">
-          <i class="hamburger align-self-center"></i>
-        </a>
+					<i class="hamburger align-self-center"></i>
+				</a>
 
 				<div class="navbar-collapse collapse">
 					<ul class="navbar-nav navbar-align">
@@ -280,16 +281,16 @@
 						</li>
 						<li class="nav-item dropdown">
 							<a class="nav-icon dropdown-toggle d-inline-block d-sm-none" href="#" data-bs-toggle="dropdown">
-                <i class="align-middle" data-feather="settings"></i>
-              </a>
+								<i class="align-middle" data-feather="settings"></i>
+							</a>
 
 							<a class="nav-link dropdown-toggle d-none d-sm-inline-block" href="#" data-bs-toggle="dropdown">
-								<img src="~/admin/img/avatars/avatar.jpg" class="avatar img-fluid rounded me-1" alt="Charles Hall" /> 
+								<img src="~/admin/img/avatars/avatar.jpg" class="avatar img-fluid rounded me-1" alt="Charles Hall" />
 								<span class="text-dark">
 									@(Context.Session.GetString("FullName") ?? "User")
 								</span>
 
-              </a>
+							</a>
 							<div class="dropdown-menu dropdown-menu-end">
 								<a class="dropdown-item" href="pages-profile.html"><i class="align-middle me-1" data-feather="user"></i> Profile</a>
 								<a class="dropdown-item" href="#"><i class="align-middle me-1" data-feather="pie-chart"></i> Analytics</a>
@@ -304,7 +305,7 @@
 				</div>
 			</nav>
 
-	@RenderBody()
+			@RenderBody()
 			<footer class="">
 				@* <div class="container-fluid">
 					<div class="row text-muted">
@@ -558,7 +559,7 @@
 			});
 		});
 	</script>
-	  @RenderSection("Scripts", required: false)
+	@RenderSection("Scripts", required: false)
 </body>
 
 </html>

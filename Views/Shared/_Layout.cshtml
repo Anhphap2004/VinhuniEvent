@@ -61,7 +61,7 @@
 					<ul class="nav-menu">
 						<li><a style="color: blue; font-size:15px" asp-controller="Home" asp-action="Index">TRANG CHỦ</a></li>
 						<li><a style="color: blue; font-size:15px" asp-controller="Events" asp-action="Index">SỰ KIỆN</a></li>
-						<li><a style="color: blue; font-size:15px" href="events.html">ẢNH</a></li>
+						<li><a style="color: blue; font-size:15px" asp-controller="Register" asp-action="RequestOrganizer">Đăng Ký Tổ Chức</a></li>
 						<li class="menu-has-children">
 							<a style="color: blue; font-size:15px" href="">TRANG</a>
 							<ul>
@@ -79,12 +79,21 @@
 								</li>
 							</ul>
 						</li>
-						<li><a style="color: blue; font-size:15px" href="contact.html">LIÊN HỆ</a></li>
+					
 						@if (!string.IsNullOrEmpty(FullName))
 						{
 							<li class="menu-has-children">
 								<a style="color: blue; font-size:15px" href="#">Xin chào, @FullName</a>
 								<ul>
+									@if (RoleId == 1 || RoleId == 3)
+									{
+										<li>
+											<a style="color: blue; font-size:15px" asp-area="Admin" asp-controller="Home"  asp-action="Index">
+												🛠 Trang quản trị (Admin)
+											</a>
+										</li>
+									}
+
 									<li>
 										<a style="color: blue; font-size:15px" asp-controller="Profile" asp-action="Index">
 											Hồ sơ cá nhân
@@ -112,7 +121,7 @@
 							</li>
 						}
 
-)
+
 			
 					</ul>
 				</nav><!-- #nav-menu-container -->

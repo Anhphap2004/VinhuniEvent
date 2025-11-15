@@ -5,10 +5,12 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using VinhuniEvent.Filters;
 using VinhuniEvent.Models;
 
 namespace VinhuniEvent.Areas.Admin.Controllers
 {
+    [RoleAuthorize(1)]
     [Area("Admin")]
     public class EventCategoriesController : Controller
     {

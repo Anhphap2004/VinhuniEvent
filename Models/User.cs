@@ -41,5 +41,9 @@ public partial class User
 
     public virtual ICollection<Event> Events { get; set; } = new List<Event>();
 
-    public virtual Role? Role { get; set; } 
+    public virtual Role? Role { get; set; }
+
+    // Fix for IDE0028: Use collection initializer for RoleRequests property
+    public virtual ICollection<RoleRequest> RoleRequests { get; set; } = new List<RoleRequest>();
+
 }

@@ -1,0 +1,69 @@
+﻿@model IEnumerable<VinhuniEvent.Models.RoleRequest>
+
+<table class="table table-striped table-bordered table-hover align-middle">
+    <thead class="table-dark text-center">
+        <tr>
+            <th>Người yêu cầu</th>
+            <th>Email</th>
+            <th>Lý do</th>
+            <th>Thời gian</th>
+            <th style="width:200px">Hành động</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null && Model.Any())
+        {
+            foreach (var req in Model)
+            {
+                <tr>
+                    <td>@req.User?.FullName</td>
+                    <td>@req.User?.Email</td>
+                    <td>@req.Reason</td>
+                    <td>@req.CreatedAt?.ToString("dd/MM/yyyy HH:mm")</td>
+                    <td class="text-center">
+
+                        @if (string.IsNullOrEmpty(req.Status) || req.Status == "Pending")
+                        {
+                            <div class="d-flex justify-content-center gap-2">
+
+                                <form asp-area="Admin" asp-controller="RoleRequests" asp-action="Handle" method="post" class="m-0">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="requestId" value="@req.RequestId" />
+                                    <input type="hidden" name="approve" value="true" />
+                                    <button type="submit" class="btn btn-success btn-sm">
+                                        ✔ Duyệt
+                                    </button>
+                                </form>
+
+                                <form asp-area="Admin" asp-controller="RoleRequests" asp-action="Handle" method="post" class="m-0">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="requestId" value="@req.RequestId" />
+                                    <input type="hidden" name="approve" value="false" />
+                                    <button type="submit" class="btn btn-danger btn-sm">
+                                        ✖ Từ chối
+                                    </button>
+                                </form>
+
+                            </div>
+                        }
+                        else
+                        {
+                            <span class="badge @(
+                                  req.Status == "Approved" ? "bg-success" :
+                                  req.Status == "Rejected" ? "bg-danger" : "bg-secondary")">
+                                @req.Status
+                            </span>
+                        }
+
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="5" class="text-center text-muted fst-italic">Không có dữ liệu 💭</td>
+            </tr>
+        }
+    </tbody>
+</table>

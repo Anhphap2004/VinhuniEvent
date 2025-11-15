@@ -29,6 +29,8 @@ public partial class ApplicationDbContext : DbContext
 
     public virtual DbSet<User> Users { get; set; }
 
+    public virtual DbSet<RoleRequest> RoleRequests { get; set; }
+
     public virtual DbSet<VwThongKeSuKien> VwThongKeSuKiens { get; set; }
 
    
@@ -185,6 +187,19 @@ public partial class ApplicationDbContext : DbContext
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Users_Roles");
         });
+
+        modelBuilder.Entity<RoleRequest>(entity =>
+        {
+            entity.HasKey(e => e.RequestId); // primary key
+
+            entity.Property(e => e.RequestedRole)
+                  .IsRequired();
+            entity.HasOne(rr => rr.User)
+                  .WithMany(u => u.RoleRequests)
+                  .HasForeignKey(rr => rr.UserId)
+                  .OnDelete(DeleteBehavior.Cascade);
+        });
+
 
         modelBuilder.Entity<VwThongKeSuKien>(entity =>
         {

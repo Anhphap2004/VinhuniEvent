@@ -21,7 +21,7 @@ namespace VinhuniEvent.Controllers
         [HttpPost]
         public async Task<IActionResult> Index(User user)
         {
-           
+
             var existingEmail = _context.Users.FirstOrDefault(u => u.Email == user.Email);
             var existingPhone = _context.Users.FirstOrDefault(u => u.PhoneNumber == user.PhoneNumber);
             var existingStudentCode = _context.Users.FirstOrDefault(u => u.StudentCode == user.StudentCode);
@@ -58,6 +58,58 @@ namespace VinhuniEvent.Controllers
 
             TempData["SuccessMessage"] = "🎉 Đăng ký thành công. Vui lòng đăng nhập!";
             return RedirectToAction("Index", "Login");
+        }
+        [HttpGet]
+        public IActionResult RequestOrganizer()
+        {
+            var userId = HttpContext.Session.GetInt32("UserId");
+            IEnumerable<RoleRequest> pendingRequests = new List<RoleRequest>();
+
+            if (userId != null)
+            {
+                pendingRequests = _context.RoleRequests
+                    .Where(r => r.UserId == userId.Value && r.Status == "Pending")
+                    .AsEnumerable();
+            }
+
+            ViewBag.PendingRequests = pendingRequests;
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult RequestOrganizer(RoleRequest model)
+        {
+            var userId = HttpContext.Session.GetInt32("UserId");
+            if (userId == null || userId <= 0)
+            {
+                TempData["Msg"] = "Vui lòng đăng nhập để gửi yêu cầu.";
+                return RedirectToAction(nameof(RequestOrganizer));
+            }
+
+            // Check duplicate
+            bool alreadyRequested = _context.RoleRequests
+                .Any(r => r.UserId == userId.Value && r.RequestedRole == "Organizer" && r.Status == "Pending");
+
+            if (alreadyRequested)
+            {
+                TempData["Msg"] = "Bạn đã gửi yêu cầu làm Organizer, vui lòng chờ Admin duyệt.";
+                return RedirectToAction(nameof(RequestOrganizer));
+            }
+
+            if (ModelState.IsValid)
+            {
+                model.UserId = userId.Value;
+                model.Status = "Pending";
+                model.CreatedAt = DateTime.Now;
+
+                _context.RoleRequests.Add(model);
+                _context.SaveChanges();
+
+                return RedirectToAction(nameof(RequestOrganizer));
+            }
+
+            return View(model);
         }
     }
 }

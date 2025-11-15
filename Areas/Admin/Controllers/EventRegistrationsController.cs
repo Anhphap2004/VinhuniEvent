@@ -5,10 +5,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using VinhuniEvent.Filters;
 using VinhuniEvent.Models;
 
 namespace VinhuniEvent.Areas.Admin.Controllers
 {
+    [RoleAuthorize(1, 3)]
     [Area("Admin")]
     public class EventRegistrationsController : Controller
     {
