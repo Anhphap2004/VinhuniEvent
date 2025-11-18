@@ -88,7 +88,7 @@
                                 }
                             </td>
                             <td>
-                                <span class="badge bg-info text-dark">@item.Role?.RoleName</span>
+                                <span class="badge bg-info text-dark">@item.Role?.Description</span>
                             </td>
                             <td>
                                 <div class="btn-group btn-group-sm" role="group">
@@ -112,7 +112,7 @@
                             <td>@(item.Faculty ?? "-")</td>
                             <td>@(item.Major ?? "-")</td>
                             <td>
-                                <span class="badge bg-info text-dark">@item.Role?.RoleName</span>
+                                <span class="badge bg-info text-dark">@item.Role?.Description</span>
                             </td>
                             <td>
                                 @if (item.IsActive)

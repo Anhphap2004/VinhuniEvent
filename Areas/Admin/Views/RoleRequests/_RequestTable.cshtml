@@ -48,12 +48,18 @@
                         }
                         else
                         {
-                            <span class="badge @(
-                                  req.Status == "Approved" ? "bg-success" :
-                                  req.Status == "Rejected" ? "bg-danger" : "bg-secondary")">
-                                @req.Status
-                            </span>
+                            var badgeClass = req.Status == "Approved" ? "bg-success"
+                            : req.Status == "Rejected" ? "bg-danger"
+                            : "bg-secondary";
+
+                            var statusText = req.Status == "Approved" ? "Đã duyệt"
+                            : req.Status == "Rejected" ? "Từ chối"
+                            : req.Status == "Pending" ? "Đang chờ"
+                            : "Không xác định";
+
+                            <span class="badge @badgeClass">@statusText</span>
                         }
+
 
                     </td>
                 </tr>

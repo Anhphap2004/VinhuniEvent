@@ -5,7 +5,7 @@
     var rejected = ViewBag.Rejected as List<VinhuniEvent.Models.RoleRequest>;
 }
 
-<h2 class="mb-4">Yêu cầu nâng quyền</h2>
+<h2 class="mb-4 mt-2">Yêu cầu nâng quyền</h2>
 
 @if (TempData["Msg"] != null)
 {
@@ -20,13 +20,13 @@
 <!-- NAV TABS -->
 <ul class="nav nav-tabs mb-3" id="roleTabs">
     <li class="nav-item">
-        <a class="nav-link active" data-bs-toggle="tab" href="#pending">⏳ Pending</a>
+        <a class="nav-link active" data-bs-toggle="tab" href="#pending">⏳ Đang Chờ</a>
     </li>
     <li class="nav-item">
-        <a class="nav-link" data-bs-toggle="tab" href="#approved">✔ Approved</a>
+        <a class="nav-link" data-bs-toggle="tab" href="#approved">✔ Đã Duyệt</a>
     </li>
     <li class="nav-item">
-        <a class="nav-link" data-bs-toggle="tab" href="#rejected">✖ Rejected</a>
+        <a class="nav-link" data-bs-toggle="tab" href="#rejected">✖ Từ Chối</a>
     </li>
 </ul>
 
