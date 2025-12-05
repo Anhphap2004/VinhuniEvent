@@ -3,8 +3,6 @@
 @{
     ViewData["Title"] = "Quản lý người dùng";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
-
-    // Lấy vai trò đang lọc (nếu có)
     string currentRole = Context.Request.Query["role"];
 }
 
@@ -47,8 +45,8 @@
                 <tr>
                     @if (currentRole == "Admin")
                     {
-                        <th>Họ tên</th>
                         <th>Email</th>
+                        <th>Tên</th>
                         <th>Số điện thoại</th>
                         <th>Trạng thái</th>
                         <th>Vai trò</th>
@@ -74,8 +72,9 @@
                     <tr>
                         @if (currentRole == "Admin")
                         {
-                            <td class="fw-semibold text-start">@item.FullName</td>
                             <td>@item.Email</td>
+                            <td class="fw-semibold text-start">@item.FullName</td>
+                            
                             <td>@(item.PhoneNumber ?? "-")</td>
                             <td>
                                 @if (item.IsActive)
@@ -98,7 +97,7 @@
                                     <a asp-action="Details" asp-route-id="@item.UserId" class="btn btn-outline-primary">
                                         <i class="fa fa-eye"></i> Xem
                                     </a>
-                                    <a asp-action="Delete" asp-route-id="@item.UserId" class="btn btn-outline-danger">
+                                    <a asp-action="Delete" asp-route-id="@item.UserId" class="btn btn-outline-warning">
                                         <i class="fa fa-trash"></i> Xóa
                                     </a>
                                 </div>
@@ -126,7 +125,7 @@
                             </td>
                             <td>
                                 <div class="btn-group btn-group-sm" role="group">
-                                    <a asp-action="Edit" asp-route-id="@item.UserId" class="btn btn-outline-secondary">
+                                    <a asp-action="Edit" asp-route-id="@item.UserId" class="btn btn-outline-success">
                                         <i class="fa fa-edit"></i> Sửa
                                     </a>
                                     <a asp-action="Details" asp-route-id="@item.UserId" class="btn btn-outline-primary">
@@ -148,7 +147,6 @@
 
 @section Scripts {
     <script>
-        // 🔎 Tìm kiếm theo tên hoặc mã sinh viên
         document.getElementById('searchInput').addEventListener('keyup', function() {
             var searchValue = this.value.toLowerCase();
             var rows = document.querySelectorAll('#userTable tbody tr');

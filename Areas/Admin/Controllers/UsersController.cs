@@ -157,21 +157,17 @@ namespace VinhuniEvent.Areas.Admin.Controllers
 
             try
             {
-                // Xử lý ảnh
                 if (user.ImageFile != null)
                 {
                     string uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "main", "img", "users");
                     Directory.CreateDirectory(uploadsFolder);
 
-                    // Xóa ảnh cũ nếu có
                     if (!string.IsNullOrEmpty(existingUser.ImageUrl))
                     {
                         string oldImagePath = Path.Combine(uploadsFolder, existingUser.ImageUrl);
                         if (System.IO.File.Exists(oldImagePath))
                             System.IO.File.Delete(oldImagePath);
                     }
-
-                    // Lưu ảnh mới
                     string fileName = Guid.NewGuid().ToString() + Path.GetExtension(user.ImageFile.FileName);
                     string filePath = Path.Combine(uploadsFolder, fileName);
 
@@ -186,8 +182,6 @@ namespace VinhuniEvent.Areas.Admin.Controllers
                 {
                     user.ImageUrl = existingUser.ImageUrl;
                 }
-
-                // Kiểm tra trùng thông tin nhưng bỏ qua chính user hiện tại
                 if (_context.Users.Any(u => u.Email == user.Email && u.UserId != id))
                 {
                     ModelState.AddModelError("Email", "⚠ Email đã tồn tại.");
@@ -203,16 +197,12 @@ namespace VinhuniEvent.Areas.Admin.Controllers
                     ModelState.AddModelError("StudentCode", "⚠ Mã sinh viên đã được sử dụng.");
                     return View(user);
                 }
-
-                // Xử lý mật khẩu
                 if (string.IsNullOrWhiteSpace(user.PasswordHash))
                 {
-                    // Giữ nguyên mật khẩu cũ
                     user.PasswordHash = existingUser.PasswordHash;
                 }
                 else
                 {
-                    // Hash lại mật khẩu mới
                     user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(user.PasswordHash);
                 }
 

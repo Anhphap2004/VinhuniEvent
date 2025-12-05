@@ -25,6 +25,30 @@
             <i class="fa-solid fa-clipboard-check me-1"></i> Điểm danh sinh viên
         </a>
     </div>
+           <form method="get" class="mb-3 d-flex" style="gap: 10px">
+    <input type="hidden" name="id" value="@ViewBag.EventId" />
+
+    <select name="attendanceFilter" class="form-select w-auto">
+        <option value="">Lọc điểm danh</option>
+
+            <option value="present" selected="@(ViewBag.AttendanceFilter == "present" ? "selected" : null)">
+                Đã điểm danh
+            </option>
+
+            <option value="absent" selected="@(ViewBag.AttendanceFilter == "absent" ? "selected" : null)">
+                Vắng mặt
+            </option>
+
+            <option value="none" selected="@(ViewBag.AttendanceFilter == "none" ? "selected" : null)">
+                Chưa điểm danh
+            </option>
+
+    </select>
+
+    <button class="btn btn-primary">
+        <i class="fa-solid fa-filter me-1"></i> Lọc
+    </button>
+</form>
 
     <!-- Table -->
     <div class="card border-0 shadow-sm">

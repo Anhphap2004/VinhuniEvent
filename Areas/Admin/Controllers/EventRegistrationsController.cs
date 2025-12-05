@@ -33,20 +33,16 @@ namespace VinhuniEvent.Areas.Admin.Controllers
         }
 
         // GET: Admin/EventRegistrations/ByEvent/5
-        public async Task<IActionResult> ByEvent(int? id)
+        public async Task<IActionResult> ByEvent(int? id, string attendanceFilter)
         {
             if (id == null)
-            {
                 return NotFound();
-            }
 
             var eventInfo = await _context.Events
                 .FirstOrDefaultAsync(e => e.EventId == id);
 
             if (eventInfo == null)
-            {
                 return NotFound();
-            }
 
             var registrations = await _context.EventRegistrations
                 .Include(er => er.User)
@@ -55,13 +51,42 @@ namespace VinhuniEvent.Areas.Admin.Controllers
                 .Where(er => er.EventId == id)
                 .ToListAsync();
 
+            // 🌸✨ LỌC TRẠNG THÁI ĐIỂM DANH ✨🌸
+            if (!string.IsNullOrEmpty(attendanceFilter))
+            {
+                registrations = attendanceFilter switch
+                {
+                    // Đã điểm danh
+                    "present" => registrations
+                        .Where(r => r.Event.Attendances
+                            .Any(a => a.UserId == r.UserId && a.IsPresent == true))
+                        .ToList(),
+
+                    // Vắng mặt
+                    "absent" => registrations
+                        .Where(r => r.Event.Attendances
+                            .Any(a => a.UserId == r.UserId && a.IsPresent == false))
+                        .ToList(),
+
+                    // Chưa điểm danh
+                    "none" => registrations
+                        .Where(r => !r.Event.Attendances
+                            .Any(a => a.UserId == r.UserId))
+                        .ToList(),
+
+                    _ => registrations
+                };
+            }
+
             ViewBag.Count = registrations.Count;
             ViewBag.EventTitle = eventInfo.Title;
             ViewBag.EventDate = eventInfo.CreatedDate?.ToString("dd/MM/yyyy");
-            ViewBag.EventId = id; // ✅ Thêm dòng này
+            ViewBag.EventId = id;
+            ViewBag.AttendanceFilter = attendanceFilter; // 👈 Lưu lại để View hiển thị đúng
 
             return View(registrations);
         }
+
 
         // GET: Admin/EventRegistrations/Attendance?eventId=5
         public async Task<IActionResult> Attendance(int eventId)

@@ -8,13 +8,13 @@
 <div class="content-wrapper">
     <!-- Header -->
     <div class="page-header">
-        <h4>📅 Quản lý sự kiện</h4>
+        <h4>Quản lý sự kiện</h4>
     </div>
 
     <!-- Toolbar -->
     <div class="toolbar">
-        <input type="text" id="searchInput" class="search-input" placeholder="🔍 Tìm kiếm theo tiêu đề hoặc địa điểm...">
-        <a asp-action="Create" class="btn-add">+ Thêm mới</a>
+        <input type="text" id="searchInput" class="search-input" placeholder=" Tìm kiếm theo tiêu đề hoặc địa điểm...">
+        <a asp-action="Create" class="btn-add">THÊM SỰ KIỆN</a>
     </div>
 
     <!-- Table -->
@@ -22,13 +22,13 @@
         <table class="data-table" id="eventTable">
             <thead>
                 <tr>
-                    <th>Tiêu đề</th>
+                    <th>Ảnh</th>
                     <th>Mô tả</th>
                     <th>Địa điểm</th>
                     <th>Bắt đầu</th>
                     <th>Kết thúc</th>
                     <th>Giới hạn</th>
-                    <th>Ảnh</th>
+                    <th>Tiêu đề</th>
                     <th>Trạng thái</th>
                     <th>Ngày tạo</th>
                     <th>Danh mục</th>
@@ -40,12 +40,6 @@
                 @foreach (var item in Model)
                 {
                     <tr>
-                        <td class="title-col">@item.Title</td>
-                        <td class="desc-col">@item.Description</td>
-                        <td>@item.Location</td>
-                        <td>@item.StartTime.ToString("dd/MM/yyyy HH:mm")</td>
-                        <td>@item.EndTime.ToString("dd/MM/yyyy HH:mm")</td>
-                        <td>@item.MaxParticipants</td>
                         <td>
                             @if (!string.IsNullOrEmpty(item.Image))
                             {
@@ -56,6 +50,13 @@
                                 <span class="text-muted">-</span>
                             }
                         </td>
+                        
+                        <td class="desc-col">@item.Description</td>
+                        <td>@item.Location</td>
+                        <td>@item.StartTime.ToString("dd/MM/yyyy HH:mm")</td>
+                        <td>@item.EndTime.ToString("dd/MM/yyyy HH:mm")</td>
+                        <td>@item.MaxParticipants</td>
+                        <td class="title-col">@item.Title</td>
                         <td>
                             @if (item.IsActive)
                             {
@@ -71,7 +72,7 @@
                         <td>@item.CreatedByNavigation?.FullName</td>
                         <td class="text-center">
                             <div class="action-buttons">
-                                <a asp-action="Edit" asp-route-id="@item.EventId" class="btn-action edit">Sửa</a>
+                                <a asp-action="Edit" asp-route-id="@item.EventId" class="btn-action edit" style="color:red">Sửa</a>
                                 <a asp-action="Details" asp-route-id="@item.EventId" class="btn-action view">Xem</a>
                                 <a asp-action="Delete" asp-route-id="@item.EventId" class="btn-action delete">Xóa</a>
                             </div>
@@ -252,7 +253,7 @@
         }
 
             .btn-action.edit {
-                background: #eaf4ff;
+                background: #ffc107;
                 color: #007bff;
                 border-color: #007bff;
             }

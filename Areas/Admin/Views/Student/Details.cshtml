@@ -1,0 +1,247 @@
+﻿@model VinhuniEvent.Models.User
+
+@{
+    ViewData["Title"] = "Hồ sơ sinh viên";
+    var totalRegistered = Model.EventRegistrations?.Count ?? 0;
+    var totalPresent = Model.Attendances?.Count(a => a.IsPresent == true) ?? 0;
+    var totalAbsent = totalRegistered - totalPresent;
+    var rate = totalRegistered == 0 ? 0 : (double)totalPresent / totalRegistered * 100;
+}
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+
+<div class="container-fluid p-4">
+    <div class="mb-4">
+        <a href="javascript:history.back()" class="text-decoration-none text-muted fw-bold">
+            <i class="fas fa-arrow-left me-1"></i> Quay lại
+        </a>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm mb-4" style="border-radius: 15px; overflow: hidden;">
+                <div class="bg-primary p-4 text-center text-white" style="background: linear-gradient(45deg, #4e73df, #224abe);">
+                    <div class="bg-white text-primary rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3 shadow"
+                         style="width: 100px; height: 100px; font-size: 2.5rem; font-weight: bold;">
+                        @Model.FullName?.FirstOrDefault()
+                    </div>
+                    <h5 class="fw-bold mb-1">@Model.FullName</h5>
+                    <p class="mb-0 opacity-75">@Model.StudentCode</p>
+                </div>
+                <div class="card-body p-4">
+                    <h6 class="fw-bold text-uppercase text-secondary mb-3" style="font-size: 0.8rem;">Thông tin cá nhân</h6>
+
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="icon-box bg-light text-primary rounded-circle me-3" style="width: 35px; height: 35px; display: flex; align-items: center; justify-content: center;">
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <div>
+                            <small class="text-muted d-block">Email</small>
+                            <span class="fw-bold text-dark">@Model.Email</span>
+                        </div>
+                    </div>
+
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="icon-box bg-light text-success rounded-circle me-3" style="width: 35px; height: 35px; display: flex; align-items: center; justify-content: center;">
+                            <i class="fas fa-phone"></i>
+                        </div>
+                        <div>
+                            <small class="text-muted d-block">Điện thoại</small>
+                            <span class="fw-bold text-dark">@(string.IsNullOrEmpty(Model.PhoneNumber) ? "Chưa cập nhật" : Model.PhoneNumber)</span>
+                        </div>
+                    </div>
+
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="icon-box bg-light text-info rounded-circle me-3" style="width: 35px; height: 35px; display: flex; align-items: center; justify-content: center;">
+                            <i class="fas fa-university"></i>
+                        </div>
+                        <div>
+                            <small class="text-muted d-block">Khoa / Ngành</small>
+                            <span class="fw-bold text-dark">@Model.Faculty</span>
+                            <div class="small text-secondary">@Model.Major</div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex align-items-center">
+                        <div class="icon-box bg-light text-warning rounded-circle me-3" style="width: 35px; height: 35px; display: flex; align-items: center; justify-content: center;">
+                            <i class="fas fa-birthday-cake"></i>
+                        </div>
+                        <div>
+                            <small class="text-muted d-block">Ngày sinh</small>
+                            <span class="fw-bold text-dark">@(Model.BirthDate?.ToString("dd/MM/yyyy") ?? "Chưa cập nhật")</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card border-0 shadow-sm" style="border-radius: 15px;">
+                <div class="card-body p-4">
+                    <h6 class="fw-bold text-uppercase text-secondary mb-4" style="font-size: 0.8rem;">Thống kê tham gia</h6>
+
+                    <div class="row text-center g-3">
+                        <div class="col-6">
+                            <div class="p-3 bg-light rounded-3">
+                                <div class="text-primary fw-bold display-6">@totalRegistered</div>
+                                <small class="text-muted fw-bold">Đăng ký</small>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="p-3 bg-success bg-opacity-10 rounded-3">
+                                <div class="text-success fw-bold display-6">@totalPresent</div>
+                                <small class="text-success fw-bold">Có mặt</small>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="p-3 bg-danger bg-opacity-10 rounded-3">
+                                <div class="text-danger fw-bold display-6">@totalAbsent</div>
+                                <small class="text-danger fw-bold">Vắng</small>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="p-3 bg-info bg-opacity-10 rounded-3">
+                                <div class="text-info fw-bold display-6">@rate.ToString("0")%</div>
+                                <small class="text-info fw-bold">Tỉ lệ</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm h-100" style="border-radius: 15px;">
+                <div class="card-header bg-white border-bottom-0 pt-4 px-4 pb-0">
+                    <ul class="nav nav-tabs card-header-tabs" id="profileTabs" role="tablist">
+                        <li class="nav-item">
+                            <button class="nav-link active fw-bold" id="registration-tab" data-bs-toggle="tab" data-bs-target="#registration" type="button" role="tab">
+                                <i class="fas fa-calendar-check me-2"></i>Sự kiện đã đăng ký
+                            </button>
+                        </li>
+                        <li class="nav-item">
+                            <button class="nav-link fw-bold" id="attendance-tab" data-bs-toggle="tab" data-bs-target="#attendance" type="button" role="tab">
+                                <i class="fas fa-clock me-2"></i>Lịch sử điểm danh
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+                <div class="card-body p-4">
+                    <div class="tab-content" id="profileTabsContent">
+
+                        <div class="tab-pane fade show active" id="registration" role="tabpanel">
+                            <div class="table-responsive">
+                                <table class="table table-hover align-middle">
+                                    <thead class="bg-light text-secondary">
+                                        <tr>
+                                            <th class="py-3 ps-3 rounded-start">Tên sự kiện</th>
+                                            <th class="py-3">Thời gian</th>
+                                            <th class="py-3">Địa điểm</th>
+                                            <th class="py-3 rounded-end text-center">Trạng thái</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if (Model.EventRegistrations != null && Model.EventRegistrations.Any())
+                                        {
+                                            @foreach (var r in Model.EventRegistrations)
+                                            {
+                                                <tr>
+                                                    <td class="fw-bold text-primary ps-3">@r.Event?.Title</td>
+                                                    <td>
+                                                        <div class="small text-muted"><i class="far fa-calendar me-1"></i> @r.Event?.StartTime.ToString("dd/MM/yyyy")</div>
+                                                        <div class="small fw-bold">@r.Event?.StartTime.ToString("HH:mm") - @r.Event?.EndTime.ToString("HH:mm")</div>
+                                                    </td>
+                                                    <td><i class="fas fa-map-marker-alt text-danger me-1"></i> @r.Event?.Location</td>
+                                                    <td class="text-center">
+                                                        <span class="badge bg-secondary bg-opacity-10 text-secondary px-3 py-2 rounded-pill">@r.Status</span>
+                                                    </td>
+                                                </tr>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <tr><td colspan="4" class="text-center py-4 text-muted">Chưa đăng ký sự kiện nào.</td></tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="tab-pane fade" id="attendance" role="tabpanel">
+                            <div class="table-responsive">
+                                <table class="table table-hover align-middle">
+                                    <thead class="bg-light text-secondary">
+                                        <tr>
+                                            <th class="py-3 ps-3 rounded-start">Sự kiện</th>
+                                            <th class="py-3">Thời gian check-in</th>
+                                            <th class="py-3 rounded-end text-center">Kết quả</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if (Model.Attendances != null && Model.Attendances.Any())
+                                        {
+                                            @foreach (var a in Model.Attendances)
+                                            {
+                                                <tr>
+                                                    <td class="fw-bold text-primary ps-3">@a.Event?.Title</td>
+                                                    <td>
+                                                        @if (a.AttendanceTime.HasValue)
+                                                        {
+                                                            <span class="text-dark"><i class="far fa-clock me-1"></i> @a.AttendanceTime.Value.ToString("dd/MM/yyyy HH:mm")</span>
+                                                        }
+                                                        else
+                                                        {
+                                                            <span class="text-muted">--</span>
+                                                        }
+                                                    </td>
+                                                    <td class="text-center">
+                                                        @if (a.IsPresent == true)
+                                                        {
+                                                            <span class="badge bg-success px-3 py-2 rounded-pill"><i class="fas fa-check me-1"></i> Có mặt</span>
+                                                        }
+                                                        else
+                                                        {
+                                                            <span class="badge bg-danger px-3 py-2 rounded-pill"><i class="fas fa-times me-1"></i> Vắng</span>
+                                                        }
+                                                    </td>
+                                                </tr>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <tr><td colspan="3" class="text-center py-4 text-muted">Chưa có dữ liệu điểm danh.</td></tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .nav-tabs .nav-link {
+        color: #6c757d;
+        border: none;
+        border-bottom: 3px solid transparent;
+        padding-bottom: 1rem;
+    }
+
+        .nav-tabs .nav-link:hover {
+            color: #4e73df;
+            isolation: isolate;
+            border-color: transparent;
+        }
+
+        .nav-tabs .nav-link.active {
+            color: #4e73df;
+            border-bottom: 3px solid #4e73df;
+            background: none;
+        }
+
+    .display-6 {
+        font-size: 1.8rem;
+    }
+</style>

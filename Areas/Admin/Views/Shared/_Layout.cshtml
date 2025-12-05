@@ -44,9 +44,14 @@
 						Tổng Quan Sự Kiện VinhUni
 					</li>
 
-					<li class="sidebar-item active">
+					<li class="sidebar-item">
 						<a class="sidebar-link" asp-controller="Users" asp-action="Index">
 							<i class="align-middle" data-feather="sliders"></i> <span class="align-middle">Quản lý người dùng</span>
+						</a>
+					</li>
+					<li class="sidebar-item">
+						<a class="sidebar-link" asp-controller="Student" asp-action="Index">
+							<i class="align-middle" data-feather="sliders"></i> <span class="align-middle">Quản lý sinh viên</span>
 						</a>
 					</li>
 
@@ -85,7 +90,7 @@
 					</li>
 
 					<li class="sidebar-item">
-						<a class="sidebar-link" href="ui-forms.html">
+						<a class="sidebar-link" asp-controller="Statistical">
 							<i class="align-middle" data-feather="check-square"></i> <span class="align-middle">Thống kê</span>
 						</a>
 					</li>
