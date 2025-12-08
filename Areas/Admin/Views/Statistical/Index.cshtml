@@ -3,154 +3,483 @@
     ViewData["Title"] = "Thống kê tổng quan";
 }
 
-<div class="container mt-5">
+<style>
+    .page-header {
+        padding: 1.5rem 0;
+        margin-bottom: 2rem;
+        border-bottom: 2px solid #2a5298;
+    }
 
-    <h2 class="fw-bolder mb-5 border-bottom pb-2 text-primary">
-        <i class="fas fa-chart-bar me-2"></i> Thống Kê Tổng Quan Hệ Thống
-    </h2>
+    .page-title {
+        color: #2a5298;
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin: 0;
+    }
 
-    <h4 class="mb-3 text-secondary">Chỉ số Sự kiện & Tham gia</h4>
-    <div class="row g-4 mb-5">
+    .page-description {
+        color: #6c757d;
+        font-size: 0.9rem;
+        margin: 0.5rem 0 0 0;
+    }
 
-        <div class="col-xl-3 col-md-6 col-sm-12">
-            <div class="card bg-primary text-white shadow-lg h-100">
-                <div class="card-body">
-                    <div class="d-flex align-items-center justify-content-between">
-                        <div>
-                            <p class="mb-0 fs-6 fw-light">Tổng sự kiện</p>
-                            <h2 class="fw-bolder display-6">@Model.TotalEvents</h2>
-                        </div>
-                        <i class="fas fa-calendar-alt fa-3x opacity-50"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
+    /* Statistics Cards */
+    .stats-section {
+        margin-bottom: 2rem;
+    }
 
-        <div class="col-xl-3 col-md-6 col-sm-12">
-            <div class="card bg-success text-white shadow-lg h-100">
-                <div class="card-body">
-                    <div class="d-flex align-items-center justify-content-between">
-                        <div>
-                            <p class="mb-0 fs-6 fw-light">Tổng lượt Đăng ký</p>
-                            <h2 class="fw-bolder display-6">@Model.TotalRegistrations</h2>
-                        </div>
-                        <i class="fas fa-user-check fa-3x opacity-50"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
+    .section-title {
+        color: #495057;
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 1px solid #dee2e6;
+    }
 
-        <div class="col-xl-3 col-md-6 col-sm-12">
-            <div class="card bg-info text-white shadow-lg h-100">
-                <div class="card-body">
-                    <div class="d-flex align-items-center justify-content-between">
-                        <div>
-                            <p class="mb-0 fs-6 fw-light">Tổng người dùng</p>
-                            <h2 class="fw-bolder display-6">@Model.TotalUsers</h2>
-                        </div>
-                        <i class="fas fa-users fa-3x opacity-50"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
+    .stat-card {
+        background: white;
+        border: 1px solid #dee2e6;
+        border-radius: 4px;
+        padding: 1.5rem;
+        height: 100%;
+        transition: all 0.3s ease;
+    }
 
-        <div class="col-xl-3 col-md-6 col-sm-12">
-            <div class="card border-warning text-white bg-danger shadow-lg h-100">
-                <div class="card-body">
-                    <div class="d-flex align-items-center justify-content-between">
-                        <div>
-                            <p class="mb-0 fs-6 fw-light text-white">SV đã Check-in</p>
-                            <h2 class="fw-bolder display-6">@Model.TotalCheckIn</h2>
-                        </div>
-                        <i class="fas fa-door-open fa-3x text-warning opacity-75"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
+        .stat-card:hover {
+            border-color: #2a5298;
+            box-shadow: 0 2px 8px rgba(42, 82, 152, 0.1);
+        }
 
+    .stat-card-header {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        margin-bottom: 1rem;
+    }
+
+    .stat-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 4px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+    }
+
+        .stat-icon.primary {
+            background: #e8f0fe;
+            color: #2a5298;
+        }
+
+        .stat-icon.success {
+            background: #d1e7dd;
+            color: #28a745;
+        }
+
+        .stat-icon.info {
+            background: #cfe2ff;
+            color: #0dcaf0;
+        }
+
+        .stat-icon.warning {
+            background: #fff3cd;
+            color: #ffc107;
+        }
+
+        .stat-icon.danger {
+            background: #f8d7da;
+            color: #dc3545;
+        }
+
+    .stat-content {
+        flex: 1;
+    }
+
+    .stat-label {
+        color: #6c757d;
+        font-size: 0.85rem;
+        font-weight: 500;
+        text-transform: uppercase;
+        margin-bottom: 0.3rem;
+    }
+
+    .stat-number {
+        color: #2a5298;
+        font-size: 2rem;
+        font-weight: 700;
+        line-height: 1;
+        margin-bottom: 0.3rem;
+    }
+
+    .stat-description {
+        color: #6c757d;
+        font-size: 0.8rem;
+        margin: 0;
+    }
+
+    /* User Stats Cards */
+    .user-stat-card {
+        background: white;
+        border: 1px solid #dee2e6;
+        border-radius: 4px;
+        padding: 1.2rem;
+        text-align: center;
+        height: 100%;
+        transition: all 0.3s ease;
+    }
+
+        .user-stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .user-stat-card.admin {
+            border-left: 4px solid #dc3545;
+        }
+
+        .user-stat-card.student {
+            border-left: 4px solid #2a5298;
+        }
+
+        .user-stat-card.organizer {
+            border-left: 4px solid #28a745;
+        }
+
+        .user-stat-card.absent {
+            border-left: 4px solid #ffc107;
+        }
+
+    .user-stat-label {
+        color: #6c757d;
+        font-size: 0.85rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        margin-bottom: 0.5rem;
+    }
+
+    .user-stat-number {
+        font-size: 1.8rem;
+        font-weight: 700;
+        margin-bottom: 0.3rem;
+    }
+
+    .user-stat-card.admin .user-stat-number {
+        color: #dc3545;
+    }
+
+    .user-stat-card.student .user-stat-number {
+        color: #2a5298;
+    }
+
+    .user-stat-card.organizer .user-stat-number {
+        color: #28a745;
+    }
+
+    .user-stat-card.absent .user-stat-number {
+        color: #ffc107;
+    }
+
+    .user-stat-note {
+        color: #6c757d;
+        font-size: 0.75rem;
+        margin: 0;
+    }
+
+    /* Event Status Cards */
+    .event-status-card {
+        background: white;
+        border: 1px solid #dee2e6;
+        border-radius: 4px;
+        padding: 1.5rem;
+        text-align: center;
+        height: 100%;
+        transition: all 0.3s ease;
+    }
+
+        .event-status-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .event-status-card.upcoming {
+            border-top: 4px solid #0dcaf0;
+        }
+
+        .event-status-card.ongoing {
+            border-top: 4px solid #dc3545;
+        }
+
+    .event-status-label {
+        color: #6c757d;
+        font-size: 0.85rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        margin-bottom: 0.5rem;
+    }
+
+    .event-status-number {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 0.3rem;
+    }
+
+    .event-status-card.upcoming .event-status-number {
+        color: #0dcaf0;
+    }
+
+    .event-status-card.ongoing .event-status-number {
+        color: #dc3545;
+    }
+
+    .event-status-note {
+        color: #6c757d;
+        font-size: 0.8rem;
+        margin: 0;
+    }
+
+    /* Tables */
+    .custom-table {
+        margin: 0;
+        border: 1px solid #dee2e6;
+        background: white;
+    }
+
+        .custom-table thead th {
+            background: #f8f9fa;
+            color: #495057;
+            font-weight: 600;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            padding: 0.75rem;
+            border-bottom: 2px solid #dee2e6;
+        }
+
+        .custom-table tbody td {
+            padding: 0.75rem;
+            vertical-align: middle;
+            font-size: 0.9rem;
+        }
+
+        .custom-table tbody tr:hover {
+            background: #f8f9fa;
+        }
+
+    .rank-badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        font-weight: 700;
+        font-size: 0.9rem;
+    }
+
+    .rank-1 {
+        background: #ffd700;
+        color: #856404;
+    }
+
+    .rank-2 {
+        background: #c0c0c0;
+        color: #495057;
+    }
+
+    .rank-3 {
+        background: #cd7f32;
+        color: white;
+    }
+
+    .rank-other {
+        background: #e9ecef;
+        color: #6c757d;
+    }
+
+    .event-name {
+        font-weight: 600;
+        color: #2a5298;
+    }
+
+    .registration-count {
+        display: inline-block;
+        background: #e8f0fe;
+        color: #2a5298;
+        padding: 0.35rem 0.7rem;
+        border-radius: 4px;
+        font-weight: 600;
+        font-size: 0.9rem;
+    }
+
+    .table-section {
+        margin-bottom: 2rem;
+    }
+</style>
+
+<div class="container-fluid px-4">
+    <!-- Header -->
+    <div class="page-header">
+        <h1 class="page-title">Thống kê tổng quan</h1>
+        <p class="page-description">Tổng quan về hoạt động hệ thống quản lý sự kiện</p>
     </div>
 
-    <div class="row g-4 mb-5">
-
-        <div class="col-lg-6">
-            <h4 class="mb-3 text-secondary">Phân loại Người dùng</h4>
-            <div class="row g-3">
-
-                <div class="col-md-4">
-                    <div class="card shadow-sm p-3 text-center border-danger">
-                        <h6 class="text-danger mb-1">Admin</h6>
-                        <h3 class="fw-bold">@Model.TotalAdmins</h3>
+    <!-- Main Statistics -->
+    <div class="stats-section">
+        <h3 class="section-title">Chỉ số chính</h3>
+        <div class="row g-3">
+            <div class="col-xl-3 col-md-6">
+                <div class="stat-card">
+                    <div class="stat-card-header">
+                        <div class="stat-content">
+                            <div class="stat-label">Tổng sự kiện</div>
+                            <div class="stat-number">@Model.TotalEvents</div>
+                            <p class="stat-description">Sự kiện đã tạo trong hệ thống</p>
+                        </div>
+                        <div class="stat-icon primary">
+                            <i class="fas fa-calendar-alt"></i>
+                        </div>
                     </div>
                 </div>
+            </div>
 
-                <div class="col-md-4">
-                    <div class="card shadow-sm p-3 text-center border-primary">
-                        <h6 class="text-primary mb-1">Sinh viên</h6>
-                        <h3 class="fw-bold">@Model.TotalStudents</h3>
+            <div class="col-xl-3 col-md-6">
+                <div class="stat-card">
+                    <div class="stat-card-header">
+                        <div class="stat-content">
+                            <div class="stat-label">Tổng lượt đăng ký</div>
+                            <div class="stat-number">@Model.TotalRegistrations</div>
+                            <p class="stat-description">Lượt đăng ký tham gia sự kiện</p>
+                        </div>
+                        <div class="stat-icon success">
+                            <i class="fas fa-user-check"></i>
+                        </div>
                     </div>
                 </div>
+            </div>
 
-                <div class="col-md-4">
-                    <div class="card shadow-sm p-3 text-center border-success">
-                        <h6 class="text-success mb-1">Nhà tổ chức</h6>
-                        <h3 class="fw-bold">@Model.TotalOrganizers</h3>
+            <div class="col-xl-3 col-md-6">
+                <div class="stat-card">
+                    <div class="stat-card-header">
+                        <div class="stat-content">
+                            <div class="stat-label">Tổng người dùng</div>
+                            <div class="stat-number">@Model.TotalUsers</div>
+                            <p class="stat-description">Người dùng trong hệ thống</p>
+                        </div>
+                        <div class="stat-icon info">
+                            <i class="fas fa-users"></i>
+                        </div>
                     </div>
                 </div>
+            </div>
 
-                <div class="col-12">
-                    <div class="card shadow-sm p-3 text-center border-primary bg-light">
-                        <h6 class="text-danger mb-1">Sinh Viên Vắng Mặt</h6>
-                        <h3 class="fw-bold">@Model.TotalAbsent</h3>
+            <div class="col-xl-3 col-md-6">
+                <div class="stat-card">
+                    <div class="stat-card-header">
+                        <div class="stat-content">
+                            <div class="stat-label">SV đã điểm danh</div>
+                            <div class="stat-number">@Model.TotalCheckIn</div>
+                            <p class="stat-description">Sinh viên đã có mặt tại sự kiện</p>
+                        </div>
+                        <div class="stat-icon warning">
+                            <i class="fas fa-clipboard-check"></i>
+                        </div>
                     </div>
                 </div>
-
             </div>
         </div>
-
-        <div class="col-lg-6">
-            <h4 class="mb-3 text-secondary">Tình trạng Sự kiện</h4>
-            <div class="row g-3 h-30">
-
-                <div class="col-md-6">
-                    <div class="card shadow-sm p-3 text-center bg-info text-white h-100">
-                        <h6 class="mb-1">Sự Kiện Sắp diễn ra</h6>
-                        <h2 class="fw-bold">@Model.UpcomingEvents</h2>
-                    </div>
-                </div>
-
-                <div class="col-md-6">
-                    <div class="card shadow-sm p-3 text-center bg-danger text-white h-100">
-                        <h6 class="mb-1">Sự Kiện Đang diễn ra</h6>
-                        <h2 class="fw-bold">@Model.OngoingEvents</h2>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-
     </div>
 
-    <div class="mt-5">
-        <h3 class="fw-bold text-dark">
-            <i class="fas fa-trophy me-2 text-warning"></i> Top 5 sự kiện có nhiều đăng ký nhất
-        </h3>
+    <div class="row g-4 mb-4">
+        <!-- User Statistics -->
+        <div class="col-lg-6">
+            <div class="stats-section">
+                <h3 class="section-title">Phân loại người dùng</h3>
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <div class="user-stat-card admin">
+                            <div class="user-stat-label">Admin</div>
+                            <div class="user-stat-number">@Model.TotalAdmins</div>
+                            <p class="user-stat-note">Quản trị viên hệ thống</p>
+                        </div>
+                    </div>
 
+                    <div class="col-md-6">
+                        <div class="user-stat-card student">
+                            <div class="user-stat-label">Sinh viên</div>
+                            <div class="user-stat-number">@Model.TotalStudents</div>
+                            <p class="user-stat-note">Tài khoản sinh viên</p>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="user-stat-card organizer">
+                            <div class="user-stat-label">Nhà tổ chức</div>
+                            <div class="user-stat-number">@Model.TotalOrganizers</div>
+                            <p class="user-stat-note">Người tổ chức sự kiện</p>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="user-stat-card absent">
+                            <div class="user-stat-label">Vắng mặt</div>
+                            <div class="user-stat-number">@Model.TotalAbsent</div>
+                            <p class="user-stat-note">Sinh viên đăng ký nhưng vắng</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Event Status -->
+        <div class="col-lg-6">
+            <div class="stats-section">
+                <h3 class="section-title">Tình trạng sự kiện</h3>
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <div class="event-status-card upcoming">
+                            <div class="event-status-label">Sắp diễn ra</div>
+                            <div class="event-status-number">@Model.UpcomingEvents</div>
+                            <p class="event-status-note">Sự kiện chưa bắt đầu</p>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="event-status-card ongoing">
+                            <div class="event-status-label">Đang diễn ra</div>
+                            <div class="event-status-number">@Model.OngoingEvents</div>
+                            <p class="event-status-note">Sự kiện đang hoạt động</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Top Events Table -->
+    <div class="table-section">
+        <h3 class="section-title">Top 5 sự kiện có nhiều đăng ký nhất</h3>
         <div class="table-responsive">
-            <table class="table table-striped table-hover mt-3 shadow-sm border">
-                <thead class="bg-dark text-white">
+            <table class="table custom-table">
+                <thead>
                     <tr>
-                        <th style="width: 10%;">#</th>
+                        <th style="width: 10%" class="text-center">Hạng</th>
                         <th>Tên sự kiện</th>
-                        <th style="width: 20%;" class="text-center">Lượt đăng ký</th>
+                        <th style="width: 20%" class="text-center">Lượt đăng ký</th>
                     </tr>
                 </thead>
                 <tbody>
                     @for (int i = 0; i < Model.TopEvents.Count; i++)
                     {
+                        var rankClass = i == 0 ? "rank-1" : i == 1 ? "rank-2" : i == 2 ? "rank-3" : "rank-other";
                         <tr>
-                            <td>@(i + 1)</td>
-                            <td>@Model.TopEvents[i].EventName</td>
-                            <td class="fw-bold text-center text-primary">@Model.TopEvents[i].RegistrationCount</td>
+                            <td class="text-center">
+                                <span class="rank-badge @rankClass">@(i + 1)</span>
+                            </td>
+                            <td class="event-name">@Model.TopEvents[i].EventName</td>
+                            <td class="text-center">
+                                <span class="registration-count">@Model.TopEvents[i].RegistrationCount</span>
+                            </td>
                         </tr>
                     }
                 </tbody>
@@ -158,25 +487,28 @@
         </div>
     </div>
 
-    <div class="mt-5 mb-5">
-        <h3 class="fw-bold text-dark">
-            <i class="fas fa-plus-circle me-2 text-success"></i> 5 sự kiện mới nhất
-        </h3>
-
+    <!-- Latest Events Table -->
+    <div class="table-section">
+        <h3 class="section-title">5 sự kiện mới nhất</h3>
         <div class="table-responsive">
-            <table class="table table-bordered table-striped mt-3 shadow-sm">
-                <thead class="bg-secondary text-white">
+            <table class="table custom-table">
+                <thead>
                     <tr>
+                        <th style="width: 8%" class="text-center">STT</th>
                         <th>Tên sự kiện</th>
-                        <th style="width: 25%;">Bắt đầu</th>
-                        <th style="width: 25%;">Kết thúc</th>
+                        <th style="width: 22%">Thời gian bắt đầu</th>
+                        <th style="width: 22%">Thời gian kết thúc</th>
                     </tr>
                 </thead>
                 <tbody>
+                    @{
+                        int stt = 1;
+                    }
                     @foreach (var ev in Model.LatestEvents)
                     {
                         <tr>
-                            <td>@ev.Title</td>
+                            <td class="text-center" style="color: #6c757d; font-weight: 600;">@(stt++)</td>
+                            <td class="event-name">@ev.Title</td>
                             <td>@ev.StartTime.ToString("dd/MM/yyyy HH:mm")</td>
                             <td>@ev.EndTime.ToString("dd/MM/yyyy HH:mm")</td>
                         </tr>
@@ -185,5 +517,4 @@
             </table>
         </div>
     </div>
-
 </div>

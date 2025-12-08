@@ -4,132 +4,386 @@
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
 }
 
-<div class="content-wrapper p-4">
+<style>
+    .page-header {
+        padding: 1.5rem 0;
+        margin-bottom: 1.5rem;
+        border-bottom: 2px solid #2a5298;
+    }
+
+    .page-title {
+        color: #2a5298;
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin: 0 0 0.3rem 0;
+    }
+
+    .event-name {
+        color: #495057;
+        font-size: 0.95rem;
+        font-weight: 500;
+        margin: 0.3rem 0 0 0;
+    }
+
+    .page-description {
+        color: #6c757d;
+        font-size: 0.9rem;
+        margin: 0.5rem 0 0 0;
+    }
+
+    .stats-card {
+        border: 1px solid #dee2e6;
+        padding: 1rem;
+        background: white;
+        margin-bottom: 1.5rem;
+    }
+
+    .stat-item {
+        text-align: center;
+        padding: 0.3rem;
+    }
+
+    .stat-number {
+        font-size: 1.3rem;
+        font-weight: 700;
+        margin-bottom: 0.2rem;
+    }
+
+    .stat-label {
+        font-size: 0.75rem;
+        color: #6c757d;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+
+    .stat-present .stat-number {
+        color: #28a745;
+    }
+
+    .stat-absent .stat-number {
+        color: #dc3545;
+    }
+
+    .stat-pending .stat-number {
+        color: #6c757d;
+    }
+
+    .action-bar {
+        background: white;
+        border: 1px solid #dee2e6;
+        padding: 1rem 1.5rem;
+        margin-bottom: 1.5rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .btn-attendance {
+        background: #2a5298;
+        color: white;
+        border: none;
+        padding: 0.5rem 1rem;
+        font-size: 0.9rem;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+        .btn-attendance:hover {
+            background: #1a3d7a;
+            color: white;
+        }
+
+    .filter-section {
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+    }
+
+    .filter-label-text {
+        font-weight: 600;
+        font-size: 0.85rem;
+        color: #495057;
+    }
+
+    .select-filter {
+        border: 1px solid #ddd;
+        padding: 0.5rem 0.75rem;
+        font-size: 0.9rem;
+        min-width: 180px;
+    }
+
+        .select-filter:focus {
+            border-color: #2a5298;
+            outline: none;
+            box-shadow: none;
+        }
+
+    .btn-filter {
+        background: white;
+        color: #495057;
+        border: 1px solid #ddd;
+        padding: 0.5rem 1rem;
+        font-size: 0.9rem;
+    }
+
+        .btn-filter:hover {
+            background: #f8f9fa;
+            color: #495057;
+            border-color: #ddd;
+        }
+
+    .custom-table {
+        margin: 0;
+        border: 1px solid #dee2e6;
+    }
+
+        .custom-table thead th {
+            background: #f8f9fa;
+            color: #495057;
+            font-weight: 600;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            padding: 0.75rem;
+            border-bottom: 2px solid #dee2e6;
+        }
+
+        .custom-table tbody td {
+            padding: 0.75rem;
+            vertical-align: middle;
+            font-size: 0.9rem;
+        }
+
+        .custom-table tbody tr:hover {
+            background: #f8f9fa;
+        }
+
+    .stt-column {
+        font-weight: 600;
+        color: #6c757d;
+    }
+
+    .student-name {
+        font-weight: 600;
+        color: #2a5298;
+    }
+
+    .student-code {
+        font-weight: 600;
+        color: #6c757d;
+    }
+
+    .badge-registered {
+        background: #cfe2ff;
+        color: #084298;
+        padding: 0.35rem 0.7rem;
+        border-radius: 4px;
+        font-size: 0.8rem;
+        font-weight: 600;
+    }
+
+    .badge-present {
+        background: #d1e7dd;
+        color: #0f5132;
+        padding: 0.35rem 0.7rem;
+        border-radius: 4px;
+        font-size: 0.8rem;
+        font-weight: 600;
+    }
+
+    .badge-absent {
+        background: #f8d7da;
+        color: #842029;
+        padding: 0.35rem 0.7rem;
+        border-radius: 4px;
+        font-size: 0.8rem;
+        font-weight: 600;
+    }
+
+    .badge-pending {
+        background: #e2e3e5;
+        color: #41464b;
+        padding: 0.35rem 0.7rem;
+        border-radius: 4px;
+        font-size: 0.8rem;
+        font-weight: 600;
+    }
+
+    .action-btn {
+        padding: 0.3rem 0.6rem;
+        font-size: 0.8rem;
+        text-decoration: none;
+        color: #dc3545;
+        border: 1px solid #dc3545;
+    }
+
+        .action-btn:hover {
+            background: #dc3545;
+            color: white;
+        }
+
+    .empty-state {
+        text-align: center;
+        padding: 3rem;
+        color: #6c757d;
+    }
+
+    .btn-back {
+        background: white;
+        color: #495057;
+        border: 1px solid #ddd;
+        padding: 0.5rem 1rem;
+        font-size: 0.9rem;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+        .btn-back:hover {
+            background: #f8f9fa;
+            color: #495057;
+            border-color: #ddd;
+        }
+</style>
+
+<div class="container-fluid px-4">
     <!-- Header -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h4 class="fw-bold text-primary mb-0">
-            <i class="fa-solid fa-users me-2"></i>
-            Danh sách sinh viên đăng ký sự kiện:
-            <span class="text-dark">@ViewBag.EventTitle</span>
-        </h4>
-        <span class="badge bg-info text-dark fs-6">
-            <i class="fa-solid fa-user-check me-1"></i>
-            Tổng số: <strong>@ViewBag.Count</strong> sinh viên
-        </span>
+    <div class="page-header">
+        <h1 class="page-title">Danh sách sinh viên đăng ký</h1>
+        <div class="event-name">Sự kiện: @ViewBag.EventTitle</div>
+        <p class="page-description">Quản lý thông tin đăng ký và điểm danh của sinh viên tham gia sự kiện.</p>
     </div>
 
-    <!-- Action Buttons -->
-    <div class="mb-3">
-        <a asp-action="Attendance" asp-route-eventId="@ViewBag.EventId"
-           class="btn btn-primary">
-            <i class="fa-solid fa-clipboard-check me-1"></i> Điểm danh sinh viên
+    @{
+        var totalStudents = ViewBag.Count ?? 0;
+        var presentCount = Model?.Count(m => m.Event?.Attendances?.Any(a => a.UserId == m.UserId && a.EventId == m.EventId && a.IsPresent == true) == true) ?? 0;
+        var absentCount = Model?.Count(m => m.Event?.Attendances?.Any(a => a.UserId == m.UserId && a.EventId == m.EventId && a.IsPresent == false) == true) ?? 0;
+        var pendingCount = totalStudents - presentCount - absentCount;
+    }
+
+    <!-- Statistics -->
+    <div class="stats-card">
+        <div class="row">
+            <div class="col-md-3">
+                <div class="stat-item">
+                    <div class="stat-number" style="color: #2a5298;">@totalStudents</div>
+                    <div class="stat-label">Tổng sinh viên</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-item stat-present">
+                    <div class="stat-number">@presentCount</div>
+                    <div class="stat-label">Đã điểm danh</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-item stat-absent">
+                    <div class="stat-number">@absentCount</div>
+                    <div class="stat-label">Vắng mặt</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-item stat-pending">
+                    <div class="stat-number">@pendingCount</div>
+                    <div class="stat-label">Chưa điểm danh</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Action Bar -->
+    <div class="action-bar">
+        <a asp-action="Attendance" asp-route-eventId="@ViewBag.EventId" class="btn-attendance">
+            Điểm danh sinh viên
         </a>
+
+        <form method="get" class="filter-section mb-0">
+            <input type="hidden" name="id" value="@ViewBag.EventId" />
+            <label class="filter-label-text mb-0">Lọc theo:</label>
+            <select name="attendanceFilter" class="form-select select-filter">
+                <option value="">Tất cả trạng thái</option>
+                <option value="present" selected="@(ViewBag.AttendanceFilter == "present" ? "selected" : null)">
+                    Đã điểm danh
+                </option>
+                <option value="absent" selected="@(ViewBag.AttendanceFilter == "absent" ? "selected" : null)">
+                    Vắng mặt
+                </option>
+                <option value="none" selected="@(ViewBag.AttendanceFilter == "none" ? "selected" : null)">
+                    Chưa điểm danh
+                </option>
+            </select>
+            <button type="submit" class="btn-filter">Áp dụng</button>
+        </form>
     </div>
-           <form method="get" class="mb-3 d-flex" style="gap: 10px">
-    <input type="hidden" name="id" value="@ViewBag.EventId" />
-
-    <select name="attendanceFilter" class="form-select w-auto">
-        <option value="">Lọc điểm danh</option>
-
-            <option value="present" selected="@(ViewBag.AttendanceFilter == "present" ? "selected" : null)">
-                Đã điểm danh
-            </option>
-
-            <option value="absent" selected="@(ViewBag.AttendanceFilter == "absent" ? "selected" : null)">
-                Vắng mặt
-            </option>
-
-            <option value="none" selected="@(ViewBag.AttendanceFilter == "none" ? "selected" : null)">
-                Chưa điểm danh
-            </option>
-
-    </select>
-
-    <button class="btn btn-primary">
-        <i class="fa-solid fa-filter me-1"></i> Lọc
-    </button>
-</form>
 
     <!-- Table -->
-    <div class="card border-0 shadow-sm">
-        <div class="card-body p-0">
-            <table class="table table-hover table-bordered align-middle mb-0">
-                <thead class="table-light text-center">
-                    <tr>
-                        <th style="width:5%">STT</th>
-                        <th style="width:20%">Họ tên</th>
-                        <th style="width:15%">Mã sinh viên</th>
-                        <th style="width:15%">Ngày đăng ký</th>
-                        <th style="width:12%">Trạng thái ĐK</th>
-                        <th style="width:15%">Điểm danh</th>
-                        <th style="width:10%">Hành động</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @{
-                        int stt = 1;
-                    }
-                    @if (Model != null && Model.Any())
+    <div class="table-responsive">
+        <table class="table custom-table">
+            <thead>
+                <tr>
+                    <th style="width: 5%" class="text-center">STT</th>
+                    <th style="width: 20%">Họ và tên</th>
+                    <th style="width: 12%">Mã sinh viên</th>
+                    <th style="width: 15%">Ngày đăng ký</th>
+                    <th style="width: 13%" class="text-center">Trạng thái ĐK</th>
+                    <th style="width: 15%" class="text-center">Điểm danh</th>
+                    <th style="width: 10%" class="text-center">Hành động</th>
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    int stt = 1;
+                }
+                @if (Model != null && Model.Any())
+                {
+                    foreach (var item in Model)
                     {
-                        foreach (var item in Model)
-                        {
-                            // ✅ Kiểm tra trạng thái điểm danh
-                            var attendance = item.Event?.Attendances
-                            ?.FirstOrDefault(a => a.UserId == item.UserId && a.EventId == item.EventId);
+                        var attendance = item.Event?.Attendances
+                        ?.FirstOrDefault(a => a.UserId == item.UserId && a.EventId == item.EventId);
 
-                            var isPresent = attendance?.IsPresent;
-                            var attendanceStatus = isPresent == true ? "Có mặt" :
-                            isPresent == false ? "Vắng" : "Chưa điểm danh";
-                            var attendanceBadge = isPresent == true ? "bg-success" :
-                            isPresent == false ? "bg-danger" : "bg-secondary";
+                        var isPresent = attendance?.IsPresent;
+                        var attendanceStatus = isPresent == true ? "Có mặt" :
+                        isPresent == false ? "Vắng mặt" : "Chưa điểm danh";
+                        var attendanceBadge = isPresent == true ? "badge-present" :
+                        isPresent == false ? "badge-absent" : "badge-pending";
 
-                            <tr class="text-center">
-                                <td>@(stt++)</td>
-                                <td class="text-start fw-semibold">@item.User?.FullName</td>
-                                <td>@item.User?.StudentCode</td>
-                                <td>@item.RegistrationDate?.ToString("dd/MM/yyyy HH:mm")</td>
-                                <td>
-                                    <span class="badge rounded-pill px-3 py-2 @(item.Status == "Đã Đăng Ký" ? "bg-info" : "bg-secondary")">
-                                        @item.Status
-                                    </span>
-                                </td>
-                                <td>
-                                    <span class="badge rounded-pill px-3 py-2 @attendanceBadge">
-                                        <i class="fa-solid @(isPresent == true ? "fa-check" : isPresent == false ? "fa-xmark" : "fa-clock") me-1"></i>
-                                        @attendanceStatus
-                                    </span>
-                                </td>
-                                <td>
-                                    <a asp-action="Delete"
-                                       asp-route-id="@item.RegistrationId"
-                                       class="btn btn-sm btn-outline-danger"
-                                       title="Xóa đăng ký"
-                                       onclick="return confirm('Bạn có chắc chắn muốn xóa đăng ký này?')">
-                                        <i class="fa-solid fa-trash">Xoá</i>
-                                    </a>
-                                </td>
-                            </tr>
-                        }
-                    }
-                    else
-                    {
                         <tr>
-                            <td colspan="7" class="text-center text-muted py-4">
-                                <i class="fa-regular fa-face-frown me-2"></i>
-                                Chưa có sinh viên nào đăng ký sự kiện này.
+                            <td class="text-center stt-column">@(stt++)</td>
+                            <td class="student-name">@item.User?.FullName</td>
+                            <td class="student-code">@item.User?.StudentCode</td>
+                            <td>@item.RegistrationDate?.ToString("dd/MM/yyyy HH:mm")</td>
+                            <td class="text-center">
+                                <span class="badge-registered">@item.Status</span>
+                            </td>
+                            <td class="text-center">
+                                <span class="@attendanceBadge">@attendanceStatus</span>
+                            </td>
+                            <td class="text-center">
+                                <a asp-action="Delete"
+                                   asp-route-id="@item.RegistrationId"
+                                   class="action-btn"
+                                   onclick="return confirm('Bạn có chắc chắn muốn xóa đăng ký này?')">
+                                    Xóa
+                                </a>
                             </td>
                         </tr>
                     }
-                </tbody>
-            </table>
-        </div>
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="7" class="empty-state">
+                            Chưa có sinh viên nào đăng ký sự kiện này.
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
     </div>
 
     <!-- Back Button -->
     <div class="mt-4">
-        <a asp-action="Index" class="btn btn-outline-secondary">
-            <i class="fa-solid fa-arrow-left me-2"></i> Quay lại danh sách sự kiện
-        </a>
+        <a asp-action="Index" class="btn-back">Quay lại danh sách sự kiện</a>
     </div>
 </div>
 

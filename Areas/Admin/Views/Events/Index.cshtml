@@ -5,82 +5,256 @@
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
 }
 
-<div class="content-wrapper">
-    <!-- Header -->
+<style>
+
+    :root {
+        --primary-color: #2a5298;
+        --secondary-text: #6c757d;
+        --border-light: #dee2e6;
+    }
+
+
+    .page-header {
+        padding: 1.5rem 0;
+        margin-bottom: 1.5rem;
+        border-bottom: 2px solid var(--primary-color);
+    }
+
+    .page-title {
+        color: #2a5298;
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin: 0 0 0.3rem 0;
+    }
+
+    .page-description {
+        color: var(--secondary-text);
+        font-size: 0.9rem;
+        margin: 0;
+    }
+
+    .search-input {
+        border: 1px solid var(--border-light);
+        padding: 0.5rem 0.75rem;
+        font-size: 0.9rem;
+        border-radius: 6px;
+    }
+
+        .search-input:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.25rem rgba(42, 82, 152, 0.25);
+            outline: none;
+        }
+
+
+    .btn-add {
+        background-color: #28a745;
+        color: white;
+        border: none;
+        padding: 0.5rem 1.2rem;
+        font-size: 0.9rem;
+        border-radius: 6px;
+    }
+
+        .btn-add:hover {
+            background-color: #218838;
+            color: white;
+        }
+
+
+    .custom-table {
+        margin: 0;
+        border: 1px solid var(--border-light);
+        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    }
+
+        .custom-table thead th {
+            background-color: var(--primary-color);
+            color: white;
+            font-weight: 500;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            padding: 0.75rem 0.5rem;
+            white-space: nowrap;
+        }
+
+        .custom-table tbody td {
+            padding: 0.75rem 0.5rem;
+            vertical-align: middle;
+            font-size: 0.85rem;
+        }
+
+        .custom-table tbody tr:hover {
+            background-color: #f5f5f5;
+        }
+
+
+    .event-img {
+        width: 60px;
+        height: 50px;
+        border-radius: 4px;
+        object-fit: cover;
+        border: 1px solid var(--border-light);
+    }
+
+    .desc-col, .title-col {
+        max-width: 180px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .title-col {
+        font-weight: 600;
+    }
+
+
+    .status-badge {
+        padding: 0.25rem 0.6rem;
+        border-radius: 4px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        display: inline-block;
+    }
+
+    .status-active {
+        background: #d4edda;
+        color: #155724;
+    }
+
+    .status-inactive {
+        background: #f8d7da;
+        color: #721c24;
+    }
+
+
+    .action-col {
+        white-space: nowrap;
+        min-width: 150px;
+    }
+
+    .action-btn {
+        padding: 0.3rem 0.5rem;
+        font-size: 0.75rem;
+        text-decoration: none;
+        border: 1px solid;
+        margin: 0 0.1rem;
+        border-radius: 4px;
+        transition: all 0.2s;
+    }
+
+    .btn-edit {
+        color: #0d6efd;
+        border-color: #0d6efd;
+    }
+
+        .btn-edit:hover {
+            background-color: #0d6efd;
+            color: white;
+        }
+
+    .btn-view {
+        color: #6c757d;
+        border-color: #6c757d;
+    }
+
+        .btn-view:hover {
+            background-color: #6c757d;
+            color: white;
+        }
+
+    .btn-delete {
+        color: #dc3545;
+        border-color: #dc3545;
+    }
+
+        .btn-delete:hover {
+            background-color: #dc3545;
+            color: white;
+        }
+</style>
+
+<div class="container-fluid px-4">
     <div class="page-header">
-        <h4>Quản lý sự kiện</h4>
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h1 class="page-title">Quản lý sự kiện</h1>
+                <p class="page-description">Theo dõi và quản lý thông tin chi tiết về các sự kiện, hoạt động và chương trình.</p>
+            </div>
+            <a asp-action="Create" class="btn btn-add shadow-sm">
+                <i class="bi bi-plus-circle me-1"></i> Thêm Sự Kiện Mới
+            </a>
+        </div>
     </div>
 
-    <!-- Toolbar -->
-    <div class="toolbar">
-        <input type="text" id="searchInput" class="search-input" placeholder=" Tìm kiếm theo tiêu đề hoặc địa điểm...">
-        <a asp-action="Create" class="btn-add">THÊM SỰ KIỆN</a>
+    <div class="mb-4" style="max-width: 400px;">
+        <input type="text" id="searchInput" class="form-control search-input" placeholder="Tìm kiếm theo tiêu đề hoặc địa điểm...">
     </div>
 
-    <!-- Table -->
-    <div class="table-container">
-        <table class="data-table" id="eventTable">
-            <thead>
-                <tr>
-                    <th>Ảnh</th>
-                    <th>Mô tả</th>
-                    <th>Địa điểm</th>
-                    <th>Bắt đầu</th>
-                    <th>Kết thúc</th>
-                    <th>Giới hạn</th>
-                    <th>Tiêu đề</th>
-                    <th>Trạng thái</th>
-                    <th>Ngày tạo</th>
-                    <th>Danh mục</th>
-                    <th>Người tạo</th>
-                    <th class="text-center">Hành động</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model)
-                {
-                    <tr>
-                        <td>
-                            @if (!string.IsNullOrEmpty(item.Image))
-                            {
-                                <img src="~/main/img/events/@item.Image" alt="@item.Title" class="event-img" />
-                            }
-                            else
-                            {
-                                <span class="text-muted">-</span>
-                            }
-                        </td>
-                        
-                        <td class="desc-col">@item.Description</td>
-                        <td>@item.Location</td>
-                        <td>@item.StartTime.ToString("dd/MM/yyyy HH:mm")</td>
-                        <td>@item.EndTime.ToString("dd/MM/yyyy HH:mm")</td>
-                        <td>@item.MaxParticipants</td>
-                        <td class="title-col">@item.Title</td>
-                        <td>
-                            @if (item.IsActive)
-                            {
-                                <span class="status-badge status-active">Hoạt động</span>
-                            }
-                            else
-                            {
-                                <span class="status-badge status-inactive">Ẩn</span>
-                            }
-                        </td>
-                        <td>@item.CreatedDate?.ToString("dd/MM/yyyy")</td>
-                        <td>@item.Category?.CategoryName</td>
-                        <td>@item.CreatedByNavigation?.FullName</td>
-                        <td class="text-center">
-                            <div class="action-buttons">
-                                <a asp-action="Edit" asp-route-id="@item.EventId" class="btn-action edit" style="color:red">Sửa</a>
-                                <a asp-action="Details" asp-route-id="@item.EventId" class="btn-action view">Xem</a>
-                                <a asp-action="Delete" asp-route-id="@item.EventId" class="btn-action delete">Xóa</a>
-                            </div>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
+    <div class="card shadow-sm border-0">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table custom-table" id="eventTable">
+                    <thead>
+                        <tr class="text-center">
+                            <th style="width: 5%;">Ảnh</th>
+                            <th style="width: 15%;">Tiêu đề</th>
+                            <th style="width: 20%;">Mô tả</th>
+                            <th style="width: 10%;">Địa điểm</th>
+                            <th style="width: 10%;">Bắt đầu</th>
+                            <th style="width: 10%;">Kết thúc</th>
+                            <th style="width: 5%;">Giới hạn</th>
+                            <th style="width: 5%;">Trạng thái</th>
+                            <th style="width: 5%;">Danh mục</th>
+                            <th style="width: 5%;">Người tạo</th>
+                            <th class="action-col">Hành động</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td class="text-center">
+                                    @if (!string.IsNullOrEmpty(item.Image))
+                                    {
+                                        <img src="~/main/img/events/@item.Image" alt="@item.Title" class="event-img" />
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">-</span>
+                                    }
+                                </td>
+                                <td class="title-col">@item.Title</td>
+                                <td class="desc-col">@item.Description</td>
+                                <td>@item.Location</td>
+                                <td>@item.StartTime.ToString("dd/MM/yyyy HH:mm")</td>
+                                <td>@item.EndTime.ToString("dd/MM/yyyy HH:mm")</td>
+                                <td class="text-center">@item.MaxParticipants</td>
+                                <td class="text-center">
+                                    @if (item.IsActive == true)
+                                    {
+                                        <span class="status-badge status-active">Hoạt động</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="status-badge status-inactive">Ẩn</span>
+                                    }
+                                </td>
+                                <td>@item.Category?.CategoryName</td>
+                                <td>@item.CreatedByNavigation?.FullName</td>
+
+
+                                <td class="text-center action-col">
+                                    <a asp-action="Edit" asp-route-id="@item.EventId" class="action-btn btn-edit">Sửa</a>
+                                    <a asp-action="Details" asp-route-id="@item.EventId" class="action-btn btn-view">Xem</a>
+                                    <a asp-action="Delete" asp-route-id="@item.EventId" class="action-btn btn-delete">Xóa</a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -91,204 +265,11 @@
             var rows = document.querySelectorAll('#eventTable tbody tr');
 
             rows.forEach(row => {
-                var title = row.cells[0].textContent.toLowerCase();
-                var location = row.cells[2].textContent.toLowerCase();
+                var title = row.cells[1].textContent.toLowerCase();
+                var location = row.cells[3].textContent.toLowerCase();
+
                 row.style.display = (title.includes(searchValue) || location.includes(searchValue)) ? '' : 'none';
             });
         });
     </script>
-
-    <style>
-        .content-wrapper {
-            padding: 32px;
-            background: #f5f6fa;
-            border-radius: 10px;
-        }
-
-        .page-header {
-            margin-bottom: 24px;
-            text-align: center;
-        }
-
-            .page-header h4 {
-                margin: 0;
-                font-size: 22px;
-                font-weight: 700;
-                color: #222;
-                letter-spacing: 0.5px;
-            }
-
-        .toolbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 18px;
-            gap: 12px;
-        }
-
-        .search-input {
-            flex: 1;
-            max-width: 420px;
-            padding: 10px 14px;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            font-size: 14px;
-            transition: all 0.3s;
-        }
-
-            .search-input:focus {
-                border-color: #007bff;
-                box-shadow: 0 0 4px rgba(0, 123, 255, 0.3);
-                outline: none;
-            }
-
-        .btn-add {
-            padding: 9px 18px;
-            background: #007bff;
-            border-radius: 8px;
-            color: #fff;
-            font-size: 14px;
-            text-decoration: none;
-            font-weight: 500;
-            transition: 0.3s;
-        }
-
-            .btn-add:hover {
-                background: #0056b3;
-            }
-
-        .table-container {
-            background: #fff;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-            overflow-x: auto;
-        }
-
-        .data-table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 14px;
-        }
-
-            .data-table thead {
-                background: #f1f3f6;
-            }
-
-            .data-table th {
-                padding: 12px 14px;
-                text-align: left;
-                font-weight: 600;
-                color: #222;
-                border-bottom: 2px solid #dee2e6;
-                white-space: nowrap;
-            }
-
-            .data-table td {
-                padding: 10px 14px;
-                border-bottom: 1px solid #f0f0f0;
-                color: #333;
-                vertical-align: middle;
-            }
-
-            .data-table tbody tr:hover {
-                background: #f9fbfd;
-            }
-
-        .title-col {
-            font-weight: 500;
-            color: #111;
-            max-width: 180px;
-        }
-
-        .desc-col {
-            max-width: 200px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-
-        .event-img {
-            width: 55px;
-            height: 45px;
-            border-radius: 6px;
-            object-fit: cover;
-            border: 1px solid #ddd;
-        }
-
-        .text-muted {
-            color: #aaa;
-        }
-
-        .status-badge {
-            display: inline-block;
-            padding: 5px 10px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 500;
-        }
-
-        .status-active {
-            background: #d4edda;
-            color: #155724;
-        }
-
-        .status-inactive {
-            background: #f8d7da;
-            color: #721c24;
-        }
-
-        .action-buttons {
-            display: flex;
-            justify-content: center;
-            gap: 6px;
-        }
-
-        .btn-action {
-            padding: 5px 10px;
-            font-size: 13px;
-            border-radius: 6px;
-            text-decoration: none;
-            border: 1px solid transparent;
-            transition: all 0.2s;
-        }
-
-            .btn-action.edit {
-                background: #ffc107;
-                color: #007bff;
-                border-color: #007bff;
-            }
-
-            .btn-action.view {
-                background: #fffbea;
-                color: #ffc107;
-                border-color: #ffc107;
-            }
-
-            .btn-action.delete {
-                background: #fdeaea;
-                color: #dc3545;
-                border-color: #dc3545;
-            }
-
-            .btn-action:hover {
-                opacity: 0.85;
-                transform: scale(1.02);
-            }
-
-        .text-center {
-            text-align: center;
-        }
-
-        /* Responsive */
-        @@media (max-width: 1200px) {
-            .data-table th,
-            .data-table td {
-                padding: 8px 10px;
-            }
-
-            .search-input {
-                max-width: 100%;
-            }
-        }
-    </style>
 }

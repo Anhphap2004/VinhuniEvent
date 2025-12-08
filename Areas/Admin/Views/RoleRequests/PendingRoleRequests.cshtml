@@ -5,45 +5,136 @@
     var rejected = ViewBag.Rejected as List<VinhuniEvent.Models.RoleRequest>;
 }
 
-<h2 class="mb-4 mt-2">Yêu cầu nâng quyền</h2>
+<style>
+    .page-header {
+        padding: 1.5rem 0;
+        margin-bottom: 1.5rem;
+        border-bottom: 2px solid #2a5298;
+    }
 
-@if (TempData["Msg"] != null)
-{
-    <div class="alert alert-success">@TempData["Msg"]</div>
-}
+    .page-title {
+        color: #2a5298;
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin: 0 0 0.3rem 0;
+    }
 
-@if (TempData["Error"] != null)
-{
-    <div class="alert alert-danger">@TempData["Error"]</div>
-}
+    .page-description {
+        color: #6c757d;
+        font-size: 0.9rem;
+        margin: 0;
+    }
 
-<!-- NAV TABS -->
-<ul class="nav nav-tabs mb-3" id="roleTabs">
-    <li class="nav-item">
-        <a class="nav-link active" data-bs-toggle="tab" href="#pending">⏳ Đang Chờ</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link" data-bs-toggle="tab" href="#approved">✔ Đã Duyệt</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link" data-bs-toggle="tab" href="#rejected">✖ Từ Chối</a>
-    </li>
-</ul>
+    .alert-success {
+        background: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+        padding: 0.75rem 1rem;
+        margin-bottom: 1rem;
+        font-size: 0.9rem;
+        border-radius: 4px;
+    }
 
-<!-- TAB CONTENT -->
-<div class="tab-content">
+    .alert-danger {
+        background: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+        padding: 0.75rem 1rem;
+        margin-bottom: 1rem;
+        font-size: 0.9rem;
+        border-radius: 4px;
+    }
 
-    <div class="tab-pane fade show active" id="pending">
-        <partial name="_RequestTable" model="pending" />
+    .custom-nav-tabs {
+        border-bottom: 2px solid #dee2e6;
+        margin-bottom: 1.5rem;
+        display: flex;
+        gap: 0.5rem;
+    }
+
+        .custom-nav-tabs .nav-item {
+            margin: 0;
+        }
+
+        .custom-nav-tabs .nav-link {
+            color: #495057;
+            border: 1px solid #ddd;
+            padding: 0.5rem 1.2rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+            background: white;
+            text-decoration: none;
+            display: inline-block;
+            border-radius: 0;
+            border-bottom: none;
+            transition: all 0.2s ease;
+        }
+
+            .custom-nav-tabs .nav-link:hover {
+                background: #f8f9fa;
+                color: #495057;
+                border-color: #ddd;
+            }
+
+            .custom-nav-tabs .nav-link.active {
+                background: #2a5298;
+                color: white;
+                border-color: #2a5298;
+            }
+
+    .tab-content {
+        padding-top: 0;
+    }
+
+    .tab-pane {
+        display: none;
+    }
+
+        .tab-pane.show.active {
+            display: block;
+        }
+</style>
+
+<div class="container-fluid px-4">
+    <!-- Header -->
+    <div class="page-header">
+        <h1 class="page-title">Quản lý yêu cầu nâng quyền</h1>
+        <p class="page-description">Xem xét và phê duyệt các yêu cầu nâng quyền từ người dùng trong hệ thống.</p>
     </div>
 
-    <div class="tab-pane fade" id="approved">
-        <partial name="_RequestTable" model="approved" />
-    </div>
+    <!-- Alert Messages -->
+    @if (TempData["Msg"] != null)
+    {
+        <div class="alert-success">@TempData["Msg"]</div>
+    }
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert-danger">@TempData["Error"]</div>
+    }
 
-    <div class="tab-pane fade" id="rejected">
-        <partial name="_RequestTable" model="rejected" />
-    </div>
+    <!-- Nav Tabs -->
+    <ul class="nav custom-nav-tabs" id="roleTabs">
+        <li class="nav-item">
+            <a class="nav-link active" data-bs-toggle="tab" href="#pending">Đang Chờ</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-bs-toggle="tab" href="#approved">Đã Duyệt</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-bs-toggle="tab" href="#rejected">Từ Chối</a>
+        </li>
+    </ul>
 
+    <!-- Tab Content -->
+    <div class="tab-content">
+        <div class="tab-pane fade show active" id="pending">
+            <partial name="_RequestTable" model="pending" />
+        </div>
+        <div class="tab-pane fade" id="approved">
+            <partial name="_RequestTable" model="approved" />
+        </div>
+        <div class="tab-pane fade" id="rejected">
+            <partial name="_RequestTable" model="rejected" />
+        </div>
+    </div>
 </div>
-

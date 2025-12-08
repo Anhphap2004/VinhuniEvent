@@ -4,80 +4,373 @@
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
 }
 
-<div class="content-wrapper p-4">
-    <h4 class="fw-bold text-primary mb-4">
-        <i class="fa-solid fa-clipboard-check me-2"></i>
-        Điểm danh sinh viên tham gia sự kiện:
-        <span class="text-dark">@ViewBag.EventTitle</span>
-    </h4>
+<style>
+    .page-header {
+        padding: 1.5rem 0;
+        margin-bottom: 1.5rem;
+        border-bottom: 2px solid #2a5298;
+    }
+
+    .page-title {
+        color: #2a5298;
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin: 0 0 0.3rem 0;
+    }
+
+    .event-name {
+        color: #495057;
+        font-size: 0.95rem;
+        font-weight: 500;
+        margin: 0.3rem 0 0 0;
+    }
+
+    .page-description {
+        color: #6c757d;
+        font-size: 0.9rem;
+        margin: 0.5rem 0 0 0;
+    }
+
+    .stats-card {
+        border: 1px solid #dee2e6;
+        padding: 1rem;
+        background: white;
+        margin-bottom: 1.5rem;
+    }
+
+    .stat-item {
+        text-align: center;
+        padding: 0.3rem;
+    }
+
+    .stat-number {
+        font-size: 1.3rem;
+        font-weight: 700;
+        margin-bottom: 0.2rem;
+    }
+
+    .stat-label {
+        font-size: 0.75rem;
+        color: #6c757d;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+
+    .stat-present .stat-number {
+        color: #28a745;
+    }
+
+    .stat-absent .stat-number {
+        color: #dc3545;
+    }
+
+    .stat-pending .stat-number {
+        color: #6c757d;
+    }
+
+    .message-box {
+        border: 1px solid #d1e7dd;
+        background: #d1e7dd;
+        color: #0f5132;
+        padding: 1rem 1.5rem;
+        margin-bottom: 1.5rem;
+        font-size: 0.9rem;
+        font-weight: 500;
+    }
+
+        .message-box.success {
+            border-color: #d1e7dd;
+            background: #d1e7dd;
+            color: #0f5132;
+        }
+
+        .message-box.error {
+            border-color: #f8d7da;
+            background: #f8d7da;
+            color: #842029;
+        }
+
+    .custom-table {
+        margin: 0;
+        border: 1px solid #dee2e6;
+    }
+
+        .custom-table thead th {
+            background: #f8f9fa;
+            color: #495057;
+            font-weight: 600;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            padding: 0.75rem;
+            border-bottom: 2px solid #dee2e6;
+        }
+
+        .custom-table tbody td {
+            padding: 0.75rem;
+            vertical-align: middle;
+            font-size: 0.9rem;
+        }
+
+        .custom-table tbody tr:hover {
+            background: #f8f9fa;
+        }
+
+        .custom-table tbody tr.row-present {
+            background: #d1e7dd;
+        }
+
+            .custom-table tbody tr.row-present:hover {
+                background: #c3e0cf;
+            }
+
+        .custom-table tbody tr.row-absent {
+            background: #f8d7da;
+        }
+
+            .custom-table tbody tr.row-absent:hover {
+                background: #ecc9cc;
+            }
+
+    .stt-column {
+        font-weight: 600;
+        color: #6c757d;
+    }
+
+    .student-name {
+        font-weight: 600;
+        color: #2a5298;
+    }
+
+    .student-code {
+        font-weight: 600;
+        color: #6c757d;
+    }
+
+    .status-text {
+        font-weight: 600;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+    }
+
+    .status-present {
+        color: #0f5132;
+    }
+
+    .status-absent {
+        color: #842029;
+    }
+
+    .status-pending {
+        color: #6c757d;
+    }
+
+    .btn-present {
+        background: #28a745;
+        color: white;
+        border: 2px solid #28a745;
+        padding: 0.5rem 1.2rem;
+        font-size: 0.9rem;
+        font-weight: 600;
+        margin-right: 0.5rem;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+    }
+
+        .btn-present:hover {
+            background: #218838;
+            border-color: #218838;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(40, 167, 69, 0.3);
+        }
+
+        .btn-present:active {
+            transform: translateY(0);
+        }
+
+    .btn-absent {
+        background: #dc3545;
+        color: white;
+        border: 2px solid #dc3545;
+        padding: 0.5rem 1.2rem;
+        font-size: 0.9rem;
+        font-weight: 600;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+    }
+
+        .btn-absent:hover {
+            background: #c82333;
+            border-color: #c82333;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(220, 53, 69, 0.3);
+        }
+
+        .btn-absent:active {
+            transform: translateY(0);
+        }
+
+    .empty-state {
+        text-align: center;
+        padding: 3rem;
+        color: #6c757d;
+    }
+
+    .btn-back {
+        background: white;
+        color: #495057;
+        border: 1px solid #ddd;
+        padding: 0.5rem 1rem;
+        font-size: 0.9rem;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+        .btn-back:hover {
+            background: #f8f9fa;
+            color: #495057;
+            border-color: #ddd;
+        }
+</style>
+
+<div class="container-fluid px-4">
+    <!-- Header -->
+    <div class="page-header">
+        <h1 class="page-title">Điểm danh sinh viên</h1>
+        <div class="event-name">Sự kiện: @ViewBag.EventTitle</div>
+        <p class="page-description">Cập nhật trạng thái điểm danh cho sinh viên tham gia sự kiện.</p>
+    </div>
 
     @if (Model != null && Model.Any())
     {
-        <div class="alert alert-info">
-            <i class="fa-solid fa-info-circle me-2"></i>
-            Tổng số sinh viên đăng ký: <strong>@Model.Count()</strong> |
-            Đã điểm danh: <strong>@Model.Count(x => x.IsPresent != null)</strong> |
-            Có mặt: <strong class="text-success">@Model.Count(x => x.IsPresent == true)</strong> |
-            Vắng: <strong class="text-danger">@Model.Count(x => x.IsPresent == false)</strong>
+        var totalStudents = Model.Count();
+        var attendedCount = Model.Count(x => x.IsPresent != null);
+        var presentCount = Model.Count(x => x.IsPresent == true);
+        var absentCount = Model.Count(x => x.IsPresent == false);
+        var pendingCount = totalStudents - attendedCount;
+
+        <!-- Statistics -->
+        <div class="stats-card">
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="stat-item">
+                        <div class="stat-number" style="color: #2a5298;">@totalStudents</div>
+                        <div class="stat-label">Tổng sinh viên</div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-item stat-present">
+                        <div class="stat-number">@presentCount</div>
+                        <div class="stat-label">Có mặt</div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-item stat-absent">
+                        <div class="stat-number">@absentCount</div>
+                        <div class="stat-label">Vắng mặt</div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-item stat-pending">
+                        <div class="stat-number">@pendingCount</div>
+                        <div class="stat-label">Chưa điểm danh</div>
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <div id="messageBox" class="alert alert-success" style="display:none;" role="alert">
-            <i class="fa-solid fa-check-circle me-2"></i>
+        <!-- Message Box -->
+        <div id="messageBox" class="message-box success" style="display:none;">
             <span id="messageText"></span>
         </div>
 
-        <table class="table table-bordered align-middle">
-            <thead class="table-light text-center">
-                <tr>
-                    <th style="width: 8%">STT</th>
-                    <th style="width: 25%">Họ tên</th>
-                    <th style="width: 15%">Mã SV</th>
-                    <th style="width: 17%">Trạng thái</th>
-                    <th style="width: 35%">Điểm danh</th>
-                </tr>
-            </thead>
-            <tbody>
-                @{
-                    int stt = 1;
-                }
-                @foreach (var item in Model)
-                {
-                    var statusClass = item.IsPresent == true ? "table-success" :
-                    item.IsPresent == false ? "table-danger" : "";
-                    var statusText = item.IsPresent == true ? "Có mặt" :
-                    item.IsPresent == false ? "Vắng" : "Chưa điểm danh";
-
-                    <tr class="text-center @statusClass" id="row-@item.UserId">
-                        <td>@(stt++)</td>
-                        <td class="text-start">@item.FullName</td>
-                        <td>@item.StudentCode</td>
-                        <td class="fw-bold" id="status-@item.UserId">@statusText</td>
-                        <td>
-                            <button class="btn btn-sm btn-success me-1"
-                                    onclick="updateAttendance(@ViewBag.EventId, @item.UserId, true)">
-                                <i class="fa-solid fa-check"></i> Có mặt
-                            </button>
-                            <button class="btn btn-sm btn-danger"
-                                    onclick="updateAttendance(@ViewBag.EventId, @item.UserId, false)">
-                                <i class="fa-solid fa-xmark"></i> Vắng
-                            </button>
-                        </td>
+        <!-- Table -->
+        <div class="table-responsive">
+            <table class="table custom-table">
+                <thead>
+                    <tr>
+                        <th style="width: 8%" class="text-center">STT</th>
+                        <th style="width: 25%">Họ và tên</th>
+                        <th style="width: 15%">Mã sinh viên</th>
+                        <th style="width: 17%" class="text-center">Trạng thái</th>
+                        <th style="width: 35%" class="text-center">Điểm danh</th>
                     </tr>
-                }
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    @{
+                        int stt = 1;
+                    }
+                    @foreach (var item in Model)
+                    {
+                        var rowClass = item.IsPresent == true ? "row-present" :
+                        item.IsPresent == false ? "row-absent" : "";
+                        var statusText = item.IsPresent == true ? "Có mặt" :
+                        item.IsPresent == false ? "Vắng mặt" : "Chưa điểm danh";
+                        var statusClass = item.IsPresent == true ? "status-present" :
+                        item.IsPresent == false ? "status-absent" : "status-pending";
+
+                        <tr class="@rowClass" id="row-@item.UserId">
+                            <td class="text-center stt-column">@(stt++)</td>
+                            <td class="student-name">@item.FullName</td>
+                            <td class="student-code">@item.StudentCode</td>
+                            <td class="text-center">
+                                <span class="status-text @statusClass" id="status-@item.UserId">
+                                    @statusText
+                                </span>
+                            </td>
+                            <td class="text-center">
+                                <button class="btn-present"
+                                        onclick="updateAttendance(@ViewBag.EventId, @item.UserId, true)">
+                                    Có mặt
+                                </button>
+                                <button class="btn-absent"
+                                        onclick="updateAttendance(@ViewBag.EventId, @item.UserId, false)">
+                                    Vắng mặt
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
     }
     else
     {
-        <div class="alert alert-warning">
-            <i class="fa-solid fa-exclamation-triangle me-2"></i>
-            Không có sinh viên nào đăng ký sự kiện này.
+        <div class="table-responsive">
+            <table class="table custom-table">
+                <thead>
+                    <tr>
+                        <th style="width: 8%" class="text-center">STT</th>
+                        <th style="width: 25%">Họ và tên</th>
+                        <th style="width: 15%">Mã sinh viên</th>
+                        <th style="width: 17%" class="text-center">Trạng thái</th>
+                        <th style="width: 35%" class="text-center">Điểm danh</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td colspan="5" class="empty-state">
+                            Không có sinh viên nào đăng ký sự kiện này.
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
     }
 
-    <div class="mt-3">
-        <a asp-action="ByEvent" asp-route-id="@ViewBag.EventId" class="btn btn-outline-secondary">
-            <i class="fa-solid fa-arrow-left me-1"></i> Quay lại
+    <!-- Back Button -->
+    <div class="mt-4">
+        <a asp-action="ByEvent" asp-route-id="@ViewBag.EventId" class="btn-back">
+            Quay lại danh sách đăng ký
         </a>
     </div>
 </div>
@@ -87,13 +380,11 @@
         function updateAttendance(eventId, userId, isPresent) {
             console.log('Bắt đầu điểm danh:', eventId, userId, isPresent);
 
-            // Tạo FormData
             const formData = new URLSearchParams();
             formData.append('eventId', eventId);
             formData.append('userId', userId);
             formData.append('isPresent', isPresent);
 
-            // Gửi request bằng fetch API
             fetch('/Admin/EventRegistrations/UpdateAttendance', {
                 method: 'POST',
                 headers: {
@@ -112,33 +403,34 @@
                 console.log('Response data:', data);
 
                 if (data.success) {
-                    // Cập nhật giao diện
                     const row = document.getElementById('row-' + userId);
                     const statusCell = document.getElementById('status-' + userId);
 
                     if (row && statusCell) {
                         // Xóa class cũ
-                        row.classList.remove('table-success', 'table-danger');
+                        row.classList.remove('row-present', 'row-absent');
+                        statusCell.classList.remove('status-present', 'status-absent', 'status-pending');
 
                         // Thêm class mới
                         if (isPresent) {
-                            row.classList.add('table-success');
+                            row.classList.add('row-present');
+                            statusCell.classList.add('status-present');
                             statusCell.textContent = 'Có mặt';
                         } else {
-                            row.classList.add('table-danger');
-                            statusCell.textContent = 'Vắng';
+                            row.classList.add('row-absent');
+                            statusCell.classList.add('status-absent');
+                            statusCell.textContent = 'Vắng mặt';
                         }
 
-                        // Hiển thị thông báo thành công
                         showMessage('Cập nhật điểm danh thành công!', 'success');
                     }
                 } else {
-                    showMessage('Có lỗi xảy ra: ' + (data.message || 'Vui lòng thử lại'), 'danger');
+                    showMessage('Có lỗi xảy ra: ' + (data.message || 'Vui lòng thử lại'), 'error');
                 }
             })
             .catch(error => {
                 console.error('Error:', error);
-                showMessage('Lỗi kết nối: ' + error.message, 'danger');
+                showMessage('Lỗi kết nối: ' + error.message, 'error');
             });
         }
 
@@ -148,10 +440,9 @@
 
             if (messageBox && messageText) {
                 messageText.textContent = message;
-                messageBox.className = 'alert alert-' + type;
+                messageBox.className = 'message-box ' + type;
                 messageBox.style.display = 'block';
 
-                // Tự động ẩn sau 3 giây
                 setTimeout(function() {
                     messageBox.style.display = 'none';
                 }, 3000);
