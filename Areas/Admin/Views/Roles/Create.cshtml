@@ -1,0 +1,52 @@
+﻿@model VinhuniEvent.Models.Role
+
+@{
+    ViewData["Title"] = "Tạo quyền mới";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-4">
+
+    <h2 class="fw-bold text-primary mb-3">Tạo quyền mới</h2>
+
+    <div class="card shadow-sm border-0 rounded-3">
+        <div class="card-body">
+
+            <form asp-action="Create">
+
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger py-2"></div>
+
+                <div class="mb-3">
+                    <label asp-for="RoleName" class="form-label fw-semibold"></label>
+                    <input asp-for="RoleName" class="form-control" placeholder="Nhập tên quyền..." />
+                    <span asp-validation-for="RoleName" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Description" class="form-label fw-semibold"></label>
+                    <input asp-for="Description" class="form-control" placeholder="Mô tả quyền..." />
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                </div>
+
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-primary px-4">
+                        <i class="bi bi-check2-circle"></i> Tạo mới
+                    </button>
+
+                    <a asp-action="Index" class="btn btn-secondary px-4">
+                        <i class="bi bi-arrow-left"></i> Quay lại
+                    </a>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
