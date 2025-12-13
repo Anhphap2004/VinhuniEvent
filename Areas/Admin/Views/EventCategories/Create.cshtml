@@ -18,17 +18,17 @@
             <form asp-action="Create">
                 <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
-                <div class="mb-3">
-                    <label asp-for="CategoryName" class="form-label fw-semibold"></label>
-                    <input asp-for="CategoryName" class="form-control" placeholder="Nhập tên danh mục..." />
-                    <span asp-validation-for="CategoryName" class="text-danger"></span>
-                </div>
+               <div class="mb-3">
+    <label asp-for="CategoryName" class="form-label fw-semibold">Tên Danh Mục</label>
+    <input asp-for="CategoryName" class="form-control" placeholder="Nhập tên danh mục..." />
+    <span asp-validation-for="CategoryName" class="text-danger"></span>
+</div>
 
-                <div class="mb-3">
-                    <label asp-for="Description" class="form-label fw-semibold"></label>
-                    <textarea asp-for="Description" class="form-control" rows="3" placeholder="Mô tả ngắn gọn..."></textarea>
-                    <span asp-validation-for="Description" class="text-danger"></span>
-                </div>
+<div class="mb-3">
+    <label asp-for="Description" class="form-label fw-semibold">Mô Tả</label>
+    <textarea asp-for="Description" class="form-control" rows="3" placeholder="Mô tả ngắn gọn về danh mục..."></textarea>
+    <span asp-validation-for="Description" class="text-danger"></span>
+</div>
 
                
 

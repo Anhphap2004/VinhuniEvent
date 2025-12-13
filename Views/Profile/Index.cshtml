@@ -1,0 +1,582 @@
+﻿@model VinhuniEvent.Models.User
+@{
+    ViewData["Title"] = "Hồ sơ sinh viên";
+    var totalRegistered = Model.EventRegistrations?.Count ?? 0;
+    var totalPresent = Model.Attendances?.Count(a => a.IsPresent == true) ?? 0;
+    var totalAbsent = totalRegistered - totalPresent;
+    var rate = totalRegistered == 0 ? 0 : (double)totalPresent / totalRegistered * 100;
+}
+
+<style>
+    .profile-wrapper {
+        background: #f8f9fa;
+        padding: 40px 0;
+        min-height: calc(100vh - 200px);
+    }
+
+    .profile-container {
+        max-width: 1140px;
+        margin: 0 auto;
+        padding: 0 15px;
+    }
+
+    .back-button {
+        display: inline-block;
+        padding: 10px 25px;
+        background: #0066CC;
+        color: white !important;
+        text-decoration: none;
+        border-radius: 5px;
+        margin-bottom: 25px;
+        font-size: 14px;
+        transition: all 0.3s;
+    }
+
+        .back-button:hover {
+            background: #0052a3;
+            color: white !important;
+            text-decoration: none;
+        }
+
+    .profile-card {
+        background: white;
+        border-radius: 10px;
+        padding: 35px;
+        margin-bottom: 25px;
+        box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+    }
+
+    .profile-header-section {
+        text-align: center;
+        padding-bottom: 25px;
+        border-bottom: 2px solid #f0f0f0;
+        margin-bottom: 25px;
+    }
+
+    .user-avatar {
+        width: 110px;
+        height: 110px;
+        background: linear-gradient(135deg, #0066CC 0%, #0052a3 100%);
+        color: white;
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 42px;
+        font-weight: 600;
+        margin-bottom: 18px;
+        box-shadow: 0 4px 12px rgba(0,102,204,0.3);
+    }
+
+    .profile-header-section h1 {
+        font-size: 26px;
+        margin-bottom: 8px;
+        color: #2c3e50;
+        font-weight: 600;
+    }
+
+    .profile-header-section p {
+        color: #7f8c8d;
+        font-size: 16px;
+        margin: 0;
+    }
+
+    .info-row {
+        display: flex;
+        flex-wrap: wrap;
+        margin: 0 -10px;
+    }
+
+    .info-col {
+        flex: 0 0 50%;
+        max-width: 50%;
+        padding: 0 10px;
+        margin-bottom: 20px;
+    }
+
+    .info-box {
+        padding: 12px 0;
+    }
+
+    .info-box-label {
+        font-size: 12px;
+        color: #95a5a6;
+        margin-bottom: 6px;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        font-weight: 500;
+    }
+
+    .info-box-value {
+        font-size: 15px;
+        color: #2c3e50;
+        font-weight: 500;
+    }
+
+    .stats-row {
+        display: flex;
+        flex-wrap: wrap;
+        margin: 0 -10px 25px -10px;
+    }
+
+    .stat-col {
+        flex: 0 0 25%;
+        max-width: 25%;
+        padding: 0 10px;
+    }
+
+    .stat-box {
+        background: white;
+        padding: 25px 20px;
+        border-radius: 10px;
+        text-align: center;
+        box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+        transition: transform 0.3s;
+    }
+
+        .stat-box:hover {
+            transform: translateY(-3px);
+        }
+
+    .stat-box-number {
+        font-size: 34px;
+        font-weight: 700;
+        color: #0066CC;
+        margin-bottom: 8px;
+        line-height: 1;
+    }
+
+    .stat-box.green .stat-box-number {
+        color: #27ae60;
+    }
+
+    .stat-box.red .stat-box-number {
+        color: #e74c3c;
+    }
+
+    .stat-box.orange .stat-box-number {
+        color: #f39c12;
+    }
+
+    .stat-box-label {
+        font-size: 13px;
+        color: #7f8c8d;
+        font-weight: 500;
+    }
+
+    /* Tab Navigation */
+    .tab-navigation {
+        display: flex;
+        background: white;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+        margin-bottom: 25px;
+    }
+
+    .tab-button {
+        flex: 1;
+        padding: 18px 20px;
+        background: white;
+        border: none;
+        color: #7f8c8d;
+        font-size: 15px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+        border-bottom: 3px solid transparent;
+        text-align: center;
+    }
+
+        .tab-button:hover {
+            background: #f8f9fa;
+            color: #0066CC;
+        }
+
+        .tab-button.active {
+            color: #0066CC;
+            border-bottom-color: #0066CC;
+            background: #f8f9fa;
+        }
+
+    .tab-content-area {
+        display: none;
+    }
+
+        .tab-content-area.active {
+            display: block;
+            animation: fadeIn 0.3s;
+        }
+
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .table-card {
+        background: white;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+        margin-bottom: 35px;
+    }
+
+    .custom-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 0;
+    }
+
+        .custom-table thead {
+            background: #f8f9fa;
+        }
+
+        .custom-table th {
+            padding: 16px 18px;
+            text-align: left;
+            font-weight: 600;
+            color: #495057;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid #dee2e6;
+        }
+
+        .custom-table td {
+            padding: 16px 18px;
+            border-bottom: 1px solid #f0f0f0;
+            font-size: 14px;
+            color: #2c3e50;
+        }
+
+        .custom-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .custom-table tbody tr:hover {
+            background: #f8f9fa;
+        }
+
+    .status-badge {
+        display: inline-block;
+        padding: 6px 14px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 500;
+        white-space: nowrap;
+    }
+
+        .status-badge.primary {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+
+        .status-badge.success {
+            background: #e8f5e9;
+            color: #388e3c;
+        }
+
+        .status-badge.danger {
+            background: #ffebee;
+            color: #d32f2f;
+        }
+
+    .empty-box {
+        text-align: center;
+        padding: 70px 20px;
+        color: #bdc3c7;
+    }
+
+    .empty-box-icon {
+        font-size: 52px;
+        margin-bottom: 18px;
+        opacity: 0.4;
+    }
+
+    .empty-box p {
+        font-size: 15px;
+        margin: 0;
+    }
+
+    .time-small {
+        color: #95a5a6;
+        font-size: 12px;
+        display: block;
+        margin-top: 3px;
+    }
+
+    @@media (max-width: 991px) {
+        .stat-col {
+            flex: 0 0 50%;
+            max-width: 50%;
+            margin-bottom: 15px;
+        }
+
+        .info-col {
+            flex: 0 0 100%;
+            max-width: 100%;
+        }
+    }
+
+    @@media (max-width: 767px) {
+        .profile-wrapper {
+            padding: 20px 0;
+        }
+
+        .profile-card {
+            padding: 25px 20px;
+        }
+
+        .user-avatar {
+            width: 90px;
+            height: 90px;
+            font-size: 36px;
+        }
+
+        .profile-header-section h1 {
+            font-size: 22px;
+        }
+
+        .stat-col {
+            flex: 0 0 50%;
+            max-width: 50%;
+        }
+
+        .stat-box {
+            padding: 20px 15px;
+        }
+
+        .stat-box-number {
+            font-size: 28px;
+        }
+
+        .tab-button {
+            padding: 15px 10px;
+            font-size: 14px;
+        }
+
+        .table-card {
+            overflow-x: auto;
+        }
+
+        .custom-table {
+            min-width: 600px;
+        }
+
+            .custom-table th,
+            .custom-table td {
+                padding: 12px 10px;
+                font-size: 13px;
+            }
+    }
+</style>
+
+<div class="profile-wrapper">
+    <div class="profile-container">
+        <a href="javascript:history.back()" class="back-button">← Quay lại</a>
+
+        <!-- Profile Information -->
+        <div class="profile-card">
+            <div class="profile-header-section">
+                <div class="user-avatar">@Model.FullName?.FirstOrDefault()</div>
+                <h1>@Model.FullName</h1>
+                <p>@Model.StudentCode</p>
+            </div>
+
+            <div class="info-row">
+                <div class="info-col">
+                    <div class="info-box">
+                        <div class="info-box-label">Email</div>
+                        <div class="info-box-value">@Model.Email</div>
+                    </div>
+                </div>
+                <div class="info-col">
+                    <div class="info-box">
+                        <div class="info-box-label">Điện thoại</div>
+                        <div class="info-box-value">@(string.IsNullOrEmpty(Model.PhoneNumber) ? "Chưa cập nhật" : Model.PhoneNumber)</div>
+                    </div>
+                </div>
+                <div class="info-col">
+                    <div class="info-box">
+                        <div class="info-box-label">Khoa</div>
+                        <div class="info-box-value">@Model.Faculty</div>
+                    </div>
+                </div>
+                <div class="info-col">
+                    <div class="info-box">
+                        <div class="info-box-label">Ngành</div>
+                        <div class="info-box-value">@Model.Major</div>
+                    </div>
+                </div>
+                <div class="info-col">
+                    <div class="info-box">
+                        <div class="info-box-label">Ngày sinh</div>
+                        <div class="info-box-value">@(Model.BirthDate?.ToString("dd/MM/yyyy") ?? "Chưa cập nhật")</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Statistics -->
+        <div class="stats-row">
+            <div class="stat-col">
+                <div class="stat-box">
+                    <div class="stat-box-number">@totalRegistered</div>
+                    <div class="stat-box-label">Đã đăng ký</div>
+                </div>
+            </div>
+            <div class="stat-col">
+                <div class="stat-box green">
+                    <div class="stat-box-number">@totalPresent</div>
+                    <div class="stat-box-label">Có mặt</div>
+                </div>
+            </div>
+            <div class="stat-col">
+                <div class="stat-box red">
+                    <div class="stat-box-number">@totalAbsent</div>
+                    <div class="stat-box-label">Vắng</div>
+                </div>
+            </div>
+            <div class="stat-col">
+                <div class="stat-box orange">
+                    <div class="stat-box-number">@rate.ToString("0")%</div>
+                    <div class="stat-box-label">Tỉ lệ tham gia</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab Navigation -->
+        <div class="tab-navigation">
+            <button class="tab-button active" onclick="switchTab(event, 'tab-registered')">
+                📅 Sự kiện đã đăng ký
+            </button>
+            <button class="tab-button" onclick="switchTab(event, 'tab-attendance')">
+                📋 Lịch sử điểm danh
+            </button>
+        </div>
+
+        <!-- Tab Content: Registered Events -->
+        <div id="tab-registered" class="tab-content-area active">
+            <div class="table-card">
+                @if (Model.EventRegistrations != null && Model.EventRegistrations.Any())
+                {
+                    <table class="custom-table">
+                        <thead>
+                            <tr>
+                                <th>Tên sự kiện</th>
+                                <th>Thời gian</th>
+                                <th>Địa điểm</th>
+                                <th>Trạng thái</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var r in Model.EventRegistrations)
+                            {
+                                <tr>
+                                    <td>@r.Event?.Title</td>
+                                    <td>
+                                        @r.Event?.StartTime.ToString("dd/MM/yyyy")
+                                        <span class="time-small">
+                                            @r.Event?.StartTime.ToString("HH:mm") - @r.Event?.EndTime.ToString("HH:mm")
+                                        </span>
+                                    </td>
+                                    <td>@r.Event?.Location</td>
+                                    <td><span class="status-badge primary">@r.Status</span></td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+                else
+                {
+                    <div class="empty-box">
+                        <div class="empty-box-icon">📅</div>
+                        <p>Chưa đăng ký sự kiện nào</p>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <!-- Tab Content: Attendance History -->
+        <div id="tab-attendance" class="tab-content-area">
+            <div class="table-card">
+                @if (Model.Attendances != null && Model.Attendances.Any())
+                {
+                    <table class="custom-table">
+                        <thead>
+                            <tr>
+                                <th>Sự kiện</th>
+                                <th>Thời gian check-in</th>
+                                <th>Kết quả</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var a in Model.Attendances)
+                            {
+                                <tr>
+                                    <td>@a.Event?.Title</td>
+                                    <td>
+                                        @if (a.AttendanceTime.HasValue)
+                                        {
+                                            @a.AttendanceTime.Value.ToString("dd/MM/yyyy HH:mm")
+                                        }
+                                        else
+                                        {
+                                            <span style="color: #bdc3c7;">--</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (a.IsPresent == true)
+                                        {
+                                            <span class="status-badge success">✓ Có mặt</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="status-badge danger">✗ Vắng</span>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+                else
+                {
+                    <div class="empty-box">
+                        <div class="empty-box-icon">📋</div>
+                        <p>Chưa có dữ liệu điểm danh</p>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function switchTab(event, tabId) {
+        // Remove active class from all tabs
+        var tabButtons = document.querySelectorAll('.tab-button');
+        tabButtons.forEach(function(btn) {
+            btn.classList.remove('active');
+        });
+
+        // Hide all tab contents
+        var tabContents = document.querySelectorAll('.tab-content-area');
+        tabContents.forEach(function(content) {
+            content.classList.remove('active');
+        });
+
+        // Add active class to clicked tab
+        event.currentTarget.classList.add('active');
+
+        // Show selected tab content
+        document.getElementById(tabId).classList.add('active');
+    }
+</script>
