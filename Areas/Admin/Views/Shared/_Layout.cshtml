@@ -1,4 +1,5 @@
-﻿@using Microsoft.AspNetCore.Http
+﻿@using Microsoft.AspNetCore.Http;
+@using Microsoft.AspNetCore.Http.Extensions;
 @using VinhuniEvent.Filters;
 
 <!DOCTYPE html>
@@ -289,29 +290,47 @@
 								</div>
 							</div>
 						</li>
-						<li class="nav-item dropdown">
-							<a class="nav-icon dropdown-toggle d-inline-block d-sm-none" href="#" data-bs-toggle="dropdown">
-								<i class="align-middle" data-feather="settings"></i>
-							</a>
+						@if (Context.Session.GetInt32("UserId") != null)
+						{
+							<li class="nav-item dropdown">
+								<a class="nav-icon dropdown-toggle d-inline-block d-sm-none"
+								   href="#" data-bs-toggle="dropdown">
+									<i class="align-middle" data-feather="settings"></i>
+								</a>
 
-							<a class="nav-link dropdown-toggle d-none d-sm-inline-block" href="#" data-bs-toggle="dropdown">
-								<img src="~/admin/img/avatars/avatar.jpg" class="avatar img-fluid rounded me-1" alt="Charles Hall" />
-								<span class="text-dark">
-									@(Context.Session.GetString("FullName") ?? "User")
-								</span>
+								<a class="nav-link dropdown-toggle d-none d-sm-inline-block"
+								   href="#" data-bs-toggle="dropdown">
+									<img src="~/admin/img/avatars/avatar.jpg"
+										 class="avatar img-fluid rounded me-1" />
+									<span class="text-dark">
+										@Context.Session.GetString("FullName")
+									</span>
+								</a>
 
-							</a>
-							<div class="dropdown-menu dropdown-menu-end">
-								<a class="dropdown-item" href="pages-profile.html"><i class="align-middle me-1" data-feather="user"></i> Profile</a>
-								<a class="dropdown-item" href="#"><i class="align-middle me-1" data-feather="pie-chart"></i> Analytics</a>
-								<div class="dropdown-divider"></div>
-								<a class="dropdown-item" href="index.html"><i class="align-middle me-1" data-feather="settings"></i> Settings & Privacy</a>
-								<a class="dropdown-item" href="#"><i class="align-middle me-1" data-feather="help-circle"></i> Help Center</a>
-								<div class="dropdown-divider"></div>
-								<a class="dropdown-item" asp-controller="Home" asp-action="Index">Log out</a>
-							</div>
-						</li>
-					</ul>
+								<div class="dropdown-menu dropdown-menu-end shadow">
+									<a class="dropdown-item" href="#">
+										<i class="align-middle me-1" data-feather="user"></i> Profile
+									</a>
+
+									@if (Context.Session.GetInt32("RoleId") == 1)
+									{
+										<a class="dropdown-item" asp-area="Admin" asp-controller="Home" asp-action="Index">
+											<i class="align-middle me-1" data-feather="shield"></i> Admin Panel
+										</a>
+									}
+
+									<div class="dropdown-divider"></div>
+
+									<a class="dropdown-item text-danger"
+									   asp-controller="Home"
+									   asp-action="Logout">
+										<i class="align-middle me-1" data-feather="log-out"></i> Log out
+									</a>
+								</div>
+							</li>
+						}
+
+						</ul>
 				</div>
 			</nav>
 

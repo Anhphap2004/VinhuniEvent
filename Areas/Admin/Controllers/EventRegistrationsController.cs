@@ -7,7 +7,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using VinhuniEvent.Filters;
 using VinhuniEvent.Models;
-
+            
 namespace VinhuniEvent.Areas.Admin.Controllers
 {
     [RoleAuthorize(1, 3)]
@@ -20,6 +20,104 @@ namespace VinhuniEvent.Areas.Admin.Controllers
         {
             _context = context;
         }
+
+
+
+        // GET: Hiển thị màn hình quét QR
+        // GET: Hiển thị màn hình quét QR
+        [HttpGet]
+        public async Task<IActionResult> ScanQRCode(int id) // 1️⃣ Sửa 'eventId' thành 'id'
+        {
+            // 1. Kiểm tra quyền Admin qua Session
+            var roleId = HttpContext.Session.GetInt32("RoleId");
+            if (roleId == null)
+            {
+                return RedirectToAction("Index", "Login", new { area = "" });
+            }
+
+            // 2. Tìm sự kiện
+            var eventInfo = await _context.Events.FindAsync(id); // 2️⃣ Sửa chỗ này thành 'id'
+            if (eventInfo == null) return NotFound();
+
+            ViewBag.EventId = id; // 3️⃣ Sửa chỗ này thành 'id'
+            ViewBag.EventName = eventInfo.Title;
+            return View();
+        }
+        // POST: Xử lý điểm danh
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ProcessAttendance([FromForm] int eventId, [FromForm] int userId)
+        {
+            // 1. Kiểm tra quyền Admin (Bảo mật API)
+            var adminRoleId = HttpContext.Session.GetInt32("RoleId");
+            if (adminRoleId == null)
+            {
+                return Json(new { success = false, message = "⛔ Bạn không có quyền thực hiện!" });
+            }
+
+            // 2. Tìm sinh viên (Dựa trên ID nhận được từ máy quét)
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.UserId == userId);
+            if (user == null)
+            {
+                return Json(new { success = false, message = "❌ Không tìm thấy sinh viên!" });
+            }
+
+            // 3. Kiểm tra đăng ký
+            var isRegistered = await _context.EventRegistrations
+                .AnyAsync(r => r.EventId == eventId && r.UserId == userId);
+
+            if (!isRegistered)
+            {
+                return Json(new { success = false, message = $"⚠️ {user.FullName} chưa đăng ký sự kiện này!" });
+            }
+
+            try
+            {
+                // 4. Cập nhật Attendance
+                var attendance = await _context.Attendances
+                    .FirstOrDefaultAsync(a => a.EventId == eventId && a.UserId == userId);
+
+                if (attendance == null)
+                {
+                    attendance = new Attendance
+                    {
+                        EventId = eventId,
+                        UserId = userId,
+                        AttendanceTime = DateTime.Now,
+                        IsPresent = true
+                    };
+                    _context.Attendances.Add(attendance);
+                }
+                else
+                {
+                    if (attendance.IsPresent == true)
+                    {
+                        return Json(new { success = false, message = $"ℹ️ {user.FullName} đã điểm danh rồi." });
+                    }
+                    attendance.IsPresent = true;
+                    attendance.AttendanceTime = DateTime.Now;
+                    _context.Attendances.Update(attendance);
+                }
+
+                await _context.SaveChangesAsync();
+
+                // 5. Trả về kết quả
+                return Json(new
+                {
+                    success = true,
+                    message = "✅ Điểm danh thành công!",
+                    studentName = user.FullName,
+                    studentCode = user.StudentCode,
+                    // Nếu ImageUrl null thì dùng ảnh placeholder
+                    image = !string.IsNullOrEmpty(user.ImageUrl) ? $"/images/users/{user.ImageUrl}" : "https://via.placeholder.com/150"
+                });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "Lỗi Server: " + ex.Message });
+            }
+        }
+
 
         // GET: Admin/EventRegistrations
         public async Task<IActionResult> Index()

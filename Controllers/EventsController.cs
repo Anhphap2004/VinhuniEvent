@@ -16,17 +16,37 @@ namespace VinhuniEvent.Controllers
         [HttpGet]
         public async Task<IActionResult> Index(int? categoryid)
         {
-            var eventsQuery = _context.Events
-                .Where(e => e.IsActive && (!categoryid.HasValue || e.CategoryId == categoryid))
+            // 1. Khởi tạo query cơ bản
+            var baseQuery = _context.Events
                 .Include(e => e.Category)
-                .OrderByDescending(e => e.CreatedDate);
+                .Where(e => e.IsActive);
 
-            ViewBag.Category = await _context.EventCategories.ToListAsync();
-            ViewBag.EventNew = await eventsQuery.Take(4).ToListAsync();
-            ViewBag.EventHightLight = await eventsQuery.Where(p => p.Status == "hot").Take(4).ToListAsync();
+            // 2. Lọc theo category nếu có
+            if (categoryid.HasValue)
+            {
+                baseQuery = baseQuery.Where(e => e.CategoryId == categoryid);
+            }
 
-            var events = await eventsQuery.ToListAsync();
-            return View(events);
+            // 3. Lấy dữ liệu cho các phần khác nhau (Dùng ToListAsync riêng để tránh xung đột)
+            ViewBag.Categories = await _context.EventCategories.ToListAsync();
+
+            ViewBag.EventNew = await baseQuery
+                .OrderByDescending(e => e.CreatedDate)
+                .Take(4)
+                .ToListAsync();
+
+            ViewBag.EventHighlight = await baseQuery
+                .Where(p => p.Status == "hot")
+                .OrderByDescending(e => e.CreatedDate)
+                .Take(4)
+                .ToListAsync();
+
+            // 4. Danh sách tất cả sự kiện (Dùng Model chính)
+            var allEvents = await baseQuery
+                .OrderByDescending(e => e.CreatedDate)
+                .ToListAsync();
+
+            return View(allEvents);
         }
 
         [HttpGet("{slug}-{id}.html")]

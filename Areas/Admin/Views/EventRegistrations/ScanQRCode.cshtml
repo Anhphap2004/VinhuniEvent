@@ -1,0 +1,156 @@
+﻿@{
+    ViewData["Title"] = "Quét QR Điểm Danh";
+    int eventId = ViewBag.EventId;
+}
+
+@Html.AntiForgeryToken()
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-lg border-0">
+                <div class="card-header bg-primary text-white text-center py-3">
+                    <h4 class="mb-0">📷 ĐIỂM DANH: @ViewBag.EventName</h4>
+                </div>
+                <div class="card-body">
+                    
+                    <div id="reader" style="width: 100%; border-radius: 10px; overflow: hidden;"></div>
+                    
+                    <div class="text-center mt-3">
+                         <span class="text-muted fst-italic">Hãy đưa mã QR của sinh viên vào khung hình</span>
+                    </div>
+
+                    <hr />
+
+                    <div id="result-area" class="alert alert-secondary text-center" style="display: none;">
+                        <h4 class="alert-heading" id="res-title">Kết quả</h4>
+                        <img id="res-img" src="" style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; margin-bottom: 10px;" />
+                        <h3 id="res-name" style="font-weight: bold; color: #333;"></h3>
+                        <p id="res-code" style="font-size: 1.2rem;"></p>
+                        <p id="res-message" style="font-weight: bold;"></p>
+                    </div>
+
+                    <div class="d-grid gap-2 mt-4">
+                        <a href="/Admin/EventRegistrations/Attendance?eventId=@eventId" class="btn btn-outline-secondary">
+                            ⬅ Quay lại danh sách
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> <script>
+    const eventId = @eventId;
+    let isScanning = true; // Cờ để chặn quét liên tục quá nhanh
+    let lastScanTime = 0;
+
+    // Âm thanh 'Bíp' khi thành công
+    const beepSound = new Audio('https://www.soundjay.com/buttons/sounds/beep-07.mp3');
+
+    function onScanSuccess(decodedText, decodedResult) {
+        // Chặn quét quá nhanh (tối thiểu 3 giây giữa các lần quét thành công)
+        const now = new Date().getTime();
+        if (now - lastScanTime < 3000) return; 
+
+        // 1. Phân tích ID từ mã QR (Giả sử mã QR chỉ chứa số UserId)
+        const userId = parseInt(decodedText);
+        if (isNaN(userId)) {
+            Swal.fire("Lỗi", "Mã QR không hợp lệ (Không phải ID số)!", "error");
+            return;
+        }
+
+        lastScanTime = now; // Cập nhật thời gian quét
+
+        // 2. Gửi dữ liệu lên Server
+        processAttendance(userId);
+    }
+
+    function processAttendance(userId) {
+        // Lấy CSRF Token từ thẻ Input ẩn do @Html.AntiForgeryToken() tạo ra
+        const token = document.querySelector('input[name="__RequestVerificationToken"]').value;
+        
+        // Tạo Form Data
+        const formData = new FormData();
+        formData.append('eventId', eventId);
+        formData.append('userId', userId);
+        formData.append('__RequestVerificationToken', token);
+
+        // Hiển thị trạng thái đang xử lý
+        Swal.fire({
+            title: 'Đang xử lý...',
+            timer: 1000,
+            didOpen: () => { Swal.showLoading() }
+        });
+
+        // Gọi Ajax
+        fetch('/Admin/EventRegistrations/ProcessAttendance', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            const resultArea = document.getElementById('result-area');
+            const resTitle = document.getElementById('res-title');
+            const resName = document.getElementById('res-name');
+            const resCode = document.getElementById('res-code');
+            const resMsg = document.getElementById('res-message');
+            const resImg = document.getElementById('res-img');
+
+            resultArea.style.display = 'block';
+
+            if (data.success) {
+                // THÀNH CÔNG
+                beepSound.play();
+                
+                resultArea.className = "alert alert-success text-center";
+                resTitle.innerText = "ĐIỂM DANH THÀNH CÔNG";
+                resName.innerText = data.studentName;
+                resCode.innerText = "MSSV: " + data.studentCode;
+                resMsg.innerText = data.message;
+                resImg.src = data.image; // Hiển thị ảnh SV
+                
+                // Thông báo popup nhỏ
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Đã điểm danh!',
+                    text: data.studentName,
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+            } else {
+                // THẤT BẠI
+                resultArea.className = "alert alert-danger text-center";
+                resTitle.innerText = "CẢNH BÁO";
+                resName.innerText = "---";
+                resCode.innerText = "";
+                resMsg.innerText = data.message;
+                resImg.src = ""; // Ẩn ảnh hoặc hiện ảnh lỗi
+                
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Lỗi',
+                    text: data.message
+                });
+            }
+        })
+        .catch(err => {
+            console.error(err);
+            Swal.fire("Lỗi Server", "Không thể kết nối đến máy chủ", "error");
+        });
+    }
+
+    function onScanFailure(error) {
+        // Không làm gì để tránh spam console log khi chưa bắt được mã
+    }
+
+    // Khởi tạo Camera
+    let html5QrcodeScanner = new Html5QrcodeScanner(
+        "reader",
+        { fps: 10, qrbox: { width: 250, height: 250 } },
+        /* verbose= */ false);
+    
+    html5QrcodeScanner.render(onScanSuccess, onScanFailure);
+</script>

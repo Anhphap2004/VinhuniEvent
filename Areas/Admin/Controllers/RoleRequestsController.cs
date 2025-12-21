@@ -63,14 +63,9 @@ namespace VinhuniEvent.Areas.Admin.Controllers
                 TempData["Error"] = "Không tìm thấy yêu cầu!";
                 return RedirectToAction(nameof(PendingRoleRequests));
             }
-
-            // Cập nhật trạng thái
             request.Status = approve ? "Approved" : "Rejected";
-
-            // Nếu duyệt -> cấp quyền
             if (approve)
             {
-                // Giả sử RoleId = 3 là Organizer
                 if (request.User != null)
                 {
                     request.User.RoleId = 3;

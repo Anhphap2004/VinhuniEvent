@@ -5,13 +5,12 @@
     ViewData["Title"] = "Đăng ký làm Ban Tổ Chức";
     Layout = "~/Views/Shared/_Layout.cshtml";
 
+    // Lấy UserId từ session để hiển thị (nếu cần) hoặc dùng trong logic hiển thị
     var userIdSession = Context.Session.GetInt32("UserId") ?? 0;
-    bool hasPendingRequest = false;
-    if (userIdSession > 0 && ViewBag.PendingRequests != null)
-    {
-        hasPendingRequest = ((IEnumerable<VinhuniEvent.Models.RoleRequest>)ViewBag.PendingRequests)
-                            .Any(r => r.UserId == userIdSession && r.Status == "Pending");
-    }
+
+    // Lấy trạng thái từ Controller
+    bool isOrganizer = ViewBag.IsOrganizer != null && (bool)ViewBag.IsOrganizer;
+    bool hasPending = ViewBag.HasPendingRequest != null && (bool)ViewBag.HasPendingRequest;
 }
 
 <style>
@@ -25,36 +24,28 @@
         max-width: 1400px;
         margin: 135px auto;
         padding: 0 20px;
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        font-family: 'Segoe UI', sans-serif;
     }
 
     .register-card {
         background: #ffffff;
-        border: 1px solid #ddd;
         border-radius: 8px;
         overflow: hidden;
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        border: 1px solid #ddd;
     }
 
     .card-header-custom {
         background: linear-gradient(135deg, #0066cc 0%, #004999 100%);
         padding: 30px 20px;
         text-align: center;
+        color: white;
     }
 
         .card-header-custom h3 {
-            color: white;
             margin: 0 0 10px 0;
             font-size: 28px;
-            font-weight: bold;
             text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .card-header-custom p {
-            color: rgba(255, 255, 255, 0.95);
-            margin: 0;
-            font-size: 15px;
         }
 
     .alert-custom {
@@ -64,7 +55,6 @@
         margin: 20px 30px;
         border-radius: 5px;
         color: #003d7a;
-        font-size: 14px;
     }
 
     .two-column-layout {
@@ -83,6 +73,7 @@
         padding-left: 20px;
     }
 
+    /* Info Sections */
     .info-section {
         background: #f9f9f9;
         border-left: 4px solid #0066cc;
@@ -93,23 +84,15 @@
 
         .info-section h4 {
             color: #0066cc;
-            margin: 0 0 15px 0;
+            margin-bottom: 15px;
             font-size: 16px;
-            font-weight: bold;
             text-transform: uppercase;
-        }
-
-        .info-section h5 {
-            color: #333;
-            margin: 15px 0 10px 0;
-            font-size: 14px;
             font-weight: bold;
         }
 
         .info-section ul {
-            margin: 10px 0;
             padding-left: 20px;
-            list-style-type: disc;
+            margin: 0;
         }
 
         .info-section li {
@@ -127,44 +110,17 @@
         border-radius: 4px;
     }
 
-        .requirements-list h5 {
-            color: #0066cc;
-            margin: 0 0 12px 0;
-            font-size: 14px;
-            font-weight: bold;
-        }
-
-        .requirements-list ol {
-            margin: 10px 0;
-            padding-left: 20px;
-        }
-
-        .requirements-list li {
-            color: #444;
-            margin: 6px 0;
-            font-size: 13px;
-            line-height: 1.6;
-        }
-
     .note-box {
         background: #fffbf0;
         border: 1px solid #ffcc00;
         padding: 15px;
         margin: 15px 0;
         border-radius: 4px;
+        color: #333;
+        font-size: 13px;
     }
 
-        .note-box p {
-            margin: 6px 0;
-            color: #333;
-            font-size: 13px;
-            line-height: 1.5;
-        }
-
-        .note-box strong {
-            color: #cc6600;
-        }
-
+    /* Poster Section */
     .poster-section {
         background: linear-gradient(135deg, #0066cc 0%, #004999 100%);
         border-radius: 12px;
@@ -173,51 +129,14 @@
         color: white;
         margin-bottom: 30px;
         box-shadow: 0 6px 20px rgba(0, 102, 204, 0.4);
-        position: relative;
-        overflow: hidden;
     }
 
-        .poster-section::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            right: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
-            animation: rotate 20s linear infinite;
+        .poster-section h2 {
+            font-size: 32px;
+            font-weight: bold;
+            text-transform: uppercase;
+            margin-bottom: 10px;
         }
-
-    @@keyframes rotate {
-        from {
-            transform: rotate(0deg);
-        }
-
-        to {
-            transform: rotate(360deg);
-        }
-    }
-
-    .poster-section > * {
-        position: relative;
-        z-index: 1;
-    }
-
-    .poster-section h2 {
-        font-size: 32px;
-        font-weight: bold;
-        margin: 0 0 10px 0;
-        text-transform: uppercase;
-        letter-spacing: 2px;
-        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
-    }
-
-    .poster-section .subtitle {
-        font-size: 17px;
-        margin: 0 0 25px 0;
-        opacity: 0.95;
-        font-weight: 300;
-    }
 
     .benefits {
         background: rgba(255, 255, 255, 0.15);
@@ -225,122 +144,63 @@
         padding: 25px 20px;
         margin: 20px 0;
         backdrop-filter: blur(10px);
-        border: 1px solid rgba(255, 255, 255, 0.2);
+        text-align: left;
     }
-
-        .benefits h3 {
-            font-size: 20px;
-            margin: 0 0 20px 0;
-            color: #ffffff;
-            font-weight: bold;
-        }
 
     .benefit-item {
         display: flex;
         align-items: flex-start;
         margin: 15px 0;
-        text-align: left;
-        animation: fadeInUp 0.6s ease-out;
-    }
-
-    @@keyframes fadeInUp {
-        from {
-            opacity: 0;
-            transform: translateY(10px);
-        }
-
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-
-    .benefit-item:nth-child(1) {
-        animation-delay: 0.1s;
-    }
-
-    .benefit-item:nth-child(2) {
-        animation-delay: 0.2s;
-    }
-
-    .benefit-item:nth-child(3) {
-        animation-delay: 0.3s;
-    }
-
-    .benefit-item:nth-child(4) {
-        animation-delay: 0.4s;
-    }
-
-    .benefit-item:nth-child(5) {
-        animation-delay: 0.5s;
     }
 
     .benefit-icon {
-        width: 45px;
-        height: 45px;
-        background: rgba(255, 255, 255, 0.25);
+        width: 40px;
+        height: 40px;
+        background: rgba(255,255,255,0.25);
         border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
         margin-right: 15px;
-        font-size: 22px;
         flex-shrink: 0;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .benefit-text strong {
+        display: block;
+        margin-bottom: 3px;
     }
 
     .benefit-text {
         font-size: 14px;
-        line-height: 1.5;
-        padding-top: 5px;
+        line-height: 1.4;
     }
-
-        .benefit-text strong {
-            display: block;
-            font-size: 15px;
-            margin-bottom: 3px;
-            color: #fff;
-        }
 
     .cta-badge {
         background: linear-gradient(135deg, #ffcc00 0%, #ff9900 100%);
         color: #003d7a;
         padding: 15px 30px;
         border-radius: 30px;
-        font-size: 16px;
         font-weight: bold;
         display: inline-block;
         margin-top: 20px;
         box-shadow: 0 4px 15px rgba(255, 204, 0, 0.5);
-        text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.3);
-        animation: pulse 2s ease-in-out infinite;
     }
 
-    @@keyframes pulse {
-        0%, 100% {
-            transform: scale(1);
-        }
-
-        50% {
-            transform: scale(1.05);
-        }
-    }
-
+    /* Form Section */
     .registration-form-section {
         background: #f9f9f9;
         padding: 30px;
         border-radius: 10px;
         border: 2px solid #0066cc;
-        box-shadow: 0 2px 10px rgba(0, 102, 204, 0.1);
     }
 
         .registration-form-section h3 {
             color: #0066cc;
-            font-size: 22px;
-            margin: 0 0 25px 0;
+            margin-bottom: 25px;
             text-align: center;
-            font-weight: bold;
             text-transform: uppercase;
+            font-weight: bold;
+            font-size: 22px;
         }
 
     .form-group-custom {
@@ -352,35 +212,20 @@
         color: #333;
         margin-bottom: 8px;
         display: block;
-        font-size: 14px;
     }
 
     .form-control-custom {
         border: 2px solid #ddd;
         padding: 12px;
-        font-size: 14px;
         width: 100%;
         border-radius: 5px;
-        transition: all 0.3s ease;
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        font-family: inherit;
     }
 
         .form-control-custom:focus {
             border-color: #0066cc;
             outline: none;
-            box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
         }
-
-        .form-control-custom:disabled {
-            background: #f0f0f0;
-            cursor: not-allowed;
-        }
-
-    textarea.form-control-custom {
-        resize: vertical;
-        min-height: 150px;
-        line-height: 1.6;
-    }
 
     .btn-custom {
         width: 100%;
@@ -393,18 +238,12 @@
         background: linear-gradient(135deg, #0066cc 0%, #004999 100%);
         color: white;
         text-transform: uppercase;
-        letter-spacing: 1px;
-        transition: all 0.3s ease;
-        box-shadow: 0 4px 10px rgba(0, 102, 204, 0.3);
+        transition: 0.3s;
     }
 
         .btn-custom:hover {
             transform: translateY(-2px);
             box-shadow: 0 6px 15px rgba(0, 102, 204, 0.4);
-        }
-
-        .btn-custom:active {
-            transform: translateY(0);
         }
 
         .btn-custom:disabled {
@@ -414,73 +253,60 @@
             box-shadow: none;
         }
 
-    .pending-card {
-        background: linear-gradient(135deg, #fff9e6 0%, #fffbf0 100%);
-        border: 2px solid #ffcc00;
+    .text-danger {
+        color: #dc3545;
+        font-size: 0.875em;
+        margin-top: 5px;
+        display: block;
+    }
+
+    /* Pending / Success Card */
+    .status-card {
         padding: 30px;
         text-align: center;
         margin-bottom: 25px;
         border-radius: 10px;
-        box-shadow: 0 2px 10px rgba(255, 204, 0, 0.2);
+    }
+
+    .pending-card {
+        background: #fff9e6;
+        border: 2px solid #ffcc00;
     }
 
         .pending-card h4 {
             color: #cc6600;
-            margin: 0 0 15px 0;
+            margin-bottom: 10px;
             font-size: 20px;
             font-weight: bold;
         }
 
-        .pending-card p {
-            color: #666;
-            margin: 0;
-            font-size: 14px;
-            line-height: 1.6;
+    .success-card {
+        background: #d4edda;
+        border: 2px solid #28a745;
+    }
+
+        .success-card h4 {
+            color: #155724;
+            margin-bottom: 10px;
+            font-size: 20px;
+            font-weight: bold;
         }
 
     @@media (max-width: 968px) {
         .two-column-layout {
             grid-template-columns: 1fr;
-            gap: 30px;
-            padding: 20px;
         }
 
         .left-column {
             border-right: none;
             border-bottom: 2px solid #e0e0e0;
-            padding-right: 0;
             padding-bottom: 20px;
+            padding-right: 0;
         }
 
         .right-column {
             padding-left: 0;
             padding-top: 20px;
-        }
-
-        .card-header-custom h3 {
-            font-size: 22px;
-        }
-
-        .poster-section h2 {
-            font-size: 24px;
-        }
-    }
-
-    @@media (max-width: 576px) {
-        .register-container {
-            padding: 0 10px;
-        }
-
-        .two-column-layout {
-            padding: 15px;
-        }
-
-        .poster-section {
-            padding: 25px 20px;
-        }
-
-        .registration-form-section {
-            padding: 20px;
         }
     }
 </style>
@@ -500,210 +326,109 @@
         }
 
         <div class="two-column-layout">
-            <!-- ==================== CỘT TRÁI: THÔNG TIN CHI TIẾT ==================== -->
             <div class="left-column">
-
-                <!-- Quyền lợi -->
                 <div class="info-section">
                     <h4>🌟 I. Quyền Lợi Của Ban Tổ Chức</h4>
                     <ul>
                         <li>Tạo và quản lý các sự kiện trên hệ thống</li>
                         <li>Chỉnh sửa, cập nhật thông tin sự kiện linh hoạt</li>
                         <li>Xem và quản lý danh sách người đăng ký tham gia</li>
-                        <li>Nhận thông báo về các hoạt động liên quan</li>
                         <li>Sử dụng đầy đủ công cụ hỗ trợ tổ chức chuyên nghiệp</li>
                     </ul>
                 </div>
 
-                <!-- Trách nhiệm -->
                 <div class="info-section">
                     <h4>📋 II. Trách Nhiệm Của Ban Tổ Chức</h4>
                     <ul>
                         <li>Đảm bảo tính chính xác và đầy đủ của thông tin sự kiện</li>
                         <li>Cập nhật kịp thời mọi thay đổi về thời gian, địa điểm</li>
-                        <li>Thông báo rõ ràng điều kiện tham gia cho người dự</li>
                         <li>Bảo mật thông tin cá nhân của người đăng ký</li>
-                        <li>Phản hồi câu hỏi, thắc mắc một cách kịp thời</li>
                         <li>Chịu trách nhiệm về nội dung và chất lượng sự kiện</li>
                     </ul>
                 </div>
 
-                <!-- Quy định nội dung -->
-                <div class="info-section">
-                    <h4>⚠️ III. Quy Định Về Nội Dung Sự Kiện</h4>
-                    <ul>
-                        <li>Nội dung phải tích cực, lành mạnh, phù hợp thuần phong mỹ tục</li>
-                        <li>Không tổ chức sự kiện có nội dung chính trị, tôn giáo nhạy cảm</li>
-                        <li>Không tuyên truyền bạo lực, phân biệt đối xử, thù hận</li>
-                        <li>Không quảng cáo sản phẩm, dịch vụ trái pháp luật</li>
-                        <li>Phù hợp mục đích giáo dục, văn hóa, thể thao, giải trí lành mạnh</li>
-                    </ul>
-                </div>
-
-                <!-- Quy trình -->
-                <div class="info-section">
-                    <h4>🔄 IV. Quy Trình Tổ Chức</h4>
-                    <ul>
-                        <li>Tạo sự kiện trước thời gian diễn ra ít nhất 7 ngày</li>
-                        <li>Thông báo hủy/thay đổi lịch trước ít nhất 48 giờ</li>
-                        <li>Cập nhật báo cáo kết quả trong vòng 3 ngày sau sự kiện</li>
-                        <li>Hình ảnh minh họa phải liên quan, không vi phạm bản quyền</li>
-                        <li>Không tạo các sự kiện trùng lặp hoặc spam thông tin</li>
-                    </ul>
-                </div>
-
-                <!-- An toàn -->
-                <div class="info-section">
-                    <h4>🛡️ V. An Toàn & Bảo Mật</h4>
-                    <ul>
-                        <li>Đảm bảo an toàn vật chất và tinh thần cho người tham gia</li>
-                        <li>Có phương án dự phòng cho các tình huống khẩn cấp</li>
-                        <li>Không thu thập thông tin cá nhân vượt mức cần thiết</li>
-                        <li>Bảo mật thông tin, không chia sẻ cho bên thứ ba</li>
-                        <li>Tuân thủ quy định bảo vệ dữ liệu cá nhân theo pháp luật</li>
-                    </ul>
-                </div>
-
-                <!-- Xử lý vi phạm -->
-                <div class="info-section">
-                    <h4>⚖️ VI. Xử Lý Vi Phạm</h4>
-                    <ul>
-                        <li><strong>Vi phạm lần 1:</strong> Nhận cảnh cáo và yêu cầu chỉnh sửa</li>
-                        <li><strong>Vi phạm lần 2:</strong> Tạm khóa quyền tạo sự kiện 30 ngày</li>
-                        <li><strong>Vi phạm nghiêm trọng:</strong> Thu hồi vĩnh viễn quyền BTC</li>
-                        <li><strong>Vi phạm pháp luật:</strong> Báo cơ quan chức năng xử lý</li>
-                    </ul>
-                </div>
-
-                <!-- Điều kiện -->
                 <div class="requirements-list">
-                    <h5>✅ VII. Điều Kiện Đăng Ký</h5>
+                    <h4>✅ III. Điều Kiện Đăng Ký</h4>
                     <ol>
                         <li>Là sinh viên, cán bộ hoặc giảng viên của trường</li>
                         <li>Tài khoản đã được kích hoạt và xác thực email</li>
-                        <li>Không trong thời gian bị khóa quyền hoặc xử lý vi phạm</li>
-                        <li>Cam kết tuân thủ đầy đủ các quy định nêu trên</li>
-                        <li>Đồng ý cho hệ thống lưu trữ và xử lý thông tin cá nhân</li>
+                        <li>Cam kết tuân thủ đầy đủ các quy định</li>
                     </ol>
                 </div>
 
-                <!-- Lưu ý -->
                 <div class="note-box">
-                    <p><strong>⚡ Lưu Ý Quan Trọng:</strong></p>
-                    <p>• Ban Quản Trị có quyền từ chối/gỡ bỏ sự kiện vi phạm quy định</p>
-                    <p>• Thông tin sự kiện có thể được kiểm duyệt trước khi công bố</p>
-                    <p>• Ban Tổ Chức chịu trách nhiệm hoàn toàn trước pháp luật</p>
-                    <p>• Hệ thống không chịu trách nhiệm về tranh chấp phát sinh</p>
+                    <p><strong>⚡ Lưu Ý:</strong> Ban Quản Trị có quyền từ chối hoặc gỡ bỏ quyền BTC nếu phát hiện vi phạm quy định của nhà trường và hệ thống.</p>
                 </div>
-
             </div>
 
-            <!-- ==================== CỘT PHẢI: POSTER & FORM ==================== -->
             <div class="right-column">
 
-                <!-- POSTER QUẢNG CÁO -->
                 <div class="poster-section">
-                    <h2>🎯 TRẢNH BAN TỔ CHỨC</h2>
-                    <p class="subtitle">Khám phá tiềm năng tổ chức sự kiện của bạn!</p>
+                    <h2>TRỞ THÀNH BAN TỔ CHỨC</h2>
+                    <p class="subtitle">Khám phá tiềm năng của bạn!</p>
 
                     <div class="benefits">
-                        <h3>✨ Những Lợi Ích Đặc Biệt</h3>
-
                         <div class="benefit-item">
                             <div class="benefit-icon">🚀</div>
-                            <div class="benefit-text">
-                                <strong>Phát Triển Kỹ Năng</strong>
-                                Rèn luyện khả năng lãnh đạo, quản lý và tổ chức chuyên nghiệp
-                            </div>
+                            <div class="benefit-text"><strong>Phát Triển Kỹ Năng</strong>Quản lý và tổ chức chuyên nghiệp</div>
                         </div>
-
                         <div class="benefit-item">
                             <div class="benefit-icon">🤝</div>
-                            <div class="benefit-text">
-                                <strong>Mở Rộng Mạng Lưới</strong>
-                                Kết nối với hàng trăm sinh viên và tạo dựng mối quan hệ
-                            </div>
+                            <div class="benefit-text"><strong>Mở Rộng Mạng Lưới</strong>Kết nối với cộng đồng sinh viên</div>
                         </div>
-
-                        <div class="benefit-item">
-                            <div class="benefit-icon">🎓</div>
-                            <div class="benefit-text">
-                                <strong>Trải Nghiệm Thực Tế</strong>
-                                Áp dụng kiến thức lý thuyết vào thực tiễn tổ chức sự kiện
-                            </div>
-                        </div>
-
-                        <div class="benefit-item">
-                            <div class="benefit-icon">🏆</div>
-                            <div class="benefit-text">
-                                <strong>Tạo Dấu Ấn Riêng</strong>
-                                Đóng góp giá trị cho cộng đồng và để lại di sản ý nghĩa
-                            </div>
-                        </div>
-
                         <div class="benefit-item">
                             <div class="benefit-icon">💼</div>
-                            <div class="benefit-text">
-                                <strong>CV Nổi Bật</strong>
-                                Kinh nghiệm quý báu giúp bạn tự tin trên con đường sự nghiệp
-                            </div>
+                            <div class="benefit-text"><strong>CV Nổi Bật</strong>Điểm cộng lớn cho hồ sơ năng lực</div>
                         </div>
                     </div>
-
-                    <div class="cta-badge">
-                        🌟 HƠN 500+ SỰ KIỆN ĐÃ ĐƯỢC TỔ CHỨC 🌟
-                    </div>
+                    <div class="cta-badge">🌟 HƠN 500+ SỰ KIỆN ĐÃ TỔ CHỨC 🌟</div>
                 </div>
 
-                <!-- FORM ĐĂNG KÝ -->
-                @if (hasPendingRequest)
+                @if (isOrganizer)
                 {
-                    <div class="pending-card">
-                        <h4>⏳ YÊU CẦU ĐANG ĐƯỢC XỬ LÝ</h4>
-                        <p>Yêu cầu đăng ký của bạn đang được Ban Quản Trị xem xét kỹ lưỡng. Chúng tôi sẽ gửi thông báo kết quả qua email trong vòng <strong>2-3 ngày làm việc</strong>. Cảm ơn bạn đã kiên nhẫn chờ đợi!</p>
+                    <div class="status-card success-card">
+                        <h4>🎉 BẠN ĐÃ LÀ BAN TỔ CHỨC</h4>
+                        <p>Tài khoản của bạn đã có quyền tạo và quản lý sự kiện. Hãy truy cập trang quản trị để bắt đầu.</p>
+                    </div>
+                    <a href="@Url.Action("Index", "Home", new { area = "Admin" })" class="btn-custom" style="display:block; text-align:center; text-decoration:none;">Truy cập trang quản lý</a>
+                }
+                else if (hasPending)
+                {
+                    <div class="status-card pending-card">
+                        <h4>⏳ YÊU CẦU ĐANG CHỜ DUYỆT</h4>
+                        <p>Yêu cầu của bạn đang được Ban Quản Trị xem xét. Kết quả sẽ được thông báo qua email trong vòng <strong>2-3 ngày làm việc</strong>.</p>
                     </div>
                     <button class="btn-custom" disabled>✓ ĐÃ GỬI YÊU CẦU</button>
                 }
                 else
                 {
                     <div class="registration-form-section">
-                        <h3>📝 Đăng Ký Ngay Hôm Nay</h3>
+                        <h3>📝 Đăng Ký Ngay</h3>
 
-                        <form asp-controller="Register" asp-action="RequestOrganizer" method="post">
-                            <input type="hidden" asp-for="UserId" value="@userIdSession" />
+                        <form asp-action="RequestOrganizer" method="post">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="UserId" value="@userIdSession" />
 
                             <div class="form-group-custom">
-                                <label class="form-label-custom">Vai trò đăng ký:</label>
+                                <label class="form-label-custom">Vai trò:</label>
                                 <input asp-for="RequestedRole" class="form-control-custom" value="Organizer" readonly />
                             </div>
 
                             <div class="form-group-custom">
                                 <label asp-for="Reason" class="form-label-custom">
-                                    Lý do muốn trở thành Ban Tổ Chức: <span style="color: red;">*</span>
+                                    Lý do / Động lực: <span style="color: red;">*</span>
                                 </label>
-                                <textarea asp-for="Reason"
-                                          class="form-control-custom"
-                                          rows="8"
-                                          required
-                                          placeholder="Vui lòng mô tả chi tiết về bản thân và động lực:
-
-        • Kinh nghiệm tổ chức sự kiện (nếu có)
-        • Mục đích và động lực đăng ký làm BTC
-        • Các loại sự kiện bạn dự định tổ chức
-        • Cam kết tuân thủ quy định của hệ thống
-
-        Ví dụ: Tôi từng tham gia tổ chức các hoạt động ngoại khóa tại lớp và khoa trong 2 năm qua. Tôi muốn đóng góp vào việc tạo ra các sự kiện bổ ích cho cộng đồng sinh viên, đặc biệt là các hoạt động về học thuật, kỹ năng mềm và văn hóa. Tôi cam kết tuân thủ đầy đủ các quy định và tổ chức các sự kiện chất lượng, an toàn, mang lại giá trị thực sự cho người tham gia."></textarea>
+                                <textarea asp-for="Reason" class="form-control-custom" rows="6" required
+                                          placeholder="Chia sẻ kinh nghiệm tổ chức (nếu có), mục đích đăng ký và loại hình sự kiện bạn dự định tổ chức..."></textarea>
+                                <span asp-validation-for="Reason" class="text-danger"></span>
                             </div>
 
                             <div class="note-box">
-                                <p><strong>✓ Xác Nhận Cam Kết:</strong></p>
-                                <p>☑ Tôi đã đọc và hiểu đầy đủ các quy định về tài khoản Ban Tổ Chức</p>
-                                <p>☑ Tôi cam kết tuân thủ mọi điều khoản và quy định khi tổ chức sự kiện</p>
-                                <p>☑ Tôi chấp nhận các hình thức xử lý vi phạm nếu không tuân thủ quy định</p>
-                                <p>☑ Tôi đồng ý cho hệ thống xử lý thông tin cá nhân theo quy định</p>
+                                <p>☑ Tôi cam kết tuân thủ quy định khi tổ chức sự kiện.</p>
+                                <p>☑ Tôi đồng ý cho hệ thống xử lý thông tin cá nhân.</p>
                             </div>
 
-                            <button type="submit" class="btn-custom">🚀 Gửi Yêu Cầu Đăng Ký</button>
+                            <button type="submit" class="btn-custom">🚀 Gửi Yêu Cầu</button>
                         </form>
                     </div>
                 }

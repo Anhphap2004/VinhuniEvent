@@ -38,26 +38,23 @@ namespace VinhuniEvent.Controllers
                 return View();
             }
 
-            //  Lưu thông tin vào Session
             HttpContext.Session.SetInt32("UserId", user.UserId);
             HttpContext.Session.SetString("FullName", user.FullName ?? "");
             HttpContext.Session.SetInt32("RoleId", user.RoleId);
 
-            //  Lấy RoleName để phân quyền
             var role = _context.Roles.FirstOrDefault(r => r.RoleId == user.RoleId);
             string roleName = role?.RoleName ?? "Unknown";
 
-            //  Điều hướng theo RoleId
             switch (user.RoleId)
             {
-                case 1: // Admin
+                case 1: 
                     return RedirectToAction("Index", "Home", new { area = "Admin" });
 
-                case 2: // Student
+                case 2: 
                     return RedirectToAction("Index", "Home");
 
-                case 3: // Organizer
-                    return RedirectToAction("Index", "Home", new { area = "Admin" });
+                case 3: 
+                    return RedirectToAction("Index", "Home");
 
                 default:
                     return RedirectToAction("Index", "Home");
@@ -67,6 +64,7 @@ namespace VinhuniEvent.Controllers
         public IActionResult Logout()
         {
             HttpContext.Session.Clear();
+            TempData["Success"] = "Bạn đã đăng xuất thành công";
             return RedirectToAction("Index", "Home");
         }
     }

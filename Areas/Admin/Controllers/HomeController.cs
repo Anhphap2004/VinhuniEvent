@@ -10,5 +10,11 @@ namespace VinhuniEvent.Areas.Admin.Controllers
         {
             return View();
         }
+        public IActionResult Logout()
+        {
+            HttpContext.Session.Clear();
+            TempData["Success"] = "Bạn đã đăng xuất thành công";
+            return RedirectToAction("Index", "Login", new {area=""});
+        }
     }
 }

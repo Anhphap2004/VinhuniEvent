@@ -1,281 +1,495 @@
 ﻿@model IEnumerable<VinhuniEvent.Models.Event>
 @{
-	List<EventCategory> category = ViewBag.category;
-	List<Event> eventnew = ViewBag.eventnew;
-	List<Event> eventhighlight = ViewBag.EventHightLight;
+    ViewData["Title"] = "Sự kiện VinhUni";
+    var categories = ViewBag.Categories as List<VinhuniEvent.Models.EventCategory>;
+    var eventNew = ViewBag.EventNew as List<VinhuniEvent.Models.Event>;
+    var eventHighlight = ViewBag.EventHighlight as List<VinhuniEvent.Models.Event>;
 }
-<!-- Start Events Page -->
-<section class="vinhuni-events-page" style="padding: 40px 20px; background: #f8f9fa;">
-	<div class="vinhuni-events-container" style="max-width: 1400px; margin: 0 auto;">
-
-		<!-- Search Section -->
-		<div class="vinhuni-search-section" style="background: white; padding: 25px 30px; margin-top:100px;margin-bottom: 30px; box-shadow: 0 2px 6px rgba(0,0,0,0.06);">
-			<div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
-				<input type="text" placeholder="Tên sự kiện, từ khóa..." style="flex: 1; min-width: 220px; padding: 10px 18px; border: 1px solid #ddd; font-size: 13px;">
-				<input type="date" style="padding: 10px 18px; border: 1px solid #ddd; font-size: 13px; width: 160px;">
-				<select style="padding: 10px 18px; border: 1px solid #ddd; font-size: 13px; width: 160px;">
-					<option>Tất cả địa điểm</option>
-					<option>Hội trường A</option>
-					<option>Hội trường B</option>
-					<option>Sân vận động</option>
-				</select>
-				<button style="padding: 10px 28px; background: #667eea; color: white; border: none; font-weight: 600; cursor: pointer; font-size: 13px;">Tìm kiếm</button>
-			</div>
-		</div>
-
-		<!-- Main Content with Sidebar -->
-		<div style="display: grid; grid-template-columns: 280px 1fr; gap: 25px;">
-
-			<!-- Left Sidebar -->
-			<div class="vinhuni-sidebar">
-				<!-- Categories -->
-				<div class="vinhuni-categories-box" style="background: white; padding: 22px; margin-bottom: 20px; box-shadow: 0 2px 6px rgba(0,0,0,0.06);">
-					<h4 style="font-size: 17px; font-weight: 600; color: #333; margin-bottom: 18px; padding-bottom: 10px; border-bottom: 2px solid #667eea;">Danh mục sự kiện</h4>
-					<ul style="list-style: none; padding: 0; margin: 0;">
-						<li style="margin-bottom: 10px;">
-							<a href="@Url.Action("Index", "Events")" class="vinhuni-cat-link" style="display: flex; justify-content: space-between; align-items: center; padding: 9px 12px; text-decoration: none; color: #666; font-size: 13px; border-left: 3px solid transparent;">
-								<span>Tất Cả</span>
-								<span style="background: #f0f0f0; padding: 2px 8px; font-size: 11px; font-weight: 600; color: #666;">24</span>
-							</a>
-						</li>
-						@foreach (var p in category)
-						{
-							<li style="margin-bottom: 10px;">
-								<a href="@Url.Action("Index", "Events", new { categoryid = p.CategoryId })" class="vinhuni-cat-link" style="display: flex; justify-content: space-between; align-items: center; padding: 9px 12px; text-decoration: none; color: #666; font-size: 13px; border-left: 3px solid transparent;">
-									<span>@p.CategoryName</span>
-									<span style="background: #f0f0f0; padding: 2px 8px; font-size: 11px; font-weight: 600; color: #666;">24</span>
-								</a>
-							</li>
-						}
-					</ul>
-				</div>
-
-				<!-- Advertisement 1 -->
-				<div class="vinhuni-ad-box-1" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 22px; margin-bottom: 20px; text-align: center; color: white; box-shadow: 0 4px 8px rgba(0,0,0,0.12);">
-					<div style="font-size: 36px; margin-bottom: 12px;">🎯</div>
-					<h4 style="font-size: 15px; font-weight: 600; margin-bottom: 8px;">Đăng ký sự kiện ngay!</h4>
-					<p style="font-size: 12px; margin-bottom: 14px; opacity: 0.9;">Nhận thông báo sớm nhất về các sự kiện hot</p>
-					<a href="#" style="display: inline-block; padding: 9px 18px; background: white; color: #667eea; text-decoration: none; font-weight: 600; font-size: 12px;">Đăng ký ngay</a>
-				</div>
-
-				<!-- Advertisement 2 -->
-				<div class="vinhuni-ad-box-2" style="background: white; padding: 18px; box-shadow: 0 2px 6px rgba(0,0,0,0.06);">
-					<img src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=400" alt="Ad" style="width: 100%; height: 140px; object-fit: cover; margin-bottom: 12px;">
-					<h5 style="font-size: 13px; font-weight: 600; color: #333; margin-bottom: 6px;">Hội thảo công nghệ 2025</h5>
-					<p style="font-size: 11px; color: #666; margin-bottom: 10px;">Đăng ký tham gia sự kiện lớn nhất năm</p>
-					<a href="#" style="display: inline-block; color: #667eea; font-weight: 600; font-size: 11px; text-decoration: none;">Xem chi tiết</a>
-				</div>
-			</div>
-
-			<!-- Right Content -->
-			<div class="vinhuni-main-content">
-
-				<!-- Sự kiện nổi bật -->
-				<div class="vinhuni-featured-events" style="margin-bottom: 50px;">
-					<div class="vinhuni-section-header" style="margin-bottom: 25px;">
-						<h2 style="font-size: 26px; font-weight: 400; color: #0066CC; font-family: 'Arial', sans-serif; margin-bottom: 6px; text-transform: uppercase;">
-							Sự kiện nổi bật
-						</h2>
-						<p style="color: #666; font-size: 13px;">Những sự kiện được quan tâm nhiều nhất</p>
-					</div>
-
-					<div class="vinhuni-events-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px;">
-
-						@foreach (var p in eventhighlight)
-						{
-							<div class="vinhuni-event-card"
-								 style="background: #fff; overflow: hidden; border-radius: 10px; box-shadow: 0 3px 8px rgba(0,0,0,0.08); transition: transform 0.2s ease, box-shadow 0.2s ease;">
-								<div style="position: relative; height: 160px; overflow: hidden;">
-									<img src="~/main/img/events/@p.Image"
-										 alt="Event"
-										 style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s ease;">
-									<div style="position: absolute; top: 10px; right: 10px; background: #ff6b35; color: #fff; padding: 4px 10px; font-size: 10px; font-weight: 600; border-radius: 4px;">
-										NỔI BẬT
-									</div>
-								</div>
-								<div style="padding: 14px 16px;">
-									<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; font-size: 11px; color: #777;">
-										<span>🕒 @p.CreatedDate?.ToString("dd/MM/yyyy")</span>
-										<span>👥 @p.CurrentParticipants / @p.MaxParticipants</span>
-									</div>
-									<h4 style="font-size: 16px; font-weight: 700; color: #222; margin-bottom: 6px; line-height: 1.35; height: 42px; overflow: hidden;">
-										@p.Title
-									</h4>
-									<p style="color: #666; font-size: 14px; margin-bottom: 10px;">📍 @p.Location</p>
-									<a href="@Url.Action("Details", "Events", new { slug = p.Slug, id = p.EventId })"
-									   style="display: inline-block; color: #667eea; font-weight: 600; font-size: 12px; text-decoration: none;">
-										Chi Tiết →
-									</a>
-								</div>
-							</div>
-
-
-						}
-
-					</div>
-				</div>
-
-				<!-- Sự kiện mới nhất -->
-				<div class="vinhuni-latest-events" style="margin-bottom: 50px;">
-					<div class="vinhuni-section-header" style="margin-bottom: 25px;">
-						<h2 style="font-size: 26px; font-weight: 400; color: #0066CC; font-family: 'Arial', sans-serif; margin-bottom: 6px; text-transform: uppercase;">
-							Sự kiện mới nhất
-						</h2>
-						<p style="color: #666; font-size: 13px;">Các sự kiện vừa được đăng tải</p>
-					</div>
-
-					<div class="vinhuni-events-grid"
-						 style="display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 16px; padding: 8px;">
-						@foreach (var p in eventnew)
-						{
-							<div class="vinhuni-event-card"
-								 style="background: #fff; border-radius: 10px; overflow: hidden; box-shadow: 0 3px 8px rgba(0,0,0,0.06); transition: all 0.25s ease-in-out;">
-
-								<!-- Hình sự kiện -->
-								<div style="position: relative; height: 135px; overflow: hidden;">
-									<img src="~/main/img/events/@p.Image" alt="Event"
-										 style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s ease;">
-									<div style="position: absolute; top: 8px; right: 8px; background: linear-gradient(90deg,#4CAF50,#5edc8a); color: #fff; padding: 3px 8px; font-size: 9px; font-weight: 600; border-radius: 5px;">
-										MỚI
-									</div>
-								</div>
-
-								<!-- Nội dung sự kiện -->
-								<div style="padding: 10px 12px;">
-									<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; font-size: 10px; color: #777;">
-										<span>🕒 @p.CreatedDate?.ToString("dd/MM/yyyy")</span>
-										<span>👥 @p.MaxParticipants</span>
-									</div>
-
-									<h4 style="font-size: 16px; font-weight: 700; color: #222; margin-bottom: 5px; line-height: 1.3; height: 38px; overflow: hidden;">
-										@p.Title
-									</h4>
-
-									<p style="color: #555; font-size: 14px; margin-bottom: 10px;">📍 @p.Location</p>
-
-									<a href="@Url.Action("Details", "Events", new { slug = p.Slug, id = p.EventId })"
-									   style="display: inline-block; color: #5b6cfb; font-weight: 600; font-size: 12px; text-decoration: none;">
-										Chi tiết →
-									</a>
-								</div>
-							</div>
-						}
-					</div>
-
-
-
-				</div>
-
-				<!-- Tất cả sự kiện -->
-				<div class="vinhuni-all-events">
-					<div class="vinhuni-section-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
-						<div>
-							<h2 style="font-size: 26px; font-weight: 400; color: #0066CC; font-family: 'Arial', sans-serif; margin-bottom: 6px; text-transform: uppercase;">
-								Tất cả sự kiện
-							</h2>
-							<p style="color: #666; font-size: 13px;">Danh sách đầy đủ các sự kiện</p>
-						</div>
-						<select style="padding: 9px 14px; border: 1px solid #ddd; font-size: 12px; color: #666;">
-							<option>Mới nhất</option>
-							<option>Sắp diễn ra</option>
-							<option>Đã kết thúc</option>
-						</select>
-					</div>
-
-					<div class="vinhuni-events-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; margin-bottom: 35px;">
-						@foreach (var p in Model)
-						{
-							
-							<!-- All Event Cards -->
-							<div class="vinhuni-event-card" style="background: white; overflow: hidden; box-shadow: 0 2px 5px rgba(0,0,0,0.06);">
-								<div style="height: 150px; overflow: hidden;">
-									<img src="~/main/img/events/@p.Image" alt="Event" style="width: 100%; height: 100%; object-fit: cover;">
-								</div>
-								<!-- Nội dung sự kiện -->
-								<div style="padding: 10px 12px;">
-									<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; font-size: 10px; color: #777;">
-										<span>🕒 @p.CreatedDate?.ToString("dd/MM/yyyy")</span>
-										<span>👥 @p.MaxParticipants</span>
-									</div>
-
-									<h4 style="font-size: 16px; font-weight: 700; color: #222; margin-bottom: 5px; line-height: 1.3; height: 38px; overflow: hidden;">
-										@p.Title
-									</h4>
-
-									<p style="color: #555; font-size: 14px; margin-bottom: 10px;">📍 @p.Location</p>
-
-									<a href="@Url.Action("Details", "Events", new { slug = p.Slug, id = p.EventId })"
-									   style="display: inline-block; color: #5b6cfb; font-weight: 600; font-size: 12px; text-decoration: none;">
-										Chi tiết →
-									</a>
-								</div>
-							</div>
-						}
-					</div>
-				</div>
-
-			</div>
-
-		</div>
-	</div>
-</section>
-<!-- End Events Page -->
 
 <style>
-	.vinhuni-cat-link:hover {
-		color: #667eea !important;
-		background: #f8f9ff !important;
-		border-left-color: #667eea !important;
-	}
+    :root {
+        --primary-color: #4e73df;
+        --secondary-color: #858796;
+        --accent-color: #36b9cc;
+        --danger-color: #e74a3b;
+        --light-bg: #f8f9fc;
+        --card-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+        --hover-transform: translateY(-5px);
+    }
 
-	.vinhuni-event-card {
-		transition: transform 0.3s ease, box-shadow 0.3s ease;
-	}
+    body {
+        background-color: var(--light-bg);
+        font-family: 'Nunito', sans-serif; /* Hoặc font hiện tại của bạn */
+    }
 
-		.vinhuni-event-card:hover {
-			transform: translateY(-4px);
-			box-shadow: 0 6px 15px rgba(0,0,0,0.12) !important;
-		}
+    /* Container & Layout */
+    .vinhuni-events-page {
+        padding-top: 40px;
+        padding-bottom: 60px;
+    }
 
-	.vinhuni-pagination a:hover {
-		background: #667eea !important;
-		color: white !important;
-		border-color: #667eea !important;
-	}
+    .vinhuni-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 0 20px;
+    }
 
-	@@media (max-width: 1200px) {
-		.vinhuni-events-grid {
-			grid-template-columns: repeat(3, 1fr) !important;
-		}
-	}
+    /* Search Bar */
+    .search-wrapper {
+        background: white;
+        padding: 30px;
+        border-radius: 15px;
+        box-shadow: var(--card-shadow);
+        margin-top: 80px; /* Cách header */
+        margin-bottom: 40px;
+        position: relative;
+        z-index: 10;
+    }
 
-	@@media (max-width: 900px) {
-		.vinhuni-events-container > div:last-child {
-			grid-template-columns: 1fr !important;
-		}
+    .search-form {
+        display: grid;
+        grid-template-columns: 2fr 1fr 1fr auto;
+        gap: 15px;
+        align-items: center;
+    }
 
-		.vinhuni-sidebar {
-			display: none;
-		}
+    .form-control-custom {
+        width: 100%;
+        padding: 12px 20px;
+        border: 1px solid #e3e6f0;
+        border-radius: 8px;
+        font-size: 0.95rem;
+        transition: all 0.3s;
+        background: #fdfdfe;
+    }
 
-		.vinhuni-events-grid {
-			grid-template-columns: repeat(2, 1fr) !important;
-		}
-	}
+        .form-control-custom:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(78, 115, 223, 0.15);
+            outline: none;
+        }
 
-	@@media (max-width: 600px) {
-		.vinhuni-events-grid {
-			grid-template-columns: 1fr !important;
-		}
+    .btn-search {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        padding: 12px 30px;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: transform 0.2s;
+        white-space: nowrap;
+    }
 
-		.vinhuni-search-section > div {
-			flex-direction: column !important;
-		}
+        .btn-search:hover {
+            transform: scale(1.05);
+            opacity: 0.95;
+        }
 
-		.vinhuni-search-section input,
-		.vinhuni-search-section select,
-		.vinhuni-search-section button {
-			width: 100% !important;
-		}
-	}
+    /* Layout Grid */
+    .main-grid {
+        display: grid;
+        grid-template-columns: 280px 1fr;
+        gap: 30px;
+    }
+
+    /* Sidebar */
+    .sidebar-widget {
+        background: white;
+        border-radius: 12px;
+        padding: 20px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        margin-bottom: 25px;
+    }
+
+    .widget-title {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: #4e73df;
+        margin-bottom: 15px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid #eaecf4;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .cat-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .cat-item a {
+        display: flex;
+        justify-content: space-between;
+        padding: 10px 12px;
+        color: #5a5c69;
+        text-decoration: none;
+        border-radius: 6px;
+        transition: all 0.2s;
+        font-size: 0.95rem;
+    }
+
+        .cat-item a:hover {
+            background-color: #eaecf4;
+            color: var(--primary-color);
+            padding-left: 18px; /* Hiệu ứng trượt */
+        }
+
+    .count-badge {
+        background: #eef2f8;
+        color: #858796;
+        padding: 2px 8px;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 700;
+    }
+
+    /* Featured/Highlight Sections */
+    .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        margin-bottom: 25px;
+        border-left: 5px solid var(--primary-color);
+        padding-left: 15px;
+    }
+
+    .section-title {
+        font-size: 1.5rem;
+        font-weight: 800;
+        color: #2e384d;
+        margin: 0;
+    }
+
+    .section-subtitle {
+        color: #858796;
+        font-size: 0.9rem;
+        margin: 5px 0 0 0;
+    }
+
+    /* Event Card Design */
+    .events-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 25px;
+    }
+
+    .events-grid-small {
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    }
+
+    .event-card {
+        background: white;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        transition: all 0.3s ease;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        border: 1px solid #f0f0f0;
+    }
+
+        .event-card:hover {
+            transform: var(--hover-transform);
+            box-shadow: var(--card-shadow);
+        }
+
+    .card-thumb {
+        position: relative;
+        height: 160px;
+        overflow: hidden;
+    }
+
+        .card-thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+    .event-card:hover .card-thumb img {
+        transform: scale(1.1);
+    }
+
+    .badge-overlay {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        color: white;
+        z-index: 2;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+
+    .badge-hot {
+        background: linear-gradient(45deg, #ff6b6b, #ee5253);
+    }
+
+    .badge-new {
+        background: linear-gradient(45deg, #1dd1a1, #10ac84);
+    }
+
+    .card-body {
+        padding: 15px;
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+    }
+
+    .meta-info {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.8rem;
+        color: #858796;
+        margin-bottom: 8px;
+    }
+
+    .card-title {
+        font-size: 1.05rem;
+        font-weight: 700;
+        color: #2e384d;
+        margin-bottom: 10px;
+        line-height: 1.4;
+        display: -webkit-box;
+        -webkit-line-clamp: 2; /* Cắt dòng */
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        min-height: 2.8em;
+    }
+
+    .location-info {
+        font-size: 0.85rem;
+        color: #5a5c69;
+        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .btn-details {
+        margin-top: auto;
+        display: block;
+        text-align: center;
+        padding: 8px;
+        background: #f0f2ff;
+        color: var(--primary-color);
+        text-decoration: none;
+        border-radius: 6px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        transition: all 0.2s;
+    }
+
+        .btn-details:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+
+    /* Responsive */
+    @@media (max-width: 1200px) {
+        .events-grid {
+            grid-template-columns: repeat(3, 1fr);
+        }
+    }
+
+    @@media (max-width: 992px) {
+        .main-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .vinhuni-sidebar {
+            display: none; /* Hoặc chuyển thành dạng menu ngang */
+        }
+
+        .events-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .search-form {
+            grid-template-columns: 1fr 1fr;
+        }
+    }
+
+    @@media (max-width: 576px) {
+        .events-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .search-form {
+            grid-template-columns: 1fr;
+        }
+
+        .section-header {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+    }
 </style>
+
+<section class="vinhuni-events-page">
+    <div class="vinhuni-container">
+
+        <div class="search-wrapper">
+            <form class="search-form">
+                <input type="text" class="form-control-custom" placeholder="🔍 Tìm kiếm tên sự kiện...">
+                <input type="date" class="form-control-custom">
+                <select class="form-control-custom">
+                    <option>📍 Tất cả địa điểm</option>
+                    <option>Hội trường A</option>
+                    <option>Hội trường B</option>
+                    <option>Sân vận động</option>
+                </select>
+                <button type="submit" class="btn-search">Tìm Kiếm</button>
+            </form>
+        </div>
+
+        <div class="main-grid">
+
+            <aside class="vinhuni-sidebar">
+                <div class="sidebar-widget">
+                    <h4 class="widget-title">Danh mục</h4>
+                    <ul class="cat-list">
+                        <li class="cat-item">
+                            <a href="@Url.Action("Index", "Events")">
+                                <span>⚡ Tất Cả</span>
+                                <span class="count-badge">ALL</span>
+                            </a>
+                        </li>
+                        @if (categories != null)
+                        {
+                            foreach (var p in categories)
+                            {
+                                <li class="cat-item">
+                                    <a href="@Url.Action("Index", "Events", new { categoryid = p.CategoryId })">
+                                        <span>📂 @p.CategoryName</span>
+                                    </a>
+                                </li>
+                            }
+                        }
+                    </ul>
+                </div>
+
+                <div class="sidebar-widget" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; text-align: center;">
+                    <div style="font-size: 40px; margin-bottom: 10px;">🚀</div>
+                    <h5 style="font-weight: 700; margin-bottom: 5px;">Đăng ký thành viên</h5>
+                    <p style="font-size: 0.85rem; opacity: 0.9; margin-bottom: 15px;">Nhận thông báo sự kiện mới nhất qua email.</p>
+                    <a href="#" style="background: white; color: #667eea; padding: 8px 20px; border-radius: 20px; text-decoration: none; font-weight: 700; font-size: 0.85rem; display: inline-block;">Đăng ký ngay</a>
+                </div>
+            </aside>
+
+            <main class="vinhuni-main-content">
+
+                @if (eventHighlight != null && eventHighlight.Any())
+                {
+                    <div style="margin-bottom: 50px;">
+                        <div class="section-header">
+                            <div>
+                                <h2 class="section-title">Sự kiện nổi bật</h2>
+                                <p class="section-subtitle">Được quan tâm nhiều nhất</p>
+                            </div>
+                        </div>
+
+                        <div class="events-grid">
+                            @foreach (var p in eventHighlight)
+                            {
+                                <div class="event-card">
+                                    <div class="card-thumb">
+                                        <img src="~/main/img/events/@p.Image" alt="@p.Title">
+                                        <span class="badge-overlay badge-hot">HOT</span>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="meta-info">
+                                            <span>📅 @p.CreatedDate?.ToString("dd/MM/yyyy")</span>
+                                            <span>👥 @p.CurrentParticipants/@p.MaxParticipants</span>
+                                        </div>
+                                        <h3 class="card-title">@p.Title</h3>
+                                        <div class="location-info">📍 @p.Location</div>
+                                        <a href="@Url.Action("Details", "Events", new { slug = p.Slug, id = p.EventId })" class="btn-details">
+                                            Xem chi tiết
+                                        </a>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                }
+
+                @if (eventNew != null && eventNew.Any())
+                {
+                    <div style="margin-bottom: 50px;">
+                        <div class="section-header">
+                            <div>
+                                <h2 class="section-title">Sự kiện mới nhất</h2>
+                                <p class="section-subtitle">Vừa được cập nhật hôm nay</p>
+                            </div>
+                        </div>
+
+                        <div class="events-grid events-grid-small">
+                            @foreach (var p in eventNew)
+                            {
+                                <div class="event-card">
+                                    <div class="card-thumb" style="height: 140px;">
+                                        <img src="~/main/img/events/@p.Image" alt="@p.Title">
+                                        <span class="badge-overlay badge-new">NEW</span>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="meta-info">
+                                            <span>📅 @p.CreatedDate?.ToString("dd/MM")</span>
+                                            <span>👥 @p.MaxParticipants</span>
+                                        </div>
+                                        <h3 class="card-title" style="font-size: 0.95rem;">@p.Title</h3>
+                                        <a href="@Url.Action("Details", "Events", new { slug = p.Slug, id = p.EventId })" class="btn-details">
+                                            Xem ngay
+                                        </a>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                }
+
+                <div>
+                    <div class="section-header" style="border-left-color: #858796;">
+                        <div>
+                            <h2 class="section-title">Tất cả sự kiện</h2>
+                            <p class="section-subtitle">Danh sách đầy đủ</p>
+                        </div>
+                        <div style="margin-bottom: 5px;">
+                            <select class="form-control-custom" style="padding: 6px 12px; font-size: 0.85rem;">
+                                <option>Sắp xếp: Mới nhất</option>
+                                <option>Sắp diễn ra</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="events-grid">
+                        @foreach (var p in Model)
+                        {
+                            <div class="event-card">
+                                <div class="card-thumb">
+                                    <img src="~/main/img/events/@p.Image" alt="@p.Title">
+                                </div>
+                                <div class="card-body">
+                                    <div class="meta-info">
+                                        <span>📅 @p.CreatedDate?.ToString("dd/MM/yyyy")</span>
+                                    </div>
+                                    <h3 class="card-title">@p.Title</h3>
+                                    <div class="location-info">📍 @p.Location</div>
+                                    <a href="@Url.Action("Details", "Events", new { slug = p.Slug, id = p.EventId })" class="btn-details">
+                                        Chi tiết
+                                    </a>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+
+            </main>
+        </div>
+    </div>
+</section>

@@ -1,6 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using BCrypt.Net;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using VinhuniEvent.Models;
-using BCrypt.Net;
 
 namespace VinhuniEvent.Controllers
 {
@@ -63,18 +64,32 @@ namespace VinhuniEvent.Controllers
         public IActionResult RequestOrganizer()
         {
             var userId = HttpContext.Session.GetInt32("UserId");
-            IEnumerable<RoleRequest> pendingRequests = new List<RoleRequest>();
-
-            if (userId != null)
+            if (userId == null)
             {
-                pendingRequests = _context.RoleRequests
-                    .Where(r => r.UserId == userId.Value && r.Status == "Pending")
-                    .AsEnumerable();
+                TempData["ErrorMessage"] = "Vui lòng đăng nhập để tiếp tục.";
+                return RedirectToAction("Index", "Login");
+            } 
+
+            var user = _context.Users
+                .Include(u => u.Role)
+                .FirstOrDefault(u => u.UserId == userId);
+
+            if (user?.Role?.RoleId == 3)
+            {
+                ViewBag.IsOrganizer = true;
+                ViewBag.HasPendingRequest = false;
+                return View();
             }
 
-            ViewBag.PendingRequests = pendingRequests;
+            var hasPending = _context.RoleRequests
+                .Any(r => r.UserId == userId && r.Status == "Pending" && r.RequestedRole == "Organizer");
+
+            ViewBag.IsOrganizer = false;
+            ViewBag.HasPendingRequest = hasPending;
+
             return View();
         }
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]

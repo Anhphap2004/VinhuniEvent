@@ -293,8 +293,12 @@
 
     <!-- Action Bar -->
     <div class="action-bar">
+        <a href="@Url.Action("ScanQRCode", new { id = ViewBag.EventId })" class="btn btn-warning text-white" style="font-weight:600; text-decoration:none; padding: 0.5rem 1rem;">
+            <i class="fa-solid fa-qrcode me-1"></i> Quét QR
+        </a>
+
         <a asp-action="Attendance" asp-route-eventId="@ViewBag.EventId" class="btn-attendance">
-            Điểm danh sinh viên
+            Điểm danh thủ công
         </a>
 
         <form method="get" class="filter-section mb-0">

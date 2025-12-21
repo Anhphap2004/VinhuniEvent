@@ -1,0 +1,248 @@
+﻿@model VinhuniEvent.Models.User
+@{
+    ViewData["Title"] = "Thẻ QR Cá Nhân";
+    var avatarUrl = !string.IsNullOrEmpty(Model.ImageUrl)
+                    ? $"/images/users/{Model.ImageUrl}"
+                    : "https://cdn-icons-png.flaticon.com/512/3135/3135715.png";
+}
+
+<style>
+    body {
+        background-color: #e0e8f0;
+        font-family: 'Segoe UI', sans-serif;
+    }
+
+    .qr-page-wrapper {
+        min-height: 80vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+    }
+
+    /* Container chính: Bố cục ngang */
+    .ticket-card {
+        display: flex;
+        width: 100%;
+        max-width: 750px; /* Độ rộng lớn hơn cho bố cục ngang */
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        overflow: hidden;
+        position: relative;
+        animation: fadeIn 0.8s ease;
+    }
+
+    /* --- PHẦN BÊN TRÁI: THÔNG TIN --- */
+    .ticket-left {
+        flex: 1.6; /* Chiếm 60% diện tích */
+        padding: 30px;
+        background: linear-gradient(135deg, #ffffff 0%, #f3f5f9 100%);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        position: relative;
+    }
+
+    .header-brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 20px;
+    }
+
+    .logo-badge {
+        width: 40px;
+        height: 40px;
+        background: #2a5298;
+        color: white;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+    }
+
+    .brand-text {
+        font-weight: 700;
+        color: #2a5298;
+        font-size: 1.1rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .student-profile {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .avatar-circle {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        border: 4px solid white;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        object-fit: cover;
+    }
+
+    .info-group h2 {
+        margin: 0;
+        font-size: 1.5rem;
+        color: #333;
+        font-weight: 800;
+    }
+
+    .info-group .mssv-badge {
+        background: #e1f5fe;
+        color: #0288d1;
+        padding: 4px 12px;
+        border-radius: 15px;
+        font-size: 0.9rem;
+        font-weight: 700;
+        display: inline-block;
+        margin: 8px 0;
+    }
+
+    .info-group .faculty {
+        color: #666;
+        font-size: 0.95rem;
+    }
+
+    /* --- PHẦN BÊN PHẢI: MÃ QR --- */
+    .ticket-right {
+        flex: 1; /* Chiếm 40% diện tích */
+        background: #2a5298; /* Màu nền xanh đậm */
+        padding: 30px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        color: white;
+        border-left: 2px dashed rgba(255,255,255,0.3); /* Đường cắt vé */
+    }
+
+        /* Tạo hiệu ứng khuyết tròn (Vé xé) */
+        .ticket-right::before, .ticket-right::after {
+            content: "";
+            position: absolute;
+            left: -10px; /* Nằm đè lên đường biên */
+            width: 20px;
+            height: 20px;
+            background-color: #e0e8f0; /* Trùng màu nền body */
+            border-radius: 50%;
+        }
+
+        .ticket-right::before {
+            top: -10px;
+        }
+
+        .ticket-right::after {
+            bottom: -10px;
+        }
+
+    .qr-bg {
+        background: white;
+        padding: 10px;
+        border-radius: 12px;
+        margin-bottom: 15px;
+    }
+
+    .qr-img {
+        width: 160px;
+        height: 160px;
+        display: block;
+    }
+
+    .scan-hint {
+        font-size: 0.85rem;
+        opacity: 0.9;
+        text-align: center;
+    }
+
+    /* Responsive cho Mobile: Chuyển về dọc nếu màn hình nhỏ */
+    @@media (max-width: 768px) {
+        .ticket-card {
+            flex-direction: column;
+            max-width: 400px;
+        }
+
+        .ticket-right {
+            border-left: none;
+            border-top: 2px dashed rgba(255,255,255,0.3);
+        }
+
+            .ticket-right::before {
+                top: -10px;
+                left: -10px;
+            }
+            /* Góc trái trên */
+            .ticket-right::after {
+                top: -10px;
+                right: -10px;
+                left: auto;
+            }
+        /* Góc phải trên */
+
+        .student-profile {
+            flex-direction: column;
+            text-align: center;
+        }
+    }
+
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>
+
+<div class="qr-page-wrapper">
+    <div class="ticket-card">
+
+        <div class="ticket-left">
+            <div class="header-brand">
+                <div class="logo-badge">
+                    <i class="fa-solid fa-graduation-cap"></i>
+                </div>
+                <div class="brand-text">Vinh University</div>
+            </div>
+
+            <div class="student-profile">
+                <img src="@avatarUrl" alt="Avatar" class="avatar-circle" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3135/3135715.png'">
+
+                <div class="info-group">
+                    <h2>@Model.FullName</h2>
+                    <span class="mssv-badge">MSSV: @Model.StudentCode</span>
+                    <div class="faculty">
+                        <i class="fa-solid fa-layer-group me-1"></i> @Model.Faculty
+                    </div>
+                </div>
+            </div>
+
+            <div style="margin-top: 20px; font-size: 0.8rem; color: #999;">
+                <i class="fa-regular fa-id-card me-1"></i> ID Hệ thống: <strong>@Model.UserId</strong>
+            </div>
+        </div>
+
+        <div class="ticket-right">
+            <div class="qr-bg">
+                <img src="@ViewBag.QrCodeImage" alt="QR Code" class="qr-img" />
+            </div>
+            <div class="scan-hint">
+                <i class="fa-solid fa-qrcode me-1"></i> CHECK-IN TICKET
+            </div>
+            <div style="font-size: 0.7rem; margin-top: 5px; opacity: 0.7;">
+                Giá trị sử dụng 1 lần/sự kiện
+            </div>
+        </div>
+
+    </div>
+</div>
