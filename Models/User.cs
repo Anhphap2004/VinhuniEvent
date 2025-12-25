@@ -46,4 +46,6 @@ public partial class User
     // Fix for IDE0028: Use collection initializer for RoleRequests property
     public virtual ICollection<RoleRequest> RoleRequests { get; set; } = new List<RoleRequest>();
 
+    public virtual ICollection<Contact> Contacts { get; set; } = new List<Contact>();
+
 }

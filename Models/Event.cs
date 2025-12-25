@@ -60,4 +60,7 @@ public partial class Event
     public virtual User? CreatedByNavigation { get; set; } 
 
     public virtual ICollection<EventRegistration> EventRegistrations { get; set; } = new List<EventRegistration>();
+    public virtual ICollection<EventComment> EventComments { get; set; }
+    = new List<EventComment>();
+
 }

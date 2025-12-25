@@ -61,23 +61,8 @@
 						<li><a style="color: blue; font-size:15px" asp-controller="Home" asp-action="Index">TRANG CHỦ</a></li>
 						<li><a style="color: blue; font-size:15px" asp-controller="Events" asp-action="Index">SỰ KIỆN</a></li>
 						<li><a style="color: blue; font-size:15px" asp-controller="Register" asp-action="RequestOrganizer">Đăng Ký Tổ Chức</a></li>
-						<li class="menu-has-children">
-							<a style="color: blue; font-size:15px" href="">TRANG</a>
-							<ul>
-								<li><a style="color: blue; font-size:15px" href="course-details.html">Course Details</a>
-								</li>
-								<li><a style="color: blue; font-size:15px" href="event-details.html">Event Details</a>
-								</li>
-								<li><a style="color: blue" href="elements.html">Elements</a></li>
-								<li class="menu-has-children">
-									<a style="color: blue; font-size:15px" href="">Level 2 </a>
-									<ul>
-										<li><a style="color: blue; font-size:15px" href="#">Item One</a></li>
-										<li><a style="color: blue; font-size:15px" href="#">Item Two</a></li>
-									</ul>
-								</li>
-							</ul>
-						</li>
+						<li><a style="color: blue; font-size:15px" asp-controller="Contact" asp-action="Index">Liên Hệ</a></li>
+						
 					
 						@if (!string.IsNullOrEmpty(FullName))
 						{

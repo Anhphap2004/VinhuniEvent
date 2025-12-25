@@ -32,8 +32,9 @@ public partial class ApplicationDbContext : DbContext
     public virtual DbSet<RoleRequest> RoleRequests { get; set; }
 
     public virtual DbSet<VwThongKeSuKien> VwThongKeSuKiens { get; set; }
+    public DbSet<Contact> Contacts { get; set; }
 
-   
+    public DbSet<EventComment> EventComments { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -212,9 +213,32 @@ public partial class ApplicationDbContext : DbContext
             entity.Property(e => e.StartTime).HasColumnType("datetime");
             entity.Property(e => e.Title).HasMaxLength(200);
         });
+        modelBuilder.Entity<Contact>()
+    .HasOne(c => c.User)
+    .WithMany(u => u.Contacts)
+    .HasForeignKey(c => c.UserId)
+    .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<EventComment>()
+  .HasOne(c => c.Event)
+  .WithMany(e => e.EventComments)
+  .HasForeignKey(c => c.EventId);
+
+        modelBuilder.Entity<EventComment>()
+        .HasOne(c => c.User)
+        .WithMany()
+        .HasForeignKey(c => c.UserId);
+
+        modelBuilder.Entity<EventComment>()
+        .HasOne(c => c.ParentComment)
+        .WithMany(c => c.Replies)
+        .HasForeignKey(c => c.ParentCommentId)
+        .OnDelete(DeleteBehavior.NoAction);
+
 
         OnModelCreatingPartial(modelBuilder);
     }
+  
 
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
 }

@@ -1,0 +1,181 @@
+﻿@model VinhuniEvent.Models.Contact
+@{
+    ViewData["Title"] = "Liên hệ hỗ trợ";
+}
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+    /* Sử dụng lại style của trang Login để đồng bộ */
+    .contact-wrapper {
+        margin-top: 100px;
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        padding-top: 80px;
+        background-image: url('/main/img/bg-login.jpg'); /* Đảm bảo đường dẫn ảnh nền đúng */
+        background-size: cover;
+        background-position: center;
+    }
+
+    .contact-container {
+        background: linear-gradient(180deg, #1B5E96 0%, #174A7A 100%);
+        border-radius: 12px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        width: 100%;
+        max-width: 650px; /* Rộng hơn login xíu để viết nội dung cho thoải mái */
+        padding: 50px 40px;
+        color: white;
+    }
+
+    .header-section {
+        text-align: center;
+        margin-bottom: 30px;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+        padding-bottom: 20px;
+    }
+
+    .header-title {
+        font-size: 24px;
+        font-weight: 700;
+        text-transform: uppercase;
+        margin-bottom: 10px;
+        letter-spacing: 1px;
+    }
+
+    .header-subtitle {
+        font-size: 14px;
+        color: rgba(255, 255, 255, 0.8);
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-label {
+        font-size: 14px;
+        font-weight: 500;
+        margin-bottom: 8px;
+        display: block;
+        color: rgba(255, 255, 255, 0.9);
+    }
+
+        .form-label i {
+            margin-right: 8px;
+            color: #89CFF0; /* Màu icon xanh nhạt cho nổi */
+        }
+
+    /* Style Input & Textarea kiểu kính trong suốt */
+    .form-control {
+        background: rgba(255, 255, 255, 0.15);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        border-radius: 6px;
+        color: white;
+        padding: 12px 15px;
+        font-size: 15px;
+        transition: all 0.3s ease;
+    }
+
+        .form-control:focus {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.6);
+            box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.1);
+            color: white;
+            outline: none;
+        }
+
+        .form-control::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+    textarea.form-control {
+        resize: none; /* Không cho kéo giãn lung tung */
+    }
+
+    .btn-send {
+        background: linear-gradient(135deg, #4A9ACF 0%, #2E75B6 100%);
+        border: none;
+        border-radius: 6px;
+        color: white;
+        font-size: 16px;
+        font-weight: 600;
+        padding: 14px;
+        width: 100%;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        margin-top: 10px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+    }
+
+        .btn-send:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+            background: linear-gradient(135deg, #5FA8D3 0%, #3984C5 100%);
+        }
+
+    /* Style cho Alert thông báo */
+    .alert-custom {
+        background: rgba(46, 213, 115, 0.2);
+        border: 1px solid rgba(46, 213, 115, 0.4);
+        color: white;
+        padding: 15px;
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        backdrop-filter: blur(5px);
+    }
+</style>
+
+<div class="contact-wrapper">
+    <div class="contact-container">
+
+        <div class="header-section">
+            <div class="header-title">Liên hệ Ban Quản Trị</div>
+            <div class="header-subtitle">Gửi thắc mắc hoặc góp ý về hệ thống VinhUni Events</div>
+        </div>
+
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-custom mb-4">
+                <i class="fas fa-check-circle fa-lg text-success"></i>
+                <span>@TempData["Success"]</span>
+            </div>
+        }
+
+        <form asp-action="Create" method="post">
+            @Html.AntiForgeryToken()
+
+            <div class="form-group">
+                <label asp-for="Subject" class="form-label">
+                    <i class="fas fa-heading"></i> Tiêu đề
+                </label>
+                <input asp-for="Subject" class="form-control" placeholder="Nhập tiêu đề vấn đề cần hỗ trợ..." required />
+                <span asp-validation-for="Subject" class="text-warning small mt-1 d-block"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Message" class="form-label">
+                    <i class="fas fa-edit"></i> Nội dung chi tiết
+                </label>
+                <textarea asp-for="Message" rows="6" class="form-control" placeholder="Mô tả chi tiết nội dung bạn muốn gửi..." required></textarea>
+                <span asp-validation-for="Message" class="text-warning small mt-1 d-block"></span>
+            </div>
+
+            <button type="submit" class="btn-send">
+                <i class="fas fa-paper-plane"></i> Gửi Liên Hệ
+            </button>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

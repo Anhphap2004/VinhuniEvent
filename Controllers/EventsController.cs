@@ -4,10 +4,10 @@ using VinhuniEvent.Models;
 
 namespace VinhuniEvent.Controllers
 {
-    
     public class EventsController : Controller
     {
         private readonly ApplicationDbContext _context;
+
         public EventsController(ApplicationDbContext context)
         {
             _context = context;
@@ -16,18 +16,15 @@ namespace VinhuniEvent.Controllers
         [HttpGet]
         public async Task<IActionResult> Index(int? categoryid)
         {
-            // 1. Khởi tạo query cơ bản
             var baseQuery = _context.Events
                 .Include(e => e.Category)
                 .Where(e => e.IsActive);
 
-            // 2. Lọc theo category nếu có
             if (categoryid.HasValue)
             {
                 baseQuery = baseQuery.Where(e => e.CategoryId == categoryid);
             }
 
-            // 3. Lấy dữ liệu cho các phần khác nhau (Dùng ToListAsync riêng để tránh xung đột)
             ViewBag.Categories = await _context.EventCategories.ToListAsync();
 
             ViewBag.EventNew = await baseQuery
@@ -41,7 +38,6 @@ namespace VinhuniEvent.Controllers
                 .Take(4)
                 .ToListAsync();
 
-            // 4. Danh sách tất cả sự kiện (Dùng Model chính)
             var allEvents = await baseQuery
                 .OrderByDescending(e => e.CreatedDate)
                 .ToListAsync();
@@ -52,10 +48,23 @@ namespace VinhuniEvent.Controllers
         [HttpGet("{slug}-{id}.html")]
         public async Task<IActionResult> Details(string slug, int id)
         {
+            // 1. Lấy UserId từ Session
             var userId = HttpContext.Session.GetInt32("UserId");
+
+            // 2. Truyền sang View bằng ViewBag (SỬA LỖI ISession trong View)
+            ViewBag.CurrentUserId = userId;
+
+            // 3. Truy vấn Event kèm theo Comment và User (SỬA LỖI KHÔNG HIỆN COMMENT)
             var eventItem = await _context.Events
                 .Include(e => e.Category)
                 .Include(e => e.CreatedByNavigation)
+                // --- Load Comment ---
+                .Include(e => e.EventComments)
+                    .ThenInclude(c => c.User) // Lấy thông tin người bình luận
+                                              // --- Load Replies (Trả lời bình luận) ---
+                .Include(e => e.EventComments)
+                    .ThenInclude(c => c.Replies)
+                        .ThenInclude(r => r.User) // Lấy thông tin người trả lời
                 .FirstOrDefaultAsync(e => e.EventId == id && e.IsActive);
 
             if (eventItem == null)
@@ -63,6 +72,7 @@ namespace VinhuniEvent.Controllers
 
             if (slug != eventItem.Slug)
                 return RedirectToActionPermanent("Details", new { slug = eventItem.Slug, id = id });
+
             bool isRegistered = false;
             if (userId != null)
             {
@@ -71,6 +81,12 @@ namespace VinhuniEvent.Controllers
             }
 
             ViewBag.IsRegistered = isRegistered;
+
+            bool isRegistrationExpired = eventItem.RegistrationDeadline.HasValue &&
+                                         DateTime.Now.Date > eventItem.RegistrationDeadline.Value.Date;
+
+            ViewBag.IsRegistrationExpired = isRegistrationExpired;
+
             ViewBag.RelatedEvent = await _context.Events
                 .Where(e => e.IsActive && e.EventId != id && e.CategoryId == eventItem.CategoryId)
                 .OrderByDescending(e => e.CreatedDate)
@@ -110,6 +126,7 @@ namespace VinhuniEvent.Controllers
 
             _context.EventRegistrations.Add(join);
             await _context.SaveChangesAsync();
+
             var eventItem = await _context.Events.FindAsync(eventId);
             if (eventItem != null)
             {
@@ -120,5 +137,36 @@ namespace VinhuniEvent.Controllers
             return RedirectToAction("Details", "Events", new { slug = eventItem?.Slug, id = eventId });
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddComment(int eventId, string content, int? parentId)
+        {
+            var userId = HttpContext.Session.GetInt32("UserId");
+            if (userId == null)
+            {
+                TempData["ErrorMessage"] = "⚠ Bạn cần đăng nhập để bình luận sự kiện.";
+                return RedirectToAction("Index", "Login");
+            }
+
+            if (string.IsNullOrWhiteSpace(content))
+            {
+                return RedirectToAction("Details", "Events", new { slug = (await _context.Events.FindAsync(eventId))?.Slug, id = eventId });
+            }
+
+            var comment = new EventComment
+            {
+                EventId = eventId,
+                UserId = userId.Value,
+                Content = content,
+                ParentCommentId = parentId,
+                CreatedAt = DateTime.Now // Đảm bảo model có trường này hoặc tự sinh
+            };
+
+            _context.EventComments.Add(comment);
+            await _context.SaveChangesAsync();
+
+            var ev = await _context.Events.FindAsync(eventId);
+            return RedirectToAction("Details", "Events", new { slug = ev?.Slug, id = eventId });
+        }
     }
 }
