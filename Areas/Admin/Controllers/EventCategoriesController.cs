@@ -10,7 +10,7 @@ using VinhuniEvent.Models;
 
 namespace VinhuniEvent.Areas.Admin.Controllers
 {
-    [RoleAuthorize(1)]
+    [RoleAuthorize(1, 3)]
     [Area("Admin")]
     public class EventCategoriesController : Controller
     {

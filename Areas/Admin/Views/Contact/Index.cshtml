@@ -1,0 +1,280 @@
+@model IEnumerable<VinhuniEvent.Models.Contact>
+
+@{
+    ViewData["Title"] = "Quản lý liên hệ";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .page-header {
+        padding: 1.5rem 0;
+        margin-bottom: 1.5rem;
+        border-bottom: 2px solid #2a5298;
+    }
+
+    .page-title {
+        color: #2a5298;
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin: 0 0 0.3rem 0;
+    }
+
+    .page-description {
+        color: #6c757d;
+        font-size: 0.9rem;
+        margin: 0;
+    }
+
+    .search-input {
+        border: 1px solid #ddd;
+        padding: 0.5rem 0.75rem;
+        font-size: 0.9rem;
+        border-radius: 4px;
+    }
+
+    .search-input:focus {
+        border-color: #2a5298;
+        box-shadow: 0 0 0 0.2rem rgba(42, 82, 152, 0.25);
+        outline: none;
+    }
+
+    .stats-container {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .stat-card {
+        background: white;
+        border: 1px solid #dee2e6;
+        padding: 1rem;
+        border-radius: 6px;
+        flex: 1;
+        text-align: center;
+    }
+
+    .stat-card .stat-number {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: #2a5298;
+        margin: 0.5rem 0;
+    }
+
+    .stat-card .stat-label {
+        font-size: 0.85rem;
+        color: #6c757d;
+        text-transform: uppercase;
+    }
+
+    .custom-table {
+        margin: 0;
+        border: 1px solid #dee2e6;
+        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    }
+
+    .custom-table thead th {
+        background: #f8f9fa;
+        color: #495057;
+        font-weight: 600;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        padding: 0.75rem;
+        border-bottom: 2px solid #dee2e6;
+    }
+
+    .custom-table tbody td {
+        padding: 0.75rem;
+        vertical-align: middle;
+        font-size: 0.9rem;
+    }
+
+    .custom-table tbody tr:hover {
+        background: #f8f9fa;
+    }
+
+    .custom-table .unread-row {
+        background-color: #fff3cd;
+    }
+
+    .custom-table .unread-row:hover {
+        background-color: #ffe69c;
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 0.4rem;
+    }
+
+    .action-buttons .btn-sm {
+        padding: 0.4rem 0.75rem;
+        font-size: 0.85rem;
+        border-radius: 4px;
+        border: none;
+    }
+
+    .action-buttons .btn-view {
+        background: #0d6efd;
+        color: white;
+    }
+
+    .action-buttons .btn-view:hover {
+        background: #0b5ed7;
+        color: white;
+    }
+
+    .action-buttons .btn-delete {
+        background: #dc3545;
+        color: white;
+    }
+
+    .action-buttons .btn-delete:hover {
+        background: #bb2d3b;
+        color: white;
+    }
+
+    .badge {
+        font-size: 0.85rem;
+        padding: 0.4rem 0.6rem;
+        border-radius: 4px;
+    }
+
+    .badge-read {
+        background: #d4edda;
+        color: #155724;
+    }
+
+    .badge-unread {
+        background: #fff3cd;
+        color: #856404;
+    }
+
+    .no-data {
+        text-align: center;
+        padding: 3rem 1rem;
+        color: #6c757d;
+    }
+
+    .no-data i {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        opacity: 0.5;
+    }
+</style>
+
+<div class="container-xl">
+    <div class="page-header">
+        <h1 class="page-title">Quản Lý Liên Hệ & Phản Hồi</h1>
+        <p class="page-description">Quản lý tất cả các tin nhắn liên hệ từ người dùng</p>
+    </div>
+
+    <!-- Statistics -->
+    <div class="stats-container">
+        <div class="stat-card">
+            <div class="stat-label">Tổng liên hệ</div>
+            <div class="stat-number">@Model.Count()</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Chưa đọc</div>
+            <div class="stat-number" style="color: #dc3545;">@Model.Count(c => !c.IsRead)</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Đã đọc</div>
+            <div class="stat-number" style="color: #28a745;">@Model.Count(c => c.IsRead)</div>
+        </div>
+    </div>
+
+    <!-- Search & Filter -->
+    <div class="row mb-3">
+        <div class="col-md-6">
+            <input type="text" class="search-input form-control" id="searchInput"
+                placeholder="Tìm kiếm theo tên, tiêu đề...">
+        </div>
+    </div>
+
+    <!-- Table -->
+    <div style="overflow-x: auto;">
+        @if (Model.Any())
+        {
+            <table class="custom-table table">
+                <thead>
+                    <tr>
+                        <th style="width: 50px;">#</th>
+                        <th style="width: 200px;">Người Gửi</th>
+                        <th>Tiêu Đề</th>
+                        <th style="width: 150px;">Ngày Gửi</th>
+                        <th style="width: 100px;">Trạng Thái</th>
+                        <th style="width: 200px; text-align: center;">Thao Tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        int stt = 1;
+                    }
+                    @foreach (var item in Model)
+                    {
+                        <tr class="@(item.IsRead ? "" : "unread-row")">
+                            <td>@stt</td>
+                            <td>
+                                <strong>@item.User?.FullName</strong>
+                            </td>
+                            <td>
+                                <span title="@item.Subject">@(item.Subject?.Length > 50 ? item.Subject.Substring(0, 50) + "..." :
+                                                                item.Subject)</span>
+                            </td>
+                            <td>
+                                <span class="text-muted">@item.CreatedAt.ToString("dd/MM/yyyy HH:mm")</span>
+                            </td>
+                            <td>
+                                @if (item.IsRead)
+                                {
+                                    <span class="badge badge-read">✓ Đã đọc</span>
+                                }
+                                else
+                                {
+                                    <span class="badge badge-unread">● Chưa đọc</span>
+                                }
+                            </td>
+                            <td style="text-align: center;">
+                                <div class="action-buttons justify-content-center">
+                                    <a style="text-decoration: none;" asp-action="Details" asp-route-id="@item.ContactId" class="btn-sm btn-view"
+                                        title="Xem chi tiết">
+                                        👁 Xem
+                                    </a>
+                                    <a style="text-decoration: none;" asp-action="Delete" asp-route-id="@item.ContactId" class="btn-sm btn-delete" title="Xoá">
+                                        🗑 Xoá
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        stt++;
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <div class="no-data">
+                <div style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.5;">📭</div>
+                <p><strong>Không có liên hệ nào</strong></p>
+                <p style="font-size: 0.9rem;">Hiện tại chưa có tin nhắn liên hệ từ người dùng</p>
+            </div>
+        }
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const searchInput = document.getElementById('searchInput');
+        const tableRows = document.querySelectorAll('.custom-table tbody tr');
+
+        if (searchInput) {
+            searchInput.addEventListener('keyup', function () {
+                const query = this.value.toLowerCase();
+                tableRows.forEach(row => {
+                    const text = row.textContent.toLowerCase();
+                    row.style.display = text.includes(query) ? '' : 'none';
+                });
+            });
+        }
+    });
+</script>

@@ -23,9 +23,10 @@
 	<!-- meta character set -->
 	<meta charset="UTF-8">
 	<!-- Site Title -->
-	<title>Education</title>
+	<title>VinhUni Events - Sự kiện Tết rộn ràng</title>
 
 	<link href="https://fonts.googleapis.com/css?family=Poppins:100,200,400,300,500,600,700" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
 
 
 	<!--
@@ -40,57 +41,519 @@
 	<link rel="stylesheet" href="~/main/css/owl.carousel.css">
 	<link rel="stylesheet" href="~/main/css/jquery-ui.css">
 	<link rel="stylesheet" href="~/main/css/main.css">
+	
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+	<!-- Enhanced Navbar CSS with Tet Theme -->
+	<style>
+		:root {
+			--tet-red: #D32F2F;
+			--tet-gold: #FDB913;
+			--tet-red-light: #E8463D;
+			--tet-dark: #1B3A42;
+			--tet-text: #2C3E50;
+		}
 
+		* {
+			font-family: 'Fredoka', 'Poppins', sans-serif;
+		}
+
+		/* Header Enhancement with Tet Colors */
+		#header {
+			box-shadow: 0 4px 20px rgba(211, 47, 47, 0.15);
+			position: sticky;
+			top: 0;
+			z-index: 1000;
+			transition: all 0.3s ease;
+			background: linear-gradient(135deg, white 0%, #FFF9E6 100%);
+			border-bottom: 3px solid var(--tet-gold);
+		}
+
+		#header.scrolled {
+			box-shadow: 0 2px 25px rgba(0, 0, 0, 0.15);
+		}
+
+		.main-menu {
+			padding: 20px 0;
+		}
+
+		#logo {
+			display: flex !important;
+			align-items: center !important;
+			gap: 12px !important;
+			transition: transform 0.3s ease;
+		}
+
+		#logo:hover {
+			transform: scale(1.05);
+		}
+
+		#logo img {
+			height: 60px !important;
+			width: auto !important;
+			transition: all 0.3s ease;
+		}
+
+		#logo>div span {
+			color: var(--tet-red) !important;
+			font-weight: 800 !important;
+			font-size: 15px !important;
+			letter-spacing: 1px;
+			text-shadow: 0 2px 4px rgba(211, 47, 47, 0.1);
+		}
+
+		/* Navigation Menu */
+		.nav-menu {
+			display: flex !important;
+			gap: 2px;
+			list-style: none !important;
+			margin: 0 !important;
+			padding: 0 !important;
+			flex-wrap: wrap;
+			align-items: center;
+		}
+
+		.nav-menu>li {
+			position: relative;
+			display: inline-block;
+		}
+
+		.nav-menu a {
+			display: block;
+			padding: 10px 12px !important;
+			color: var(--tet-text) !important;
+			font-size: 15px !important;
+			font-weight: 700 !important;
+			text-decoration: none;
+			text-transform: uppercase;
+			letter-spacing: 0.3px;
+			transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+			position: relative;
+			border-radius: 6px;
+			white-space: nowrap;
+		}
+
+		.nav-menu a::before {
+			content: '';
+			position: absolute;
+			bottom: 0;
+			left: 50%;
+			width: 0;
+			height: 3px;
+			background: linear-gradient(90deg, var(--tet-red), var(--tet-gold));
+			transform: translateX(-50%);
+			transition: width 0.3s ease;
+		}
+
+		.nav-menu a:hover::before {
+			width: 100%;
+		}
+
+		.nav-menu a:hover {
+			color: var(--tet-red) !important;
+			background-color: linear-gradient(135deg, rgba(211, 47, 47, 0.08), rgba(253, 185, 19, 0.08));
+			transform: translateY(-2px);
+		}
+
+		/* Dropdown Menu */
+		.nav-menu .menu-has-children>a::after {
+			content: '▼';
+			font-size: 10px;
+			margin-left: 8px;
+			transition: transform 0.3s ease;
+		}
+
+		.nav-menu .menu-has-children:hover>a::after {
+			transform: rotate(180deg);
+		}
+
+		.nav-menu ul {
+			display: none;
+			position: absolute;
+			top: 100%;
+			left: 0;
+			background: white;
+			min-width: 250px;
+			border-radius: 8px;
+			box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+			margin-top: 8px;
+			padding: 8px 0;
+			list-style: none;
+			margin: 0;
+			z-index: 1001;
+			animation: slideDown 0.3s ease;
+		}
+
+		@@keyframes slideDown {
+			from {
+				opacity: 0;
+				transform: translateY(-10px);
+			}
+
+			to {
+				opacity: 1;
+				transform: translateY(0);
+			}
+		}
+
+		.nav-menu .menu-has-children:hover>ul {
+			display: block;
+		}
+
+		.nav-menu ul li {
+			display: block;
+		}
+
+		.nav-menu ul a {
+			padding: 12px 20px !important;
+			color: #333 !important;
+			font-size: 15px !important;
+			text-transform: capitalize;
+			border-radius: 0;
+			display: flex;
+			align-items: center;
+			gap: 8px;
+		}
+
+		.nav-menu ul a::before {
+			display: none;
+		}
+
+		.nav-menu ul a:hover {
+			background-color: linear-gradient(135deg, rgba(211, 47, 47, 0.1), rgba(253, 185, 19, 0.08)) !important;
+			color: var(--tet-red) !important;
+			padding-left: 24px !important;
+		}
+
+		/* Responsive Mobile Menu */
+		@@media (max-width: 1200px) {
+			.nav-menu a {
+				padding: 8px 10px !important;
+				font-size: 11px !important;
+			}
+
+			#logo img {
+				height: 50px !important;
+			}
+
+			#logo>div span {
+				font-size: 13px !important;
+			}
+		}
+
+		@@media (max-width: 768px) {
+			.nav-menu {
+				flex-direction: column;
+				gap: 0;
+			}
+
+			.nav-menu ul {
+				position: static;
+				box-shadow: none;
+				background: #f5f5f5;
+				margin-top: 0;
+				border-radius: 0;
+			}
+
+			.nav-menu .menu-has-children:hover>ul {
+				display: block;
+			}
+
+			#logo {
+				gap: 8px !important;
+			}
+
+			#logo img {
+				height: 50px !important;
+			}
+
+			#logo>div span {
+				font-size: 12px !important;
+			}
+
+			.nav-menu a {
+				padding: 10px 12px !important;
+				font-size: 13px !important;
+			}
+		}
+	</style>
+
+	<!-- Decorations CSS with Tet Theme -->
+	<style>
+		.AnhhPhapp-tet-left,
+		.AnhhPhapp-tet-right {
+			position: fixed;
+			z-index: 9999;
+			text-decoration: none;
+			transition: all 0.3s ease;
+		}
+
+		.AnhhPhapp-tet-left {
+			top: 5px;
+			left: 0px;
+			animation: swing-left 2.5s ease-in-out infinite;
+		}
+
+		.AnhhPhapp-tet-right {
+			top: 5px;
+			right: 0px;
+			animation: swing-right 2.5s ease-in-out infinite;
+		}
+
+		.AnhhPhapp-tet-left img,
+		.AnhhPhapp-tet-right img {
+			width: 140px !important;
+			height: auto !important;
+			filter: drop-shadow(0 8px 16px rgba(211, 47, 47, 0.25)) brightness(1.1);
+			transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+		}
+
+		.AnhhPhapp-tet-left:hover img,
+		.AnhhPhapp-tet-right:hover img {
+			transform: scale(1.15) rotateZ(5deg);
+			filter: drop-shadow(0 12px 24px rgba(211, 47, 47, 0.35)) brightness(1.2);
+		}
+
+		@@keyframes swing-left {
+			0%, 100% {
+				transform: rotate(0deg);
+			}
+			25% {
+				transform: rotate(-8deg);
+			}
+			75% {
+				transform: rotate(8deg);
+			}
+		}
+
+		@@keyframes swing-right {
+			0%, 100% {
+				transform: rotate(0deg);
+			}
+			25% {
+				transform: rotate(8deg);
+			}
+			75% {
+				transform: rotate(-8deg);
+			}
+		}
+
+		/* Responsive */
+		@@media (max-width: 768px) {
+			.AnhhPhapp-tet-left img,
+			.AnhhPhapp-tet-right img {
+				width: 120px !important;
+			}
+		}
+
+		@@media (max-width: 480px) {
+			.AnhhPhapp-tet-left,
+			.AnhhPhapp-tet-right {
+				display: none;
+			}
+		}
+	</style>
 </head>
 
 <body>
+	<!-- Tết Decorations -->
+	<div>
+		<a class="AnhhPhapp-tet-left" href="#">
+			<img alt="tet" src="~/main/TrangTri/img-before-head.webp" />
+		</a>
+	</div>
+	<div>
+		<a class="AnhhPhapp-tet-right" href="#">
+			<img alt="tet" src="~/main/TrangTri/mat-trang-long-den-trung-thu.webp" />
+		</a>
+	</div>
+	<!-- Global Fireworks CSS with Tet Effects -->
+	<style>
+		#fireworks-global {
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			pointer-events: none;
+			z-index: 5;
+		}
+
+		/* Tet Sparkle Effect */
+		.tet-sparkle {
+			position: fixed;
+			pointer-events: none;
+			z-index: 10;
+			animation: sparkle-animation 1.5s ease-out forwards;
+		}
+
+		@@keyframes sparkle-animation {
+			0% {
+				opacity: 1;
+				transform: scale(1);
+			}
+			100% {
+				opacity: 0;
+				transform: scale(0);
+			}
+		}
+	</style>
+
+	<!-- Global Fireworks JavaScript with Tet Colors -->
+	<script>
+		// Tet Color Palette
+		const TET_COLORS = ['#D32F2F', '#FDB913', '#C8102E', '#FFD700', '#FF6B35', '#E8463D'];
+
+		// Fireworks Effect - Global
+		const canvasGlobal = document.getElementById('fireworks-global');
+		const ctxGlobal = canvasGlobal.getContext('2d');
+		canvasGlobal.width = window.innerWidth;
+		canvasGlobal.height = window.innerHeight;
+
+		let particlesGlobal = [];
+
+		class ParticleGlobal {
+			constructor(x, y) {
+				this.x = x;
+				this.y = y;
+				this.velocity = {
+					x: (Math.random() - 0.5) * 10,
+					y: (Math.random() - 0.5) * 10
+				};
+				this.alpha = 1;
+				this.decay = Math.random() * 0.02 + 0.015;
+				this.size = Math.random() * 4 + 2;
+				this.color = TET_COLORS[Math.floor(Math.random() * TET_COLORS.length)];
+				this.rotation = Math.random() * Math.PI * 2;
+				this.rotationSpeed = (Math.random() - 0.5) * 0.1;
+			}
+
+			draw() {
+				ctxGlobal.save();
+				ctxGlobal.globalAlpha = this.alpha;
+				ctxGlobal.fillStyle = this.color;
+				ctxGlobal.translate(this.x, this.y);
+				ctxGlobal.rotate(this.rotation);
+				
+				// Draw star shape
+				for (let i = 0; i < 5; i++) {
+					ctxGlobal.beginPath();
+					ctxGlobal.arc(
+						Math.cos(i * Math.PI * 2 / 5) * this.size,
+						Math.sin(i * Math.PI * 2 / 5) * this.size,
+						this.size * 0.3, 0, Math.PI * 2
+					);
+					ctxGlobal.fill();
+				}
+				
+				ctxGlobal.beginPath();
+				ctxGlobal.arc(0, 0, this.size, 0, Math.PI * 2);
+				ctxGlobal.fill();
+				ctxGlobal.restore();
+			}
+
+			update() {
+				this.velocity.y += 0.15;
+				this.x += this.velocity.x;
+				this.y += this.velocity.y;
+				this.alpha -= this.decay;
+				this.rotation += this.rotationSpeed;
+			}
+		}
+
+		function createFireworksGlobal(x, y) {
+			const particleCount = 40;
+			for (let i = 0; i < particleCount; i++) {
+				particlesGlobal.push(new ParticleGlobal(x, y));
+			}
+		}
+
+		function animateGlobal() {
+			ctxGlobal.clearRect(0, 0, canvasGlobal.width, canvasGlobal.height);
+
+			particlesGlobal.forEach((particle, index) => {
+				particle.update();
+				particle.draw();
+
+				if (particle.alpha <= 0) {
+					particlesGlobal.splice(index, 1);
+				}
+			});
+
+			if (particlesGlobal.length > 0) {
+				requestAnimationFrame(animateGlobal);
+			}
+		}
+
+		// Auto fireworks every 3-5 seconds with Tet energy
+		setInterval(() => {
+			const randomX = Math.random() * window.innerWidth;
+			const randomY = Math.random() * window.innerHeight * 0.6;
+			createFireworksGlobal(randomX, randomY);
+			animateGlobal();
+		}, Math.random() * 1500 + 2500);
+
+		// Fireworks on click with extra burst for Tet
+		document.addEventListener('click', (e) => {
+			createFireworksGlobal(e.clientX, e.clientY);
+			animateGlobal();
+		});
+
+		// Handle window resize
+		window.addEventListener('resize', () => {
+			canvasGlobal.width = window.innerWidth;
+			canvasGlobal.height = window.innerHeight;
+		});
+	</script>
+	<!-- Global Fireworks Canvas -->
+	<canvas id="fireworks-global"></canvas>
 	<header id="header" class="bg-white">
 		<div class="container main-menu">
 			<div class="row align-items-center justify-content-between d-flex">
-				<div id="logo" style="display: flex; align-items: center; gap: 15px;">
-					<a href="index.html">
-						<img src="~/main/img/logovinh.jpg" alt="" title="" style="height: 80px; width: auto;" />
+				<div id="logo">
+					<a href="@Url.Action("Index", "Home")">
+						<img src="~/main/img/logovinh.jpg" alt="Vinhuni Logo" title="Vinhuni" />
 					</a>
-					<div style="display: flex; flex-direction: column; line-height: 1.3;">
-						<span style="color: #0066CC; font-weight: 600; font-size: 18px;">TRƯỜNG ĐẠI HỌC VINH</span>
-						<span style="color: #0066CC; font-weight: 600; font-size: 18px;">VINH EVENTS</span>
+					<div class="d-flex flex-column">
+						<span>ĐẠI HỌC VINH</span>
+						<span>VINHUNI EVENTS</span>
 					</div>
 				</div>
 				<nav id="nav-menu-container">
 					<ul class="nav-menu">
-						<li><a style="color: blue; font-size:15px" asp-controller="Home" asp-action="Index">TRANG CHỦ</a></li>
-						<li><a style="color: blue; font-size:15px" asp-controller="Events" asp-action="Index">SỰ KIỆN</a></li>
-						<li><a style="color: blue; font-size:15px" asp-controller="Register" asp-action="RequestOrganizer">Đăng Ký Tổ Chức</a></li>
-						<li><a style="color: blue; font-size:15px" asp-controller="Contact" asp-action="Index">Liên Hệ</a></li>
-						
-					
+						<li><a asp-controller="Home" asp-action="Index">📍 Trang chủ</a></li>
+						<li><a asp-controller="Events" asp-action="Index">📅 Sự kiện</a></li>
+						<li><a asp-controller="Register" asp-action="RequestOrganizer">📝 Đăng ký tổ chức</a></li>
+						<li><a asp-controller="Contact" asp-action="Index">📞 Liên hệ</a></li>
+
 						@if (!string.IsNullOrEmpty(FullName))
 						{
 							<li class="menu-has-children">
-								<a style="color: blue; font-size:15px" href="#">Xin chào, @FullName</a>
+								<a href="#">👤 @FullName</a>
 								<ul>
 									@if (RoleId == 1 || RoleId == 3)
 									{
 										<li>
-											<a style="color: blue; font-size:15px" asp-area="Admin" asp-controller="Home"  asp-action="Index">
-												🛠 Trang quản trị (Admin)
+											<a asp-area="Admin" asp-controller="Home" asp-action="Index">
+												🛠️ Quản trị
 											</a>
 										</li>
+										<li style="border-top: 1px solid #eee;"></li>
 									}
 
 									<li>
-										<a style="color: blue; font-size:15px" asp-controller="Profile" asp-action="Index">
-											Hồ sơ cá nhân
+										<a asp-controller="Profile" asp-action="Index">
+											👤 Hồ sơ cá nhân
 										</a>
 									</li>
 									<li>
-										<a style="color: blue; font-size:15px" asp-controller="Profile" asp-action="MyQRCode">
-											Lấy MÃ QR
+										<a asp-controller="Profile" asp-action="MyQRCode">
+											📱 Mã QR
 										</a>
 									</li>
+									<li style="border-top: 1px solid #eee;"></li>
 									<li>
-										<a style="color: blue; font-size:15px" asp-controller="Login" asp-action="Logout">
-											Đăng xuất
+										<a asp-controller="Login" asp-action="Logout">
+											🚪 Đăng xuất
 										</a>
 									</li>
 								</ul>
@@ -98,98 +561,252 @@
 						}
 						else
 						{
-							<li>
-								<a style="color: blue; font-size:15px" asp-controller="Login" asp-action="Index">
-									ĐĂNG NHẬP
-								</a>
-							</li>
-							<li>
-								<a style="color: blue; font-size:15px" asp-controller="Register" asp-action="Index">
-									ĐĂNG KÝ
-								</a>
-							</li>
+							<li><a asp-controller="Login" asp-action="Index">🔓 Đăng nhập</a></li>
+							<li><a asp-controller="Register" asp-action="Index"
+									style="color: #764ba2 !important; font-weight: 700;">✨ Đăng ký</a></li>
 						}
-
-
-			
 					</ul>
-				</nav><!-- #nav-menu-container -->
+				</nav>
 			</div>
 		</div>
-	</header><!-- #header -->
+	</header>
 	@RenderBody()
 
 	<!-- start footer Area -->
 	<!-- ================== START FOOTER ================== -->
+	<style>
+		/* Footer Enhancement with Tet Theme */
+		.vn-footer-wrapper {
+			margin-top: 60px;
+			clear: both;
+		}
+
+		.vn-footer {
+			background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+			position: relative;
+			overflow: hidden;
+			border-top: 4px solid;
+			border-image: linear-gradient(90deg, var(--tet-red), var(--tet-gold), var(--tet-red)) 1;
+		}
+
+		.vn-footer::before {
+			content: '';
+			position: absolute;
+			top: 0;
+			left: 0;
+			right: 0;
+			height: 2px;
+			background: linear-gradient(90deg, transparent, var(--tet-red), var(--tet-gold), transparent);
+		}
+
+		.vn-footer h5 {
+			color: #fff;
+			font-size: 14px;
+			font-weight: 700;
+			letter-spacing: 1px;
+			position: relative;
+			display: inline-block;
+			padding-bottom: 12px;
+		}
+
+		.vn-footer h5::after {
+			content: '';
+			position: absolute;
+			bottom: 0;
+			left: 0;
+			width: 100%;
+			height: 3px;
+			background: linear-gradient(90deg, var(--tet-red), var(--tet-gold));
+			border-radius: 2px;
+		}
+
+		.vn-footer .footer-column {
+			transition: all 0.3s ease;
+		}
+
+		.vn-footer .footer-column:hover {
+			transform: translateY(-8px);
+		}
+
+		.vn-footer ul li {
+			margin-bottom: 12px;
+			transition: all 0.3s ease;
+			padding-left: 0;
+		}
+
+		.vn-footer ul li:hover {
+			padding-left: 8px;
+			color: #667eea;
+		}
+
+		.vn-footer ul li i {
+			color: #667eea;
+			width: 20px;
+			font-size: 14px;
+		}
+
+		.vn-footer a {
+			color: #b0b0b0;
+			text-decoration: none;
+			transition: all 0.3s ease;
+			position: relative;
+		}
+
+		.vn-footer a::before {
+			content: '';
+			position: absolute;
+			bottom: -2px;
+			left: 0;
+			width: 0;
+			height: 2px;
+			background: linear-gradient(90deg, var(--tet-red), var(--tet-gold));
+			transition: width 0.3s ease;
+		}
+
+		.vn-footer a:hover {
+			color: var(--tet-red);
+		}
+
+		.vn-footer a:hover::before {
+			width: 100%;
+		}
+
+		.vn-footer .footer-image {
+			border-radius: 8px;
+			overflow: hidden;
+			transition: all 0.3s ease;
+			border: 2px solid rgba(102, 126, 234, 0.2);
+		}
+
+		.vn-footer .footer-image:hover {
+			border-color: #667eea;
+			box-shadow: 0 0 20px rgba(102, 126, 234, 0.4);
+			transform: scale(1.05);
+		}
+
+		.vn-footer p {
+			color: #b0b0b0;
+			line-height: 1.8;
+			font-size: 13px;
+		}
+
+		.vn-footer-bottom {
+			border-top: 1px solid rgba(102, 126, 234, 0.2);
+			margin-top: 40px;
+			padding-top: 30px;
+			text-align: center;
+		}
+
+		.vn-footer-bottom p {
+			margin: 5px 0;
+			color: #888;
+			font-size: 12px;
+		}
+
+		.footer-social {
+			margin-top: 20px;
+		}
+
+		.footer-social a {
+			display: inline-block;
+			width: 40px;
+			height: 40px;
+			line-height: 40px;
+			text-align: center;
+			background: rgba(102, 126, 234, 0.1);
+			border-radius: 50%;
+			margin: 0 8px;
+			transition: all 0.3s ease;
+			color: #667eea;
+		}
+
+		.footer-social a:hover {
+			background: linear-gradient(135deg, var(--tet-red), var(--tet-gold));
+			color: white;
+			transform: translateY(-5px) scale(1.1);
+		}
+
+		.footer-divider {
+			height: 1px;
+			background: linear-gradient(90deg, transparent, rgba(102, 126, 234, 0.3), transparent);
+			margin: 30px 0;
+		}
+	</style>
+
 	<div class="vn-footer-wrapper">
-		<footer class="vn-footer bg-dark text-light pt-5 pb-4">
+		<footer class="vn-footer text-light pt-5 pb-4">
 			<div class="container">
 				<div class="row gy-4">
 					<!-- Cột 1: Tầm nhìn -->
-					<div class="col-lg-3 col-md-6">
-						<h5 class="text-uppercase fw-bold mb-3 border-bottom border-primary pb-2">TẦM NHÌN</h5>
+					<div class="col-lg-3 col-md-6 footer-column">
+						<h5 class="text-uppercase mb-3">TẦM NHÌN</h5>
 						<p class="small">
-							Trường Đại học Vinh trở thành đại học thông minh, xếp hạng top 500 đại học hàng đầu châu Á vào năm 2030,
+							Trường Đại học Vinh trở thành đại học thông minh, xếp hạng top 500 đại học hàng đầu châu Á
+							vào năm 2030,
 							hướng đến top 1000 đại học hàng đầu thế giới vào năm 2045.
 						</p>
-						<img src="~/main/img/p10.jpg" alt="Tầm nhìn" class="img-fluid rounded mt-3">
+						<img style="width: 50px;" src="~/main/img/logovinh.jpg" alt="Tầm nhìn"
+							class="img-fluid footer-image">
 					</div>
 
 					<!-- Cột 2: Sứ mạng -->
-					<div class="col-lg-3 col-md-6">
-						<h5 class="text-uppercase fw-bold mb-3 border-bottom border-primary pb-2">SỨ MẠNG</h5>
+					<div class="col-lg-3 col-md-6 footer-column">
+						<h5 class="text-uppercase mb-3">SỨ MẠNG</h5>
 						<p class="small">
-							Trường Đại học Vinh là cơ sở giáo dục đại học đào tạo nguồn nhân lực chất lượng cao, dẫn dắt sự phát triển giáo dục và đào tạo của khu vực Bắc Trung Bộ; là trung tâm nghiên cứu, đổi mới sáng tạo, góp phần thúc đẩy sự phát triển của quốc gia và quốc tế.
+							Trường Đại học Vinh là cơ sở giáo dục đại học đào tạo nguồn nhân lực chất lượng cao, dẫn dắt
+							sự phát triển giáo dục và đào tạo của khu vực Bắc Trung Bộ; là trung tâm nghiên cứu, đổi mới
+							sáng tạo, góp phần thúc đẩy sự phát triển của quốc gia và quốc tế.
 						</p>
-						<img src="~/main/img/banners.webp" alt="Sứ mạng" class="img-fluid rounded mt-3">
+						<img style="width: 50px" src="~/main/img/logovinh.jpg" alt="Sứ mạng"
+							class="img-fluid footer-image">
 					</div>
 
 					<!-- Cột 3: Các cơ sở -->
-					<div class="col-lg-3 col-md-6">
-						<h5 class="text-uppercase fw-bold mb-3 border-bottom border-primary pb-2">CÁC CƠ SỞ</h5>
+					<div class="col-lg-3 col-md-6 footer-column">
+						<h5 class="text-uppercase mb-3">CÁC CƠ SỞ</h5>
 						<ul class="list-unstyled small">
-							<li><i class="fa fa-map-marker text-primary me-2"></i> Cơ sở 1: 182 Lê Duẩn, TP. Vinh</li>
-							<li><i class="fa fa-map-marker text-primary me-2"></i> Cơ sở 2: Phường Vinh Phú & Vinh Lộc</li>
-							<li><i class="fa fa-map-marker text-primary me-2"></i> Cơ sở 3: Xã Đan Hải, Hà Tĩnh</li>
-							<li><i class="fa fa-map-marker text-primary me-2"></i> Cơ sở 4: Xã Hưng Nguyên, Nghệ An</li>
-							<li><i class="fa fa-map-marker text-primary me-2"></i> Cơ sở 5: Phường Thành Vinh</li>
+							<li><i class="fa fa-map-marker"></i> Cơ sở 1: 182 Lê Duẩn, TP. Vinh</li>
+							<li><i class="fa fa-map-marker"></i> Cơ sở 2: Phường Vinh Phú & Vinh Lộc</li>
+							<li><i class="fa fa-map-marker"></i> Cơ sở 3: Xã Đan Hải, Hà Tĩnh</li>
+							<li><i class="fa fa-map-marker"></i> Cơ sở 4: Xã Hưng Nguyên, Nghệ An</li>
+							<li><i class="fa fa-map-marker"></i> Cơ sở 5: Phường Thành Vinh</li>
 						</ul>
 					</div>
 
 					<!-- Cột 4: Liên hệ -->
-					<div class="col-lg-3 col-md-6">
-						<h5 class="text-uppercase fw-bold mb-3 border-bottom border-primary pb-2">LIÊN HỆ</h5>
+					<div class="col-lg-3 col-md-6 footer-column">
+						<h5 class="text-uppercase mb-3">LIÊN HỆ</h5>
 						<ul class="list-unstyled small">
-							<li><i class="fa fa-map-marker text-primary me-2"></i> 182 Lê Duẩn, TP. Vinh, Nghệ An</li>
-							<li><i class="fa fa-phone text-primary me-2"></i> (0238) 3855 452</li>
-							<li><i class="fa fa-fax text-primary me-2"></i> (0238) 3855 269</li>
-							<li><i class="fa fa-globe text-primary me-2"></i> <a href="https://vinhuni.edu.vn" class="text-light text-decoration-none">vinhuni.edu.vn</a></li>
-							<li><i class="fa fa-envelope text-primary me-2"></i> <a href="mailto:vinhuni@vinhuni.edu.vn" class="text-light text-decoration-none">vinhuni@vinhuni.edu.vn</a></li>
+							<li><i class="fa fa-map-marker"></i> 182 Lê Duẩn, TP. Vinh, Nghệ An</li>
+							<li><i class="fa fa-phone"></i> (0238) 3855 452</li>
+							<li><i class="fa fa-fax"></i> (0238) 3855 269</li>
+							<li><i class="fa fa-globe"></i> <a href="https://vinhuni.edu.vn"
+									target="_blank">vinhuni.edu.vn</a></li>
+							<li><i class="fa fa-envelope"></i> <a
+									href="mailto:vinhuni@vinhuni.edu.vn">vinhuni@vinhuni.edu.vn</a></li>
 						</ul>
-						<p class="small fst-italic mt-2">Chịu trách nhiệm nội dung: GS.TS. Nguyễn Huy Bằng - Hiệu trưởng</p>
-						<p class="small fst-italic">(Ban hành theo Nghị quyết số 11/NQ-HĐT ngày 18/10/2022 của Hội đồng trường)</p>
+						<div class="footer-social">
+							<a href="#" title="Facebook"><i class="fa fa-facebook"></i></a>
+							<a href="#" title="Twitter"><i class="fa fa-twitter"></i></a>
+							<a href="#" title="Instagram"><i class="fa fa-instagram"></i></a>
+							<a href="#" title="Youtube"><i class="fa fa-youtube"></i></a>
+						</div>
 					</div>
+				</div>
+
+				<div class="footer-divider"></div>
+
+				<div class="vn-footer-bottom">
+					<p class="small"><strong>Trường Đại Học Vinh - Hệ Thống Quản Lý Sự Kiện</strong></p>
+					<p class="small">Chịu trách nhiệm nội dung: GS.TS. Nguyễn Huy Bằng - Hiệu trưởng</p>
+					<p class="small fst-italic">(Ban hành theo Nghị quyết số 11/NQ-HĐT ngày 18/10/2022 của Hội đồng
+						trường)</p>
+					<p class="small mt-3"><strong>©</strong> 2024 Trường Đại Học Vinh. Bảo lưu mọi quyền.</p>
 				</div>
 			</div>
 		</footer>
 	</div>
 	<!-- ================== END FOOTER ================== -->
-	<!-- CSS nhỏ gọn ngay trong code -->
-	<style>
-		.vn-footer-wrapper {
-			margin-top: 40px;
-			clear: both;
-		}
-
-		.vn-footer h5 {
-			color: #fff;
-		}
-
-		.vn-footer a:hover {
-			text-decoration: underline;
-		}
-	</style>
-	<!-- End footer Area -->
 
 
 	<script src="~/main/js/vendor/jquery-2.2.4.min.js"></script>
@@ -209,6 +826,107 @@
 	<script src="~/main/js/mail-script.js"></script>
 	<script src="~/main/js/main.js"></script>
 	<script src="~/main/js/vendor/bootstrap.min.js"></script>
+
+	<!-- Global Fireworks CSS -->
+	<style>
+		#fireworks-global {
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			pointer-events: none;
+			z-index: 5;
+		}
+	</style>
+
+	<!-- Global Fireworks JavaScript -->
+	<script>
+		// Fireworks Effect - Global
+		const canvasGlobal = document.getElementById('fireworks-global');
+		const ctxGlobal = canvasGlobal.getContext('2d');
+		canvasGlobal.width = window.innerWidth;
+		canvasGlobal.height = window.innerHeight;
+
+		let particlesGlobal = [];
+
+		class ParticleGlobal {
+			constructor(x, y) {
+				this.x = x;
+				this.y = y;
+				this.velocity = {
+					x: (Math.random() - 0.5) * 8,
+					y: (Math.random() - 0.5) * 8
+				};
+				this.alpha = 1;
+				this.decay = Math.random() * 0.02 + 0.015;
+				this.size = Math.random() * 3 + 2;
+				this.color = `hsl(${Math.random() * 60 + 0}, 100%, ${Math.random() * 50 + 50}%)`;
+			}
+
+			draw() {
+				ctxGlobal.save();
+				ctxGlobal.globalAlpha = this.alpha;
+				ctxGlobal.fillStyle = this.color;
+				ctxGlobal.beginPath();
+				ctxGlobal.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+				ctxGlobal.fill();
+				ctxGlobal.restore();
+			}
+
+			update() {
+				this.velocity.y += 0.1; // gravity
+				this.x += this.velocity.x;
+				this.y += this.velocity.y;
+				this.alpha -= this.decay;
+			}
+		}
+
+		function createFireworksGlobal(x, y) {
+			const particleCount = 30;
+			for (let i = 0; i < particleCount; i++) {
+				particlesGlobal.push(new ParticleGlobal(x, y));
+			}
+		}
+
+		function animateGlobal() {
+			ctxGlobal.clearRect(0, 0, canvasGlobal.width, canvasGlobal.height);
+
+			particlesGlobal.forEach((particle, index) => {
+				particle.update();
+				particle.draw();
+
+				if (particle.alpha <= 0) {
+					particlesGlobal.splice(index, 1);
+				}
+			});
+
+			if (particlesGlobal.length > 0) {
+				requestAnimationFrame(animateGlobal);
+			}
+		}
+
+		// Auto fireworks every 3-5 seconds
+		setInterval(() => {
+			const randomX = Math.random() * window.innerWidth;
+			const randomY = Math.random() * window.innerHeight * 0.6;
+			createFireworksGlobal(randomX, randomY);
+			animateGlobal();
+		}, Math.random() * 2000 + 3000);
+
+		// Fireworks on click
+		document.addEventListener('click', (e) => {
+			createFireworksGlobal(e.clientX, e.clientY);
+			animateGlobal();
+		});
+
+		// Handle window resize
+		window.addEventListener('resize', () => {
+			canvasGlobal.width = window.innerWidth;
+			canvasGlobal.height = window.innerHeight;
+		});
+	</script>
+
 	@RenderSection("Scripts", required: false)
 </body>
 

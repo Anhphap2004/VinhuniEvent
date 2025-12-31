@@ -2,436 +2,697 @@
 @{
     ViewData["Title"] = Model.Title;
     List<VinhuniEvent.Models.Event> RelatedEvent = ViewBag.RelatedEvent;
-    // Lấy UserId từ Controller truyền sang (Sửa lỗi ISession)
     int? currentUserId = ViewBag.CurrentUserId as int?;
 }
 
-<div class="event-detail-page-magazine">
-    <div class="container py-5">
-        <div class="magazine-hero-card">
-            <div class="row align-items-center g-4">
-                <div class="col-lg-8">
-                    <div class="hero-image-content">
-                        <img src="~/main/img/events/@Model.Image" alt="@Model.Title" class="hero-image-magazine">
-                        <div class="hero-text-overlay">
-                            <span class="event-category-badge mb-2">@Model.Category?.CategoryName</span>
-                            <h1 class="hero-title-magazine text-white">@Model.Title</h1>
-                            <div class="hero-quick-meta">
-                                <span><i class="fa-solid fa-calendar-days me-2"></i> @Model.StartTime.ToString("dd/MM/yyyy HH:mm")</span>
-                                <span><i class="fa-solid fa-location-dot me-2"></i> @Model.Location</span>
+<div class="modern-event-page">
+    <div class="page-header-decor"></div>
+
+    <div class="container main-container">
+        <div class="row g-4">
+
+            <div class="col-lg-8">
+
+                <div class="content-card animate-up">
+                    <div class="event-header">
+                        <span class="badge bg-primary-subtle text-primary mb-3 px-3 py-2 rounded-pill fw-bold">
+                            @Model.Category?.CategoryName
+                        </span>
+                        <h1 class="event-title">@Model.Title</h1>
+
+                        <div class="event-meta-row">
+                            <div class="meta-item">
+                                <i class="fa-regular fa-calendar"></i>
+                                <span>@Model.StartTime.ToString("dd/MM/yyyy")</span>
                             </div>
+                            <div class="meta-item">
+                                <i class="fa-regular fa-clock"></i>
+                                <span>@Model.StartTime.ToString("HH:mm")</span>
+                            </div>
+                            <div class="meta-item location">
+                                <i class="fa-solid fa-location-dot"></i>
+                                <span>@Model.Location</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="event-hero-image-wrapper mt-4">
+                        <img src="~/main/img/events/@Model.Image" alt="@Model.Title" class="event-hero-image">
+                    </div>
+
+                    <div class="event-body mt-5">
+                        <h3 class="section-title">Giới thiệu</h3>
+                        <div class="description-content">
+                            @Html.Raw(Model.Description)
                         </div>
                     </div>
                 </div>
 
-                <div class="col-lg-4 d-flex flex-column h-100">
-                    <div class="d-flex flex-column h-100 p-4">
-                        <h5 class="fw-bold mb-3 text-uppercase" style="color: var(--primary-color);">Tóm tắt nhanh</h5>
+                <div class="content-card mt-4 animate-up" style="animation-delay: 0.1s;">
+                    <div class="comments-header mb-4">
+                        <h3 class="fw-bold fs-4">
+                            <i class="fa-solid fa-comments me-2 text-primary"></i>Thảo luận
+                            <span class="text-muted fs-6 fw-normal ms-1">(@Model.EventComments.Count())</span>
+                        </h3>
+                    </div>
 
-                        <ul class="list-unstyled quick-details-list flex-grow-1">
-                            <li><i class="fa-solid fa-calendar-alt"></i> Thời gian: @Model.StartTime.ToString("dd/MM/yyyy HH:mm")</li>
-                            <li><i class="fa-solid fa-map-marker-alt"></i> Địa điểm: @Model.Location</li>
-                            @if (Model.MaxParticipants.HasValue && Model.CurrentParticipants.HasValue)
+                    @if (currentUserId != null)
+                    {
+                        <div class="comment-compose mb-5">
+                            <div class="d-flex gap-3">
+                                <div class="user-avatar-current">
+                                    <i class="fa-solid fa-user"></i>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <form asp-action="AddComment" method="post" class="position-relative">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="eventId" value="@Model.EventId" />
+                                        <div class="input-wrapper">
+                                            <textarea name="content" class="form-control comment-textarea" rows="2"
+                                            placeholder="Viết bình luận công khai..." required></textarea>
+                                            <button class="btn-send-icon"><i class="fa-solid fa-paper-plane"></i></button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="login-alert">
+                            <i class="fa-solid fa-lock me-2"></i>
+                            <span>Vui lòng <a asp-controller="Login" asp-action="Index">đăng nhập</a> để tham gia thảo
+                                luận.</span>
+                        </div>
+                    }
+
+                    <div class="comment-list-wrapper">
+                        @if (Model.EventComments != null && Model.EventComments.Any())
+                        {
+                            foreach (var c in Model.EventComments.Where(x => x.ParentCommentId == null).OrderByDescending(x
+                            => x.CreatedAt))
                             {
-                                <li><i class="fa-solid fa-users"></i>Đã đăng ký: @Model.CurrentParticipants/@Model.MaxParticipants người</li>
-                            }
-                            <li><i class="fa-solid fa-user-tie"></i> Người tạo: @Model.CreatedByNavigation?.FullName</li>
-                            <li><i class="fa-solid fa-clock"></i>Ngày tạo: @Model.CreatedDate?.ToString("dd/MM/yyyy")</li>
-                        </ul>
+                                <div class="comment-item-root mb-3">
+                                    <div class="d-flex gap-2">
+                                        <div class="avatar-placeholder rounded-circle bg-gradient-gray text-white d-flex align-items-center justify-content-center flex-shrink-0"
+                                            style="width: 40px; height: 40px; font-weight: bold;">
+                                            @(c.User?.FullName?.Substring(0, 1).ToUpper() ?? "U")
+                                        </div>
 
-                        <div class="mt-auto pt-3 border-top">
+                                        <div class="flex-grow-1">
+                                            <div class="comment-bubble">
+                                                <div class="d-flex justify-content-between align-items-baseline">
+                                                    <span class="comment-author">@c.User?.FullName</span>
+                                                    <small class="comment-time">@c.CreatedAt.ToString("dd/MM HH:mm")</small>
+                                                </div>
+                                                <p class="comment-content">@c.Content</p>
+                                            </div>
+
+                                            <div class="comment-actions">
+                                                @if (currentUserId != null)
+                                                {
+                                                    <button class="btn-reply-trigger" onclick="toggleReplyBox(@c.CommentId)">Trả
+                                                        lời</button>
+                                                }
+                                            </div>
+
+                                            <div id="reply-box-@c.CommentId" class="reply-box d-none mt-2">
+                                                <form asp-action="AddComment" method="post"
+                                                    class="d-flex align-items-center gap-2">
+                                                    @Html.AntiForgeryToken()
+                                                    <input type="hidden" name="eventId" value="@Model.EventId" />
+                                                    <input type="hidden" name="parentId" value="@c.CommentId" />
+                                                    <div class="position-relative w-100">
+                                                        <input type="text" name="content"
+                                                            class="form-control rounded-pill bg-light small-input"
+                                                            placeholder="Viết phản hồi..." required>
+                                                        <button class="btn-send-small"><i
+                                                                class="fa-solid fa-paper-plane"></i></button>
+                                                    </div>
+                                                </form>
+                                            </div>
+
+                                            @if (c.Replies != null && c.Replies.Any())
+                                            {
+                                                <div class="replies-container">
+                                                    @foreach (var r in c.Replies.OrderBy(x => x.CreatedAt))
+                                                    {
+                                                        <div class="reply-item d-flex gap-2 position-relative">
+                                                            <div class="connector-curve"></div>
+                                                            <div class="avatar-placeholder rounded-circle bg-info text-white d-flex align-items-center justify-content-center flex-shrink-0"
+                                                                style="width: 32px; height: 32px; font-size: 12px; z-index: 1;">
+                                                                @(r.User?.FullName?.Substring(0, 1).ToUpper() ?? "U")
+                                                            </div>
+                                                            <div class="comment-bubble bg-light-gray">
+                                                                <div class="d-flex justify-content-between align-items-baseline">
+                                                                    <span class="comment-author small">@r.User?.FullName</span>
+                                                                    <small class="comment-time">@r.CreatedAt.ToString("HH:mm")</small>
+                                                                </div>
+                                                                <p class="comment-content small mb-0">@r.Content</p>
+                                                            </div>
+                                                        </div>
+                                                    }
+                                                </div>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <div class="empty-comments">
+                                <img src="https://cdn-icons-png.flaticon.com/512/1380/1380338.png" alt="No comments">
+                                <p>Chưa có bình luận nào.</p>
+                            </div>
+                        }
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="col-lg-4">
+                <div class="sidebar-sticky-wrapper">
+
+                    <div class="sidebar-card highlight-border animate-left">
+                        <h4 class="sidebar-title">Thông tin vé</h4>
+
+                        <div class="stats-grid">
+                            <div class="stat-box">
+                                <i class="fa-solid fa-users text-primary"></i>
+                                <span class="stat-label">Đã đăng ký</span>
+                                <span class="stat-value">@(Model.CurrentParticipants ?? 0)/@(Model.MaxParticipants ??
+                                                                        0)</span>
+                            </div>
+                            <div class="stat-box">
+                                <i class="fa-solid fa-user-tie text-success"></i>
+                                <span class="stat-label">Người tạo</span>
+                                <span class="stat-value">@Model.CreatedByNavigation?.FullName</span>
+                            </div>
+                        </div>
+
+                        <hr class="sidebar-divider">
+
+                        <div class="action-btn-wrapper">
                             @if (ViewBag.IsRegistrationExpired == true)
                             {
-                                <button class="btn w-100 fw-bold btn-secondary" disabled>
-                                    <i class="fa-solid fa-clock me-2"></i> Đã hết hạn đăng ký
+                                <button class="btn btn-secondary w-100 py-3 fw-bold disabled" disabled>
+                                    Đã hết hạn
                                 </button>
                             }
                             else if (ViewBag.IsRegistered == true)
                             {
-                                <button class="btn w-100 fw-bold btn-success" disabled>
-                                    <i class="fa-solid fa-check me-2"></i> Đã đăng ký
+                                <button class="btn btn-success w-100 py-3 fw-bold disabled" disabled>
+                                    <i class="fa-solid fa-check me-2"></i>Đã tham gia
                                 </button>
                             }
                             else
                             {
                                 <form asp-action="RegisterEvent" method="post">
                                     <input type="hidden" name="eventId" value="@Model.EventId" />
-                                    <button type="submit" class="btn btn-primary-cta w-100 fw-bold">
-                                        <i class="fa-solid fa-ticket me-2"></i> Đăng ký tham gia
+                                    <button type="submit" class="btn btn-primary w-100 py-3 fw-bold btn-register-effect">
+                                        Đăng ký ngay
                                     </button>
                                 </form>
+                                <p class="text-center mt-2 mb-0 text-muted small fst-italic">Số lượng có hạn, đăng ký ngay!
+                                </p>
                             }
                         </div>
                     </div>
-                </div>
-            </div>
-        </div>
 
-        <div class="row g-5 pt-5">
-            <div class="col-lg-8">
-                <div class="content-panel-card">
-                    <section class="mb-5">
-                        <h2 class="section-title-magazine"><i class="fa-solid fa-book-open me-2"></i> Giới thiệu sự kiện</h2>
-                        <div class="text-secondary event-description" style="font-size: 16px; line-height: 1.7;">
-                            @Html.Raw(Model.Description)
-                        </div>
-                    </section>
-
-                    <section class="mb-5" id="comments">
-                        <div class="d-flex align-items-center mb-4">
-                            <h2 class="section-title-magazine mb-0 border-0 me-3">
-                                <i class="fa-solid fa-comments me-2"></i> Thảo luận
-                            </h2>
-                            <span class="badge bg-light text-dark border">
-                                @Model.EventComments.Count() bình luận
-                            </span>
-                        </div>
-
-                        @if (currentUserId != null)
-                        {
-                            <div class="comment-form-wrapper mb-5 p-4 bg-white rounded shadow-sm border">
-                                <div class="d-flex gap-3">
-                                    <div class="avatar-placeholder bg-primary text-white rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 40px; height: 40px; font-weight: bold;">
-                                        <i class="fa-solid fa-user"></i>
-                                    </div>
-                                    <div class="flex-grow-1">
-                                        <form asp-action="AddComment" method="post">
-                                            @Html.AntiForgeryToken()
-                                            <input type="hidden" name="eventId" value="@Model.EventId" />
-                                            <textarea name="content" class="form-control mb-2" rows="2" placeholder="Viết bình luận của bạn..." required></textarea>
-                                            <div class="text-end">
-                                                <button class="btn btn-primary btn-sm px-4 fw-bold">
-                                                    <i class="fa-solid fa-paper-plane me-1"></i> Gửi bình luận
-                                                </button>
-                                            </div>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                        }
-                        else
-                        {
-                            <div class="alert alert-light border border-warning text-center py-4 mb-4">
-                                <i class="fa-solid fa-lock text-warning mb-2 fs-4 d-block"></i>
-                                <span>Vui lòng <a asp-controller="Login" asp-action="Index" class="fw-bold text-primary text-decoration-none">đăng nhập</a> để tham gia thảo luận.</span>
-                            </div>
-                        }
-
-                        <div class="comment-list">
-                            @if (Model.EventComments != null && Model.EventComments.Any())
+                    <div class="sidebar-card mt-4 animate-left" style="animation-delay: 0.1s;">
+                        <h5 class="sidebar-title fs-5 mb-3">Sự kiện khác</h5>
+                        <div class="related-events-list">
+                            @if (RelatedEvent != null && RelatedEvent.Any())
                             {
-                                // Chỉ lấy comment cha (ParentCommentId == null)
-                                @foreach (var c in Model.EventComments.Where(x => x.ParentCommentId == null).OrderByDescending(x => x.CreatedAt))
+                                foreach (var ev in RelatedEvent)
                                 {
-                                    <div class="comment-item mb-4">
-                                        <div class="d-flex gap-3">
-                                            <div class="avatar-placeholder bg-secondary text-white rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 40px; height: 40px; font-weight: bold; font-size: 14px;">
-                                                @(c.User?.FullName?.Substring(0, 1).ToUpper() ?? "U")
-                                            </div>
-
-                                            <div class="flex-grow-1">
-                                                <div class="bg-light p-3 rounded-3">
-                                                    <div class="d-flex justify-content-between align-items-center mb-1">
-                                                        <strong class="text-dark">@c.User?.FullName</strong>
-                                                        <small class="text-muted" style="font-size: 12px;">@c.CreatedAt.ToString("dd/MM/yyyy HH:mm")</small>
-                                                    </div>
-                                                    <p class="mb-0 text-secondary" style="font-size: 15px;">@c.Content</p>
-                                                </div>
-
-                                                <div class="d-flex gap-3 mt-1 ms-2">
-                                                    @if (currentUserId != null)
-                                                    {
-                                                        <a href="javascript:void(0)" class="text-decoration-none text-muted small fw-bold" onclick="toggleReplyBox(@c.CommentId)">
-                                                            <i class="fa-solid fa-reply me-1"></i> Trả lời
-                                                        </a>
-                                                    }
-                                                </div>
-
-                                                <div id="reply-box-@c.CommentId" class="reply-box d-none mt-3 ms-3">
-                                                    <form asp-action="AddComment" method="post">
-                                                        @Html.AntiForgeryToken()
-                                                        <input type="hidden" name="eventId" value="@Model.EventId" />
-
-                                                        <input type="hidden" name="parentId" value="@c.CommentId" />
-
-                                                        <div class="d-flex gap-2">
-                                                            <textarea name="content" class="form-control form-control-sm" rows="1" placeholder="Viết câu trả lời..." required></textarea>
-                                                            <button class="btn btn-primary btn-sm" style="width: 80px;">Gửi</button>
-                                                        </div>
-                                                    </form>
-                                                </div>
-
-                                                @if (c.Replies != null && c.Replies.Any())
-                                                {
-                                                    <div class="replies-list mt-3">
-                                                        @foreach (var r in c.Replies.OrderBy(x => x.CreatedAt))
-                                                        {
-                                                            <div class="d-flex gap-3 mb-3">
-                                                                <div class="position-relative">
-                                                                    <div style="position: absolute; top: -20px; left: 15px; width: 2px; height: 30px; background: #e9ecef; border-bottom-left-radius: 10px;"></div>
-                                                                    <div class="avatar-placeholder bg-info text-white rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 30px; height: 30px; font-size: 12px; z-index: 1; position: relative;">
-                                                                        @(r.User?.FullName?.Substring(0, 1).ToUpper() ?? "U")
-                                                                    </div>
-                                                                </div>
-
-                                                                <div class="flex-grow-1">
-                                                                    <div class="bg-light p-2 px-3 rounded-3">
-                                                                        <div class="d-flex justify-content-between align-items-center">
-                                                                            <strong class="text-dark small">@r.User?.FullName</strong>
-                                                                            <small class="text-muted" style="font-size: 11px;">@r.CreatedAt.ToString("dd/MM/yyyy HH:mm")</small>
-                                                                        </div>
-                                                                        <p class="mb-0 text-secondary small">@r.Content</p>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        }
-                                                    </div>
-                                                }
-                                            </div>
+                                    <a href="@Url.Action("Details", "Events", new { slug = ev.Slug, id = ev.EventId })"
+                                        class="related-event-item">
+                                        <div class="related-img">
+                                            <img src="~/main/img/events/@ev.Image" alt="@ev.Title">
                                         </div>
-                                    </div>
+                                        <div class="related-info">
+                                            <h6>@ev.Title</h6>
+                                            <span><i
+                                                    class="fa-regular fa-calendar me-1"></i>@ev.StartTime.ToString("dd/MM")</span>
+                                        </div>
+                                    </a>
                                 }
                             }
                             else
                             {
-                                <div class="text-center py-5">
-                                    <img src="https://cdn-icons-png.flaticon.com/512/1380/1380338.png" alt="No comments" style="width: 60px; opacity: 0.5;">
-                                    <p class="text-muted mt-3">Chưa có bình luận nào. Hãy là người đầu tiên chia sẻ ý kiến!</p>
-                                </div>
+                                <p class="text-muted text-center py-3 small">Không có sự kiện liên quan.</p>
                             }
                         </div>
-                    </section>
-
-                    <script>
-                        function toggleReplyBox(commentId) {
-                            var replyBox = document.getElementById('reply-box-' + commentId);
-                            if (replyBox.classList.contains('d-none')) {
-                                replyBox.classList.remove('d-none');
-                                // Tự động focus vào ô nhập liệu
-                                replyBox.querySelector('textarea').focus();
-                            } else {
-                                replyBox.classList.add('d-none');
-                            }
-                        }
-                    </script>
-                </div>
-            </div>
-
-            <div class="col-lg-4">
-                <div class="sidebar-sticky-card">
-                    <h3 class="sidebar-title-magazine"><i class="fa-solid fa-newspaper me-2" style="color: var(--primary-color);"></i> Sự kiện liên quan</h3>
-
-                    <div class="related-events-magazine">
-                        @if (RelatedEvent != null && RelatedEvent.Any())
-                        {
-                            foreach (var ev in RelatedEvent)
-                            {
-                                <a href="@Url.Action("Details", "Events", new { slug = ev.Slug, id = ev.EventId })" class="related-event-item-magazine">
-                                    <div class="related-image-magazine">
-                                        <img src="~/main/img/events/@ev.Image" alt="@ev.Title">
-                                    </div>
-                                    <div class="related-info-magazine">
-                                        <h4 class="related-title-magazine">@ev.Title</h4>
-                                        <p class="related-date-magazine">
-                                            <i class="fa-solid fa-calendar-alt me-1"></i>
-                                            @ev.StartTime.ToString("dd/MM/yyyy")
-                                        </p>
-                                    </div>
-                                </a>
-                            }
-                        }
-                        else
-                        {
-                            <p class="text-center text-muted fst-italic p-3">Không có sự kiện liên quan.</p>
-                        }
                     </div>
+
                 </div>
             </div>
+
         </div>
     </div>
 </div>
 
+<script>
+    function toggleReplyBox(id) {
+        var box = document.getElementById('reply-box-' + id);
+        box.classList.toggle('d-none');
+        if (!box.classList.contains('d-none')) {
+            box.querySelector('input').focus();
+        }
+    }
+</script>
+
 <style>
+    /* Reset font to sans-serif */
+    * {
+        font-family: "Fredoka", "Poppins", sans-serif !important;
+    }
+
+    /* Tet Theme Variables */
     :root {
-        --primary-color: #0d6efd;
-        --accent-color: #ffc107;
-        --text-dark: #212529;
+        --tet-red: #D32F2F;
+        --tet-gold: #FDB913;
+        --tet-red-light: #E8463D;
+        --primary-color: var(--tet-red);
+        --bg-body: linear-gradient(135deg, #FFF9E6 0%, #FFE8CC 100%);
+        --bg-card: #ffffff;
+        --text-main: #212529;
         --text-muted: #6c757d;
-        --bg-light: #f8f9fa;
-        --border-light: #dee2e6;
-        --shadow-magazine: 0 4px 10px rgba(0, 0, 0, 0.05);
+        --fb-bg-comment: #f0f2f5;
+        --border-radius-card: 16px;
+        --border-radius-bubble: 18px;
     }
 
     body {
-        background-color: var(--bg-light);
+        background: var(--bg-body);
+        font-family: 'Fredoka', 'Segoe UI', system-ui, -apple-system, sans-serif;
     }
 
-    .event-detail-page-magazine .container {
-        max-width: 1200px;
-    }
-
-    /* Hero Section */
-    .magazine-hero-card {
-        background: white;
-        border-radius: 12px;
-        box-shadow: var(--shadow-magazine);
-        overflow: hidden;
-    }
-
-    .hero-image-content {
+    .modern-event-page {
         position: relative;
-        height: 380px;
+        padding-bottom: 50px;
     }
 
-    .hero-image-magazine {
+    /* Decorative Header with Tet Colors */
+    .page-header-decor {
+        height: 280px;
+        background: linear-gradient(135deg, var(--tet-red) 0%, #C8102E 50%, #8B0000 100%);
+        border-bottom-left-radius: 50% 20%;
+        border-bottom-right-radius: 50% 20%;
+        margin-bottom: -200px;
+        box-shadow: 0 8px 30px rgba(211, 47, 47, 0.25);
+    }
+
+    .main-container {
+        position: relative;
+        z-index: 2;
+        /* Đè lên header */
+    }
+
+    /* 3. CARDS & LAYOUT */
+    .content-card,
+    .sidebar-card {
+        background: var(--bg-card);
+        border-radius: var(--border-radius-card);
+        padding: 30px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        border: 1px solid rgba(0, 0, 0, 0.02);
+    }
+
+    .highlight-border {
+        border-top: 5px solid var(--tet-gold);
+        box-shadow: 0 10px 30px rgba(211, 47, 47, 0.08);
+    }
+
+    /* 4. HERO SECTION */
+    .event-title {
+        font-weight: 800;
+        font-size: 2.2rem;
+        line-height: 1.2;
+        color: var(--text-main);
+        margin-bottom: 15px;
+    }
+
+    .event-meta-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        color: var(--text-muted);
+        font-weight: 500;
+        font-size: 0.95rem;
+    }
+
+    .meta-item i {
+        color: var(--primary-color);
+        margin-right: 8px;
+    }
+
+    .event-hero-image-wrapper {
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .event-hero-image {
+        width: 100%;
+        height: auto;
+        display: block;
+        transition: transform 0.5s;
+    }
+
+    .event-hero-image:hover {
+        transform: scale(1.02);
+    }
+
+    /* 5. CONTENT BODY */
+    .section-title {
+        font-weight: 700;
+        font-size: 1.5rem;
+        margin-bottom: 20px;
+        position: relative;
+        padding-left: 15px;
+    }
+
+    .section-title::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 5px;
+        bottom: 5px;
+        width: 4px;
+        background: linear-gradient(180deg, var(--tet-red), var(--tet-gold));
+        border-radius: 4px;
+    }
+
+    .description-content {
+        font-size: 1.05rem;
+        line-height: 1.8;
+        color: #444;
+    }
+
+    .description-content img {
+        max-width: 100%;
+        border-radius: 8px;
+        margin: 15px 0;
+    }
+
+    /* 6. FACEBOOK STYLE COMMENTS (Đã tích hợp) */
+    .user-avatar-current {
+        width: 40px;
+        height: 40px;
+        background: #e4e6eb;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #65676b;
+    }
+
+    .input-wrapper {
+        position: relative;
+    }
+
+    .comment-textarea {
+        background-color: var(--fb-bg-comment);
+        border: none;
+        border-radius: 20px;
+        padding: 12px 50px 12px 15px;
+        resize: none;
+        transition: 0.2s;
+    }
+
+    .comment-textarea:focus {
+        background-color: #fff;
+        box-shadow: 0 0 0 2px #e7f3ff;
+    }
+
+    .btn-send-icon {
+        position: absolute;
+        bottom: 8px;
+        right: 15px;
+        border: none;
+        background: none;
+        color: var(--tet-red);
+        cursor: pointer;
+        font-size: 18px;
+        transition: all 0.3s;
+    }
+
+    .btn-send-icon:hover {
+        color: var(--tet-gold);
+        transform: scale(1.15);
+    }
+
+    .comment-bubble {
+        background-color: var(--fb-bg-comment);
+        border-radius: 18px;
+        padding: 10px 15px;
+        display: inline-block;
+        min-width: 120px;
+    }
+
+    .bg-light-gray {
+        background-color: #e9ecef;
+    }
+
+    .comment-author {
+        font-weight: 700;
+        font-size: 0.95rem;
+        color: #050505;
+    }
+
+    .comment-time {
+        font-size: 0.75rem;
+        color: var(--text-muted);
+        margin-left: 10px;
+    }
+
+    .comment-content {
+        margin-top: 4px;
+        margin-bottom: 0;
+        font-size: 0.95rem;
+        color: #050505;
+        line-height: 1.4;
+    }
+
+    .comment-actions {
+        margin-left: 12px;
+        margin-top: 2px;
+    }
+
+    .btn-reply-trigger {
+        background: none;
+        border: none;
+        padding: 0;
+        font-size: 12px;
+        font-weight: 700;
+        color: #65676b;
+        cursor: pointer;
+    }
+
+    .btn-reply-trigger:hover {
+        text-decoration: underline;
+    }
+
+    /* Reply Tree & Connector */
+    .replies-container {
+        position: relative;
+        margin-top: 10px;
+    }
+
+    .reply-item {
+        margin-top: 10px;
+        padding-left: 0;
+    }
+
+    .connector-curve {
+        position: absolute;
+        top: -20px;
+        left: -25px;
+        width: 40px;
+        height: 40px;
+        border-bottom: 2px solid #e4e6eb;
+        border-left: 2px solid #e4e6eb;
+        border-bottom-left-radius: 15px;
+        z-index: 0;
+    }
+
+    .btn-send-small {
+        position: absolute;
+        top: 50%;
+        right: 10px;
+        transform: translateY(-50%);
+        border: none;
+        background: none;
+        color: var(--tet-red);
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+
+    .btn-send-small:hover {
+        color: var(--tet-gold);
+        transform: translateY(-50%) scale(1.15);
+    }
+
+    .small-input {
+        padding-right: 35px;
+    }
+
+    .login-alert {
+        background: #fff3cd;
+        color: #856404;
+        padding: 15px;
+        border-radius: 10px;
+        text-align: center;
+    }
+
+    .empty-comments {
+        text-align: center;
+        padding: 40px 0;
+        opacity: 0.6;
+    }
+
+    .empty-comments img {
+        width: 50px;
+        margin-bottom: 10px;
+    }
+
+    /* 7. SIDEBAR & RELATED */
+    .sidebar-sticky-wrapper {
+        position: sticky;
+        top: 20px;
+    }
+
+    .sidebar-title {
+        font-weight: 700;
+        margin-bottom: 20px;
+        color: var(--text-main);
+    }
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+    }
+
+    .stat-box {
+        background: #f8f9fa;
+        padding: 15px;
+        border-radius: 10px;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .stat-label {
+        font-size: 0.8rem;
+        color: var(--text-muted);
+    }
+
+    .stat-value {
+        font-weight: 700;
+        font-size: 0.95rem;
+    }
+
+    .btn-register-effect {
+        transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        box-shadow: 0 6px 16px rgba(211, 47, 47, 0.25);
+        background: linear-gradient(135deg, var(--tet-red), var(--tet-red-light)) !important;
+        color: white;
+        font-weight: 700;
+    }
+
+    .btn-register-effect:hover {
+        transform: translateY(-3px) scale(1.02);
+        box-shadow: 0 10px 24px rgba(211, 47, 47, 0.4);
+    }
+
+    .related-event-item {
+        display: flex;
+        gap: 12px;
+        text-decoration: none;
+        color: var(--text-main);
+        padding: 10px;
+        border-radius: 10px;
+        transition: 0.2s;
+    }
+
+    .related-event-item:hover {
+        background: #f8f9fa;
+    }
+
+    .related-img {
+        width: 60px;
+        height: 60px;
+        border-radius: 8px;
+        overflow: hidden;
+        flex-shrink: 0;
+    }
+
+    .related-img img {
         width: 100%;
         height: 100%;
         object-fit: cover;
     }
 
-    .hero-text-overlay {
-        position: absolute;
-        inset: 0;
-        padding: 30px;
-        color: white;
-        background: linear-gradient(90deg, rgba(0, 0, 0, 0.75) 0%, rgba(0, 0, 0, 0.2) 60%, rgba(0, 0, 0, 0) 100%);
-        display: flex;
-        flex-direction: column;
-        justify-content: flex-end;
-    }
-
-    .event-category-badge {
-        display: inline-block;
-        padding: 6px 15px;
-        background-color: var(--accent-color);
-        color: var(--text-dark);
-        border-radius: 6px;
-        font-weight: 700;
-        font-size: 13px;
-    }
-
-    .hero-title-magazine {
-        font-size: 2.2rem;
-        font-weight: 800;
-        margin-bottom: 10px;
-        text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
-    }
-
-    .hero-quick-meta span {
-        font-size: 15px;
-        margin-right: 15px;
-        opacity: 0.9;
-    }
-
-    /* Right Sidebar in Hero */
-    .quick-details-list li {
-        border-bottom: 1px dashed #f0f0f0;
-        padding: 10px 0;
-        color: var(--text-muted);
-        font-size: 15px;
-    }
-
-        .quick-details-list li i {
-            color: var(--primary-color);
-            width: 20px;
-            margin-right: 5px;
-        }
-
-    .btn-primary-cta {
-        background-color: var(--primary-color);
-        color: white;
-        padding: 12px 20px;
-        border-radius: 8px;
-        transition: background-color 0.2s;
-    }
-
-        .btn-primary-cta:hover {
-            background-color: #0b5ed7;
-        }
-
-    /* Content & Comments */
-    .content-panel-card {
-        padding: 20px 0;
-    }
-
-    .section-title-magazine {
-        font-size: 20px;
-        font-weight: 700;
-        color: var(--text-dark);
-        margin-bottom: 25px;
-        padding-bottom: 5px;
-        border-bottom: 3px solid var(--border-light);
-    }
-
-    .event-description img {
-        max-width: 100%;
-        height: auto;
-        border-radius: 8px;
-        margin: 15px 0;
-    }
-
-    /* Sidebar Sticky */
-    .sidebar-sticky-card {
-        background: white;
-        border-radius: 12px;
-        box-shadow: var(--shadow-magazine);
-        padding: 25px;
-        position: sticky;
-        top: 20px;
-    }
-
-    .related-event-item-magazine {
-        display: flex;
-        gap: 15px;
-        text-decoration: none;
-        padding: 10px;
-        border-radius: 8px;
-        transition: 0.2s;
-    }
-
-        .related-event-item-magazine:hover {
-            background-color: var(--bg-light);
-        }
-
-    .related-image-magazine {
-        width: 80px;
-        height: 60px;
-        border-radius: 6px;
-        overflow: hidden;
-        flex-shrink: 0;
-    }
-
-        .related-image-magazine img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-    .related-title-magazine {
-        font-size: 15px;
+    .related-info h6 {
+        font-size: 0.95rem;
         font-weight: 600;
-        color: var(--text-dark);
         margin: 0;
-        display: -webkit-box;
-        -webkit-line-clamp: 2;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
+        line-height: 1.3;
+        margin-bottom: 4px;
     }
 
-    .related-date-magazine {
-        font-size: 13px;
+    .related-info span {
+        font-size: 0.8rem;
         color: var(--text-muted);
-        margin: 0;
+    }
+
+    /* 8. ANIMATIONS */
+    .animate-up {
+        opacity: 0;
+        transform: translateY(20px);
+        animation: fadeInUp 0.6s forwards;
+    }
+
+    .animate-left {
+        opacity: 0;
+        transform: translateX(20px);
+        animation: fadeLeft 0.6s forwards;
+    }
+
+    @@keyframes fadeInUp {
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @@keyframes fadeLeft {
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
     }
 
     /* Responsive */
     @@media (max-width: 991px) {
-        .hero-image-content {
-            height: 250px;
+        .page-header-decor {
+            height: 200px;
+            margin-bottom: -50px;
         }
 
-        .sidebar-sticky-card {
+        .event-title {
+            font-size: 1.8rem;
+        }
+
+        .sidebar-sticky-wrapper {
             position: static;
+            margin-top: 30px;
         }
     }
 </style>

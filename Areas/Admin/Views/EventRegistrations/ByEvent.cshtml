@@ -90,10 +90,10 @@
         display: inline-block;
     }
 
-        .btn-attendance:hover {
-            background: #1a3d7a;
-            color: white;
-        }
+    .btn-attendance:hover {
+        background: #1a3d7a;
+        color: white;
+    }
 
     .filter-section {
         display: flex;
@@ -114,11 +114,11 @@
         min-width: 180px;
     }
 
-        .select-filter:focus {
-            border-color: #2a5298;
-            outline: none;
-            box-shadow: none;
-        }
+    .select-filter:focus {
+        border-color: #2a5298;
+        outline: none;
+        box-shadow: none;
+    }
 
     .btn-filter {
         background: white;
@@ -128,36 +128,36 @@
         font-size: 0.9rem;
     }
 
-        .btn-filter:hover {
-            background: #f8f9fa;
-            color: #495057;
-            border-color: #ddd;
-        }
+    .btn-filter:hover {
+        background: #f8f9fa;
+        color: #495057;
+        border-color: #ddd;
+    }
 
     .custom-table {
         margin: 0;
         border: 1px solid #dee2e6;
     }
 
-        .custom-table thead th {
-            background: #f8f9fa;
-            color: #495057;
-            font-weight: 600;
-            font-size: 0.85rem;
-            text-transform: uppercase;
-            padding: 0.75rem;
-            border-bottom: 2px solid #dee2e6;
-        }
+    .custom-table thead th {
+        background: #f8f9fa;
+        color: #495057;
+        font-weight: 600;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        padding: 0.75rem;
+        border-bottom: 2px solid #dee2e6;
+    }
 
-        .custom-table tbody td {
-            padding: 0.75rem;
-            vertical-align: middle;
-            font-size: 0.9rem;
-        }
+    .custom-table tbody td {
+        padding: 0.75rem;
+        vertical-align: middle;
+        font-size: 0.9rem;
+    }
 
-        .custom-table tbody tr:hover {
-            background: #f8f9fa;
-        }
+    .custom-table tbody tr:hover {
+        background: #f8f9fa;
+    }
 
     .stt-column {
         font-weight: 600;
@@ -218,10 +218,10 @@
         border: 1px solid #dc3545;
     }
 
-        .action-btn:hover {
-            background: #dc3545;
-            color: white;
-        }
+    .action-btn:hover {
+        background: #dc3545;
+        color: white;
+    }
 
     .empty-state {
         text-align: center;
@@ -239,11 +239,11 @@
         display: inline-block;
     }
 
-        .btn-back:hover {
-            background: #f8f9fa;
-            color: #495057;
-            border-color: #ddd;
-        }
+    .btn-back:hover {
+        background: #f8f9fa;
+        color: #495057;
+        border-color: #ddd;
+    }
 </style>
 
 <div class="container-fluid px-4">
@@ -256,8 +256,10 @@
 
     @{
         var totalStudents = ViewBag.Count ?? 0;
-        var presentCount = Model?.Count(m => m.Event?.Attendances?.Any(a => a.UserId == m.UserId && a.EventId == m.EventId && a.IsPresent == true) == true) ?? 0;
-        var absentCount = Model?.Count(m => m.Event?.Attendances?.Any(a => a.UserId == m.UserId && a.EventId == m.EventId && a.IsPresent == false) == true) ?? 0;
+        var presentCount = Model?.Count(m => m.Event?.Attendances?.Any(a => a.UserId == m.UserId && a.EventId == m.EventId
+        && a.IsPresent == true) == true) ?? 0;
+        var absentCount = Model?.Count(m => m.Event?.Attendances?.Any(a => a.UserId == m.UserId && a.EventId == m.EventId &&
+        a.IsPresent == false) == true) ?? 0;
         var pendingCount = totalStudents - presentCount - absentCount;
     }
 
@@ -293,12 +295,18 @@
 
     <!-- Action Bar -->
     <div class="action-bar">
-        <a href="@Url.Action("ScanQRCode", new { id = ViewBag.EventId })" class="btn btn-warning text-white" style="font-weight:600; text-decoration:none; padding: 0.5rem 1rem;">
+        <a href="@Url.Action("ScanQRCode", new { id = ViewBag.EventId })" class="btn btn-warning text-white"
+            style="font-weight:600; text-decoration:none; padding: 0.5rem 1rem;">
             <i class="fa-solid fa-qrcode me-1"></i> Quét QR
         </a>
 
         <a asp-action="Attendance" asp-route-eventId="@ViewBag.EventId" class="btn-attendance">
             Điểm danh thủ công
+        </a>
+
+        <a asp-action="IssueCertificates" asp-route-id="@ViewBag.EventId" class="btn btn-success"
+            style="font-weight:600; text-decoration:none; padding: 0.5rem 1rem;">
+            🏅 Cấp giấy chứng nhận
         </a>
 
         <form method="get" class="filter-section mb-0">
@@ -363,10 +371,8 @@
                                 <span class="@attendanceBadge">@attendanceStatus</span>
                             </td>
                             <td class="text-center">
-                                <a asp-action="Delete"
-                                   asp-route-id="@item.RegistrationId"
-                                   class="action-btn"
-                                   onclick="return confirm('Bạn có chắc chắn muốn xóa đăng ký này?')">
+                                <a asp-action="Delete" asp-route-id="@item.RegistrationId" class="action-btn"
+                                    onclick="return confirm('Bạn có chắc chắn muốn xóa đăng ký này?')">
                                     Xóa
                                 </a>
                             </td>

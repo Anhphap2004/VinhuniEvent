@@ -2,87 +2,504 @@
 	List<Event> EventNew = ViewBag.EventNew;
 	ViewData["Title"] = "Home Page";
 }
-<!-- start banner Area -->
-<section class="banner-area relative" id="home">
-	<div class="overlay overlay-bg"></div>
-	<div class="container">
-		<div class="row fullscreen d-flex align-items-center justify-content-between">
-			<div class="banner-content col-lg-9 col-md-12">
-				<h1 class="text-uppercase">
-					Vinhuni Events - Nơi kết nối
-					những trải nghiệm đáng nhớ
-				</h1>
-				<p class="pt-10 pb-10">
-					Khám phá và tham gia các sự kiện học thuật, văn hóa, thể thao tại Trường Đại học Vinh. Chúng tôi mang đến không gian giao lưu, học hỏi và phát triển toàn diện cho sinh viên.
-				</p>
 
-				<!-- Stats Section -->
-				<div style="display: flex; gap: 50px; margin: 30px 0; flex-wrap: wrap;">
-					<div>
-						<div style="font-size: 48px; font-weight: 700; color: #FFD700; margin-bottom: 5px;">500+</div>
-						<div style="font-size: 16px; color: rgba(255,255,255,0.9); text-transform: uppercase; letter-spacing: 1px;">Sự kiện</div>
-					</div>
-					<div>
-						<div style="font-size: 48px; font-weight: 700; color: #FFD700; margin-bottom: 5px;">10K+</div>
-						<div style="font-size: 16px; color: rgba(255,255,255,0.9); text-transform: uppercase; letter-spacing: 1px;">Sinh viên</div>
-					</div>
-					<div>
-						<div style="font-size: 48px; font-weight: 700; color: #FFD700; margin-bottom: 5px;">50+</div>
-						<div style="font-size: 16px; color: rgba(255,255,255,0.9); text-transform: uppercase; letter-spacing: 1px;">Đối tác</div>
-					</div>
-				</div>
+<style>
+	/* Reset font to sans-serif */
+	* {
+		font-family: "Fredoka", "Poppins", sans-serif !important;
+	}
 
-				<a href="#" class="primary-btn text-uppercase">Khám phá ngay</a>
+	/* Tet Theme Variables */
+	:root {
+		--tet-red: #D32F2F;
+		--tet-gold: #FDB913;
+		--tet-red-light: #E8463D;
+	}
+
+	/* Winter Banner with Tet Theme */
+	.winter-banner {
+		position: relative;
+		height: 620px;
+		background: linear-gradient(135deg, var(--tet-red) 0%, #C8102E 50%, #8B0000 100%);
+		overflow: hidden;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+
+	.winter-banner::before {
+		content: '';
+		position: absolute;
+		width: 100%;
+		height: 100%;
+		background-image:
+			radial-gradient(2px 2px at 20px 30px, rgba(253, 185, 19, 0.8), rgba(253, 185, 19, 0)),
+			radial-gradient(2px 2px at 60px 70px, rgba(253, 185, 19, 0.8), rgba(253, 185, 19, 0)),
+			radial-gradient(1px 1px at 50px 50px, rgba(255, 215, 0, 0.8), rgba(255, 215, 0, 0)),
+			radial-gradient(1px 1px at 130px 80px, rgba(253, 185, 19, 0.8), rgba(253, 185, 19, 0)),
+			radial-gradient(2px 2px at 90px 10px, rgba(255, 215, 0, 0.8), rgba(255, 215, 0, 0));
+		background-repeat: repeat;
+		background-size: 200px 200px;
+		animation: snowfall 20s linear infinite;
+		opacity: 0.7;
+		z-index: 1;
+	}
+
+	@@keyframes snowfall {
+		0% {
+			transform: translateY(-100%);
+		}
+
+		100% {
+			transform: translateY(100vh);
+		}
+	}
+
+	.banner-content-winter {
+		position: relative;
+		z-index: 2;
+		text-align: center;
+		color: white;
+		max-width: 800px;
+		padding: 40px;
+	}
+
+	.banner-content-winter h1 {
+		font-size: 56px;
+		font-weight: 800;
+		margin-bottom: 20px;
+		line-height: 1.2;
+		text-shadow: 0 6px 20px rgba(0, 0, 0, 0.4), 0 0 30px rgba(253, 185, 19, 0.3);
+		animation: slideDown 0.8s ease-out;
+		color: #FFF;
+		letter-spacing: 2px;
+	}
+
+	.banner-content-winter .subtitle {
+		font-size: 20px;
+		margin-bottom: 30px;
+		opacity: 0.95;
+		animation: slideUp 0.8s ease-out 0.2s both;
+	}
+
+	.banner-stats-winter {
+		display: flex;
+		justify-content: center;
+		gap: 60px;
+		margin-bottom: 40px;
+		flex-wrap: wrap;
+		animation: slideUp 0.8s ease-out 0.4s both;
+	}
+
+	.stat-winter {
+		text-align: center;
+		background: rgba(255, 255, 255, 0.12);
+		padding: 20px 30px;
+		border-radius: 12px;
+		backdrop-filter: blur(10px);
+		border: 2px solid rgba(253, 185, 19, 0.3);
+		box-shadow: 0 8px 32px rgba(211, 47, 47, 0.15);
+	}
+
+	.stat-number-winter {
+		font-size: 40px;
+		font-weight: 800;
+		margin-bottom: 8px;
+	}
+
+	.stat-label-winter {
+		font-size: 14px;
+		text-transform: uppercase;
+		letter-spacing: 1px;
+		opacity: 0.9;
+	}
+
+	.banner-btn-winter {
+		display: inline-block;
+		background: linear-gradient(135deg, var(--tet-gold) 0%, #FFC107 100%);
+		color: var(--tet-red);
+		padding: 15px 45px;
+		border-radius: 50px;
+		text-decoration: none;
+		font-weight: 800;
+		font-size: 16px;
+		text-transform: uppercase;
+		letter-spacing: 1.5px;
+		box-shadow: 0 12px 32px rgba(253, 185, 19, 0.4);
+		transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+		animation: slideUp 0.8s ease-out 0.6s both;
+	}
+
+	.banner-btn-winter:hover {
+		transform: translateY(-5px) scale(1.08);
+		box-shadow: 0 18px 48px rgba(253, 185, 19, 0.6);
+		color: #8B0000;
+	}
+
+	.snowflake-decoration {
+		position: absolute;
+		z-index: 2;
+		font-size: 40px;
+		opacity: 0.8;
+		animation: float 6s ease-in-out infinite;
+	}
+
+	.snowflake-1 {
+		top: 50px;
+		left: 10%;
+		animation-delay: 0s;
+	}
+
+	.snowflake-2 {
+		top: 150px;
+		right: 15%;
+		animation-delay: 1s;
+	}
+
+	.snowflake-3 {
+		bottom: 100px;
+		left: 20%;
+		animation-delay: 2s;
+	}
+
+	.snowflake-4 {
+		top: 200px;
+		right: 5%;
+		animation-delay: 3s;
+	}
+
+	@@keyframes float {
+
+		0%,
+		100% {
+			transform: translateY(0px) rotate(0deg);
+		}
+
+		50% {
+			transform: translateY(-20px) rotate(180deg);
+		}
+	}
+
+	@@keyframes slideDown {
+		from {
+			opacity: 0;
+			transform: translateY(-30px);
+		}
+
+		to {
+			opacity: 1;
+			transform: translateY(0);
+		}
+	}
+
+	@@keyframes slideUp {
+		from {
+			opacity: 0;
+			transform: translateY(30px);
+		}
+
+		to {
+			opacity: 1;
+			transform: translateY(0);
+		}
+	}
+</style>
+
+<!-- Winter Banner -->
+<section class="winter-banner" id="home">
+	<div class="snowflake-decoration snowflake-1">❄️</div>
+	<div class="snowflake-decoration snowflake-2">❅</div>
+	<div class="snowflake-decoration snowflake-3">❆</div>
+	<div class="snowflake-decoration snowflake-4">❄️</div>
+
+	<div class="banner-content-winter">
+		<h1 style="color: var(--tet-gold);">✨ VinhUni Events ✨</h1>
+		<p class="subtitle">🎊 Nơi kết nối những khoảnh khắc đáng nhớ 🎊</p>
+
+		<div class="banner-stats-winter">
+			<div class="stat-winter">
+				<div class="stat-number-winter">500+</div>
+				<div class="stat-label-winter">Sự kiện</div>
+			</div>
+			<div class="stat-winter">
+				<div class="stat-number-winter">10K+</div>
+				<div class="stat-label-winter">Sinh viên</div>
+			</div>
+			<div class="stat-winter">
+				<div class="stat-number-winter">50+</div>
+				<div class="stat-label-winter">Đối tác</div>
 			</div>
 		</div>
+
+		<p style="font-size: 16px; margin-bottom: 30px; opacity: 0.95;">
+			Khám phá và tham gia các sự kiện học thuật, văn hóa, thể thao tại Trường Đại học Vinh.
+			Chúng tôi mang đến không gian giao lưu, học hỏi và phát triển toàn diện cho sinh viên.
+		</p>
+
+		<a href="#featured-events" class="banner-btn-winter">Khám Phá Ngay</a>
 	</div>
 </section>
-<!-- End banner Area -->
+
 <!-- Start featured-event Area -->
-<section class="featured-event-area section-gap">
+<section class="featured-event-area section-gap" id="featured-events">
+	<style>
+		.featured-event-area {
+			background: linear-gradient(135deg, #FFF9E6 0%, #FFE8CC 50%, #FFF0D9 100%);
+			position: relative;
+			overflow: hidden;
+		}
+
+		.featured-event-area::before {
+			content: '';
+			position: absolute;
+			top: 0;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			background-image:
+				radial-gradient(circle at 20% 50%, rgba(211, 47, 47, 0.08) 0%, transparent 50%),
+				radial-gradient(circle at 80% 80%, rgba(253, 185, 19, 0.08) 0%, transparent 50%);
+		}
+
+		.featured-event-area .container {
+			position: relative;
+			z-index: 2;
+		}
+
+		.event-section-title {
+			font-family: "Fredoka", sans-serif;
+			text-align: center;
+			margin-bottom: 35px;
+		}
+
+		.event-section-title h1 {
+			font-size: 32px;
+			font-weight: 800;
+			background: linear-gradient(135deg, var(--tet-red) 0%, var(--tet-gold) 100%);
+			-webkit-background-clip: text;
+			-webkit-text-fill-color: transparent;
+			background-clip: text;
+			margin-bottom: 8px;
+		}
+
+		.event-section-title p {
+			font-size: 14px;
+			color: #888;
+			max-width: 500px;
+			margin: 0 auto;
+			font-family: "Fredoka", sans-serif;
+		}
+
+		.events-list {
+			display: grid;
+			grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+			gap: 25px;
+		}
+
+		.event-item {
+			background: white;
+			border-radius: 12px;
+			overflow: hidden;
+			box-shadow: 0 4px 12px rgba(211, 47, 47, 0.08);
+			transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+			display: flex;
+			flex-direction: column;
+			height: 100%;
+			border: 2px solid transparent;
+		}
+
+		.event-item:hover {
+			transform: translateY(-8px) scale(1.02);
+			box-shadow: 0 12px 28px rgba(211, 47, 47, 0.18);
+			border-color: var(--tet-gold);
+		}
+
+		.event-item-thumb {
+			position: relative;
+			width: 100%;
+			height: 200px;
+			overflow: hidden;
+			background: linear-gradient(135deg, var(--tet-red) 0%, var(--tet-gold) 100%);
+		}
+
+		.event-item-thumb img {
+			width: 100%;
+			height: 100%;
+			object-fit: cover;
+			transition: transform 0.4s ease;
+		}
+
+		.event-item:hover .event-item-thumb img {
+			transform: scale(1.08);
+		}
+
+		.event-item-content {
+			display: flex;
+			flex-direction: column;
+			gap: 8px;
+			padding: 18px;
+			flex: 1;
+		}
+
+		.event-item-title {
+			font-size: 16px;
+			font-weight: 700;
+			color: #2c3e50;
+			margin: 0;
+			line-height: 1.4;
+			display: -webkit-box;
+			-webkit-line-clamp: 2;
+			-webkit-box-orient: vertical;
+			overflow: hidden;
+			font-family: "Fredoka", sans-serif;
+		}
+
+		.event-item-meta {
+			display: flex;
+			gap: 8px;
+			align-items: center;
+			flex-wrap: wrap;
+			font-size: 12px;
+		}
+
+		.event-item-date {
+			font-size: 12px;
+			color: #7f8c8d;
+			font-family: "Fredoka", sans-serif;
+		}
+
+		.event-item-category {
+			display: inline-block;
+			background: linear-gradient(135deg, rgba(211, 47, 47, 0.1), rgba(253, 185, 19, 0.08));
+			color: var(--tet-red);
+			padding: 4px 10px;
+			border-radius: 20px;
+			font-size: 11px;
+			font-weight: 600;
+			border: 1px solid var(--tet-gold);
+			font-family: "Fredoka", sans-serif;
+		}
+
+		.event-item-btn {
+			background: linear-gradient(135deg, var(--tet-red) 0%, var(--tet-gold) 100%);
+			color: white;
+			padding: 10px 16px;
+			border-radius: 8px;
+			text-decoration: none;
+			font-size: 12px;
+			font-weight: 700;
+			text-transform: uppercase;
+			letter-spacing: 0.5px;
+			transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+			text-align: center;
+			margin-top: auto;
+			font-family: "Fredoka", sans-serif;
+		}
+
+		.event-item-btn:hover {
+			transform: scale(1.05);
+			box-shadow: 0 8px 20px rgba(211, 47, 47, 0.28);
+			color: white;
+		}
+
+		.view-all-btn {
+			display: flex;
+			justify-content: center;
+			margin-top: 35px;
+		}
+
+		.view-all-btn a {
+			background: linear-gradient(135deg, var(--tet-red) 0%, var(--tet-gold) 100%);
+			color: white;
+			padding: 13px 40px;
+			border-radius: 25px;
+			text-decoration: none;
+			font-weight: 800;
+			font-size: 13px;
+			text-transform: uppercase;
+			letter-spacing: 1px;
+			box-shadow: 0 8px 24px rgba(211, 47, 47, 0.25);
+			transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+			font-family: "Fredoka", sans-serif;
+		}
+
+		.view-all-btn a:hover {
+			transform: translateY(-4px) scale(1.06);
+			box-shadow: 0 12px 36px rgba(211, 47, 47, 0.35);
+		}
+
+		@@media (max-width: 1024px) {
+			.events-list {
+				grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+				gap: 20px;
+			}
+		}
+
+		@@media (max-width: 768px) {
+			.events-list {
+				grid-template-columns: repeat(2, 1fr);
+				gap: 15px;
+			}
+
+			.event-item-thumb {
+				height: 160px;
+			}
+
+			.event-item-content {
+				padding: 14px;
+				gap: 6px;
+			}
+
+			.event-item-title {
+				font-size: 15px;
+			}
+		}
+
+		@@media (max-width: 480px) {
+			.events-list {
+				grid-template-columns: 1fr;
+			}
+
+			.event-item-thumb {
+				height: 180px;
+			}
+
+			.event-item-title {
+				font-size: 14px;
+			}
+		}
+	</style>
+
 	<div class="container">
-		<div class="row d-flex justify-content-center">
-			<div class="menu-content pb-70 col-lg-8">
-				<div class="title text-center">
-					<h1 class="mb-10">🎊 Sự kiện nổi bật</h1>
-					<p>Khám phá những khoảnh khắc đáng nhớ cùng các hoạt động mới nhất của trường.</p>
-				</div>
-			</div>
+		<div class="event-section-title">
+			<h1>🎊 Sự kiện nổi bật 🎊</h1>
+			<p>Khám phá những khoảnh khắc rộn ràng của trường trong dịp Tết</p>
 		</div>
 
-		<div class="row">
-			<div class="active-popular-carusel">
-				@foreach (var p in EventNew)
-				{
-					<div class="single-popular-carusel">
-						<div class="thumb-wrap relative">
-							<div class="thumb relative">
-								<div class="overlay overlay-bg"></div>
-								<img style="width: 100%; height: 200px;" class="img-fluid rounded-2xl shadow-lg" src="~/main/img/events/@p.Image" alt="@p.Title">
-							</div>
-							<div class="meta d-flex justify-content-between align-items-center px-3 py-2">
-								<p class="mb-0">
-									<span class="lnr lnr-calendar-full"></span> @p.CreatedDate?.ToString("dd/MM/yyyy")
-								</p>
-								<span class="badge bg-primary text-white px-3 py-1 rounded-pill">
-									@p.Category?.CategoryName
-								</span>
-							</div>
-						</div>
-
-						<div class="details text-center mt-3">
-							<a href="@Url.Action("Details", "Events", new { slug = p.Slug, id = p.EventId })">
-								<h4 class="fw-bold text-dark">@p.Title</h4>
-							</a>
-							@* <p class="text-muted">@p.ShortDescription</p> *@
-							<a href="@Url.Action("Details", "Events", new { slug = p.Slug, id = p.EventId })"
-							   class="btn btn-outline-primary btn-sm mt-2 rounded-pill">
-								Xem chi tiết
-							</a>
+		<div class="events-list">
+			@foreach (var p in EventNew)
+			{
+				<div class="event-item">
+					<div class="event-item-thumb">
+						<img src="~/main/img/events/@p.Image" alt="@p.Title">
+					</div>
+					<div class="event-item-content">
+						<h3 class="event-item-title">@p.Title</h3>
+						<div class="event-item-meta">
+							<span class="event-item-date">📅 @p.CreatedDate?.ToString("dd/MM/yyyy")</span>
+							<span class="event-item-category">@p.Category?.CategoryName</span>
 						</div>
 					</div>
-				}
-			</div>
+					<a href="@Url.Action("Details", "Events", new { slug = p.Slug, id = p.EventId })"
+						class="event-item-btn">
+						Xem →
+					</a>
+				</div>
+			}
+		</div>
+
+		<div class="view-all-btn">
+			<a href="@Url.Action("Index", "Events")">Xem tất cả sự kiện</a>
 		</div>
 	</div>
 </section>
@@ -98,21 +515,29 @@
 					during this Summer!
 				</h1>
 				<p>
-					inappropriate behavior is often laughed off as “boys will be boys,” women face higher conduct standards especially in the workplace. That’s why it’s crucial that, as women, our behavior on the job is beyond reproach.
+					inappropriate behavior is often laughed off as “boys will be boys,” women face higher conduct
+					standards especially in the workplace. That’s why it’s crucial that, as women, our behavior on the
+					job is beyond reproach.
 				</p>
 				<div class="row details-content">
 					<div class="col single-detials">
 						<span class="lnr lnr-graduation-hat"></span>
-						<a href="#"><h4>Expert Instructors</h4></a>
+						<a href="#">
+							<h4>Expert Instructors</h4>
+						</a>
 						<p>
-							Usage of the Internet is becoming more common due to rapid advancement of technology and power.
+							Usage of the Internet is becoming more common due to rapid advancement of technology and
+							power.
 						</p>
 					</div>
 					<div class="col single-detials">
 						<span class="lnr lnr-license"></span>
-						<a href="#"><h4>Certification</h4></a>
+						<a href="#">
+							<h4>Certification</h4>
+						</a>
 						<p>
-							Usage of the Internet is becoming more common due to rapid advancement of technology and power.
+							Usage of the Internet is becoming more common due to rapid advancement of technology and
+							power.
 						</p>
 					</div>
 				</div>
@@ -120,9 +545,12 @@
 			<div class="col-lg-4 col-md-6 search-course-right section-gap">
 				<form class="form-wrap" action="#">
 					<h4 class="text-white pb-20 text-center mb-30">Search for Available Course</h4>
-					<input type="text" class="form-control" name="name" placeholder="Your Name" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Your Name'">
-					<input class="form-control" name="phone" placeholder="Your Phone Number" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Your Phone Number'">
-					<input type="email" class="form-control" name="email" placeholder="Your Email Address" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Your Email Address'">
+					<input type="text" class="form-control" name="name" placeholder="Your Name"
+						onfocus="this.placeholder = ''" onblur="this.placeholder = 'Your Name'">
+					<input class="form-control" name="phone" placeholder="Your Phone Number"
+						onfocus="this.placeholder = ''" onblur="this.placeholder = 'Your Phone Number'">
+					<input type="email" class="form-control" name="email" placeholder="Your Email Address"
+						onfocus="this.placeholder = ''" onblur="this.placeholder = 'Your Email Address'">
 					<div class="form-select" id="service-select">
 						<select>
 							<option datd-display="">Choose Course</option>
@@ -165,7 +593,8 @@
 							</h4>
 						</a>
 						<p>
-							For most of us, the idea of astronomy is something we directly connect to “stargazing”, telescopes and seeing magnificent displays in the heavens.
+							For most of us, the idea of astronomy is something we directly connect to “stargazing”,
+							telescopes and seeing magnificent displays in the heavens.
 						</p>
 					</div>
 				</div>
@@ -182,7 +611,8 @@
 							</h4>
 						</a>
 						<p>
-							For most of us, the idea of astronomy is something we directly connect to “stargazing”, telescopes and seeing magnificent displays in the heavens.
+							For most of us, the idea of astronomy is something we directly connect to “stargazing”,
+							telescopes and seeing magnificent displays in the heavens.
 						</p>
 					</div>
 				</div>
@@ -199,7 +629,8 @@
 							</h4>
 						</a>
 						<p>
-							For most of us, the idea of astronomy is something we directly connect to “stargazing”, telescopes and seeing magnificent displays in the heavens.
+							For most of us, the idea of astronomy is something we directly connect to “stargazing”,
+							telescopes and seeing magnificent displays in the heavens.
 						</p>
 					</div>
 				</div>
@@ -216,7 +647,8 @@
 							</h4>
 						</a>
 						<p>
-							For most of us, the idea of astronomy is something we directly connect to “stargazing”, telescopes and seeing magnificent displays in the heavens.
+							For most of us, the idea of astronomy is something we directly connect to “stargazing”,
+							telescopes and seeing magnificent displays in the heavens.
 						</p>
 					</div>
 				</div>
@@ -233,7 +665,8 @@
 							</h4>
 						</a>
 						<p>
-							For most of us, the idea of astronomy is something we directly connect to “stargazing”, telescopes and seeing magnificent displays in the heavens.
+							For most of us, the idea of astronomy is something we directly connect to “stargazing”,
+							telescopes and seeing magnificent displays in the heavens.
 						</p>
 					</div>
 				</div>
@@ -250,7 +683,8 @@
 							</h4>
 						</a>
 						<p>
-							For most of us, the idea of astronomy is something we directly connect to “stargazing”, telescopes and seeing magnificent displays in the heavens.
+							For most of us, the idea of astronomy is something we directly connect to “stargazing”,
+							telescopes and seeing magnificent displays in the heavens.
 						</p>
 					</div>
 				</div>
@@ -267,7 +701,9 @@
 			<div class="active-review-carusel">
 				<div class="single-review item">
 					<div class="title justify-content-start d-flex">
-						<a href="#"><h4>Fannie Rowe</h4></a>
+						<a href="#">
+							<h4>Fannie Rowe</h4>
+						</a>
 						<div class="star">
 							<span class="fa fa-star checked"></span>
 							<span class="fa fa-star checked"></span>
@@ -277,12 +713,16 @@
 						</div>
 					</div>
 					<p>
-						Accessories Here you can find the best computer accessory for your laptop, monitor, printer, scanner, speaker. Here you can find the best computer accessory for your laptop, monitor, printer, scanner, speaker.
+						Accessories Here you can find the best computer accessory for your laptop, monitor, printer,
+						scanner, speaker. Here you can find the best computer accessory for your laptop, monitor,
+						printer, scanner, speaker.
 					</p>
 				</div>
 				<div class="single-review item">
 					<div class="title justify-content-start d-flex">
-						<a href="#"><h4>Hulda Sutton</h4></a>
+						<a href="#">
+							<h4>Hulda Sutton</h4>
+						</a>
 						<div class="star">
 							<span class="fa fa-star checked"></span>
 							<span class="fa fa-star checked"></span>
@@ -292,12 +732,16 @@
 						</div>
 					</div>
 					<p>
-						Accessories Here you can find the best computer accessory for your laptop, monitor, printer, scanner, speaker. Here you can find the best computer accessory for your laptop, monitor, printer, scanner, speaker.
+						Accessories Here you can find the best computer accessory for your laptop, monitor, printer,
+						scanner, speaker. Here you can find the best computer accessory for your laptop, monitor,
+						printer, scanner, speaker.
 					</p>
 				</div>
 				<div class="single-review item">
 					<div class="title justify-content-start d-flex">
-						<a href="#"><h4>Fannie Rowe</h4></a>
+						<a href="#">
+							<h4>Fannie Rowe</h4>
+						</a>
 						<div class="star">
 							<span class="fa fa-star checked"></span>
 							<span class="fa fa-star checked"></span>
@@ -307,12 +751,16 @@
 						</div>
 					</div>
 					<p>
-						Accessories Here you can find the best computer accessory for your laptop, monitor, printer, scanner, speaker. Here you can find the best computer accessory for your laptop, monitor, printer, scanner, speaker.
+						Accessories Here you can find the best computer accessory for your laptop, monitor, printer,
+						scanner, speaker. Here you can find the best computer accessory for your laptop, monitor,
+						printer, scanner, speaker.
 					</p>
 				</div>
 				<div class="single-review item">
 					<div class="title justify-content-start d-flex">
-						<a href="#"><h4>Hulda Sutton</h4></a>
+						<a href="#">
+							<h4>Hulda Sutton</h4>
+						</a>
 						<div class="star">
 							<span class="fa fa-star checked"></span>
 							<span class="fa fa-star checked"></span>
@@ -322,12 +770,16 @@
 						</div>
 					</div>
 					<p>
-						Accessories Here you can find the best computer accessory for your laptop, monitor, printer, scanner, speaker. Here you can find the best computer accessory for your laptop, monitor, printer, scanner, speaker.
+						Accessories Here you can find the best computer accessory for your laptop, monitor, printer,
+						scanner, speaker. Here you can find the best computer accessory for your laptop, monitor,
+						printer, scanner, speaker.
 					</p>
 				</div>
 				<div class="single-review item">
 					<div class="title justify-content-start d-flex">
-						<a href="#"><h4>Fannie Rowe</h4></a>
+						<a href="#">
+							<h4>Fannie Rowe</h4>
+						</a>
 						<div class="star">
 							<span class="fa fa-star checked"></span>
 							<span class="fa fa-star checked"></span>
@@ -337,12 +789,16 @@
 						</div>
 					</div>
 					<p>
-						Accessories Here you can find the best computer accessory for your laptop, monitor, printer, scanner, speaker. Here you can find the best computer accessory for your laptop, monitor, printer, scanner, speaker.
+						Accessories Here you can find the best computer accessory for your laptop, monitor, printer,
+						scanner, speaker. Here you can find the best computer accessory for your laptop, monitor,
+						printer, scanner, speaker.
 					</p>
 				</div>
 				<div class="single-review item">
 					<div class="title justify-content-start d-flex">
-						<a href="#"><h4>Hulda Sutton</h4></a>
+						<a href="#">
+							<h4>Hulda Sutton</h4>
+						</a>
 						<div class="star">
 							<span class="fa fa-star checked"></span>
 							<span class="fa fa-star checked"></span>
@@ -352,13 +808,17 @@
 						</div>
 					</div>
 					<p>
-						Accessories Here you can find the best computer accessory for your laptop, monitor, printer, scanner, speaker. Here you can find the best computer accessory for your laptop, monitor, printer, scanner, speaker.
+						Accessories Here you can find the best computer accessory for your laptop, monitor, printer,
+						scanner, speaker. Here you can find the best computer accessory for your laptop, monitor,
+						printer, scanner, speaker.
 					</p>
 				</div>
 				<div class="single-review item">
 					<img src="~/main/img/r1.png" alt="">
 					<div class="title justify-content-start d-flex">
-						<a href="#"><h4>Fannie Rowe</h4></a>
+						<a href="#">
+							<h4>Fannie Rowe</h4>
+						</a>
 						<div class="star">
 							<span class="fa fa-star checked"></span>
 							<span class="fa fa-star checked"></span>
@@ -368,12 +828,16 @@
 						</div>
 					</div>
 					<p>
-						Accessories Here you can find the best computer accessory for your laptop, monitor, printer, scanner, speaker. Here you can find the best computer accessory for your laptop, monitor, printer, scanner, speaker.
+						Accessories Here you can find the best computer accessory for your laptop, monitor, printer,
+						scanner, speaker. Here you can find the best computer accessory for your laptop, monitor,
+						printer, scanner, speaker.
 					</p>
 				</div>
 				<div class="single-review item">
 					<div class="title justify-content-start d-flex">
-						<a href="#"><h4>Hulda Sutton</h4></a>
+						<a href="#">
+							<h4>Hulda Sutton</h4>
+						</a>
 						<div class="star">
 							<span class="fa fa-star checked"></span>
 							<span class="fa fa-star checked"></span>
@@ -383,7 +847,9 @@
 						</div>
 					</div>
 					<p>
-						Accessories Here you can find the best computer accessory for your laptop, monitor, printer, scanner, speaker. Here you can find the best computer accessory for your laptop, monitor, printer, scanner, speaker.
+						Accessories Here you can find the best computer accessory for your laptop, monitor, printer,
+						scanner, speaker. Here you can find the best computer accessory for your laptop, monitor,
+						printer, scanner, speaker.
 					</p>
 				</div>
 			</div>
@@ -399,7 +865,9 @@
 			<div class="wrap">
 				<h1 class="text-white">Become an instructor</h1>
 				<p>
-					There is a moment in the life of any aspiring astronomer that it is time to buy that first telescope. It’s exciting to think about setting up your own viewing station whether that is on the deck.
+					There is a moment in the life of any aspiring astronomer that it is time to buy that first
+					telescope. It’s exciting to think about setting up your own viewing station whether that is on the
+					deck.
 				</p>
 				<a class="primary-btn wh" href="#">Apply for the post</a>
 			</div>
@@ -409,6 +877,3 @@
 <!-- End cta-one Area -->
 <!-- Start blog Area -->
 <!-- End blog Area -->
-
-
-

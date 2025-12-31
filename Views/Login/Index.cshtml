@@ -1,8 +1,13 @@
 ﻿@model VinhuniEvent.Models.User;
 <style>
+    /* Reset font to sans-serif */
+    * {
+        font-family: "Fredoka", "Poppins", sans-serif !important;
+    }
+
     .login-container {
         margin: 80px auto;
-        margin-top: 150px;
+        margin-top: 40px;
         background: linear-gradient(180deg, #1B5E96 0%, #174A7A 100%);
         border-radius: 12px;
         box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
@@ -214,13 +219,13 @@
             @Html.AntiForgeryToken()
             @if (TempData["ErrorMessage"] != null)
             {
-                <div class="alert alert-warning alert-dismissible fade show" role="alert">              
+                <div class="alert alert-warning alert-dismissible fade show" role="alert">
                     @TempData["ErrorMessage"]
                 </div>
             }
             @if (TempData["Success"] != null)
             {
-                <div class="alert alert-success alert-dismissible fade show" role="alert">              
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
                     @TempData["Success"]
                 </div>
             }

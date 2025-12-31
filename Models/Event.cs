@@ -55,12 +55,14 @@ public partial class Event
 
     public virtual ICollection<Attendance> Attendances { get; set; } = new List<Attendance>();
 
-    public virtual EventCategory? Category { get; set; } 
+    public virtual EventCategory? Category { get; set; }
 
-    public virtual User? CreatedByNavigation { get; set; } 
+    public virtual User? CreatedByNavigation { get; set; }
 
     public virtual ICollection<EventRegistration> EventRegistrations { get; set; } = new List<EventRegistration>();
     public virtual ICollection<EventComment> EventComments { get; set; }
     = new List<EventComment>();
+
+    public virtual ICollection<Certificate> Certificates { get; set; } = new List<Certificate>();
 
 }

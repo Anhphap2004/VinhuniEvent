@@ -7,7 +7,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using VinhuniEvent.Filters;
 using VinhuniEvent.Models;
-            
+using VinhuniEvent.ViewModels;
+
 namespace VinhuniEvent.Areas.Admin.Controllers
 {
     [RoleAuthorize(1, 3)]
@@ -21,12 +22,9 @@ namespace VinhuniEvent.Areas.Admin.Controllers
             _context = context;
         }
 
-
-
-        // GET: Hiển thị màn hình quét QR
         // GET: Hiển thị màn hình quét QR
         [HttpGet]
-        public async Task<IActionResult> ScanQRCode(int id) // 1️⃣ Sửa 'eventId' thành 'id'
+        public async Task<IActionResult> ScanQRCode(int id) 
         {
             // 1. Kiểm tra quyền Admin qua Session
             var roleId = HttpContext.Session.GetInt32("RoleId");
@@ -36,10 +34,10 @@ namespace VinhuniEvent.Areas.Admin.Controllers
             }
 
             // 2. Tìm sự kiện
-            var eventInfo = await _context.Events.FindAsync(id); // 2️⃣ Sửa chỗ này thành 'id'
+            var eventInfo = await _context.Events.FindAsync(id); 
             if (eventInfo == null) return NotFound();
 
-            ViewBag.EventId = id; // 3️⃣ Sửa chỗ này thành 'id'
+            ViewBag.EventId = id; 
             ViewBag.EventName = eventInfo.Title;
             return View();
         }
@@ -48,21 +46,19 @@ namespace VinhuniEvent.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ProcessAttendance([FromForm] int eventId, [FromForm] int userId)
         {
-            // 1. Kiểm tra quyền Admin (Bảo mật API)
             var adminRoleId = HttpContext.Session.GetInt32("RoleId");
             if (adminRoleId == null)
             {
                 return Json(new { success = false, message = "⛔ Bạn không có quyền thực hiện!" });
             }
 
-            // 2. Tìm sinh viên (Dựa trên ID nhận được từ máy quét)
             var user = await _context.Users.FirstOrDefaultAsync(u => u.UserId == userId);
             if (user == null)
             {
                 return Json(new { success = false, message = "❌ Không tìm thấy sinh viên!" });
             }
 
-            // 3. Kiểm tra đăng ký
+
             var isRegistered = await _context.EventRegistrations
                 .AnyAsync(r => r.EventId == eventId && r.UserId == userId);
 
@@ -73,7 +69,7 @@ namespace VinhuniEvent.Areas.Admin.Controllers
 
             try
             {
-                // 4. Cập nhật Attendance
+                
                 var attendance = await _context.Attendances
                     .FirstOrDefaultAsync(a => a.EventId == eventId && a.UserId == userId);
 
@@ -101,14 +97,14 @@ namespace VinhuniEvent.Areas.Admin.Controllers
 
                 await _context.SaveChangesAsync();
 
-                // 5. Trả về kết quả
+         
                 return Json(new
                 {
                     success = true,
                     message = "✅ Điểm danh thành công!",
                     studentName = user.FullName,
                     studentCode = user.StudentCode,
-                    // Nếu ImageUrl null thì dùng ảnh placeholder
+        
                     image = !string.IsNullOrEmpty(user.ImageUrl) ? $"/images/users/{user.ImageUrl}" : "https://via.placeholder.com/150"
                 });
             }
@@ -313,9 +309,99 @@ namespace VinhuniEvent.Areas.Admin.Controllers
 
             return RedirectToAction(nameof(Index));
         }
+
+        // GET: Admin/EventRegistrations/IssueCertificates/5
+        public async Task<IActionResult> IssueCertificates(int id)
+        {
+            var eventInfo = await _context.Events.FindAsync(id);
+            if (eventInfo == null)
+                return NotFound();
+
+            var registrations = await _context.EventRegistrations
+                .Include(r => r.User)
+                .Where(r => r.EventId == id)
+                .ToListAsync();
+
+            var attendances = await _context.Attendances
+                .Where(a => a.EventId == id && a.IsPresent == true)
+                .ToListAsync();
+
+            var existingCertificates = await _context.Certificates
+                .Where(c => c.EventId == id)
+                .Select(c => c.UserId)
+                .ToListAsync();
+
+            var viewModel = new CertificateIssueViewModel
+            {
+                EventId = id,
+                EventTitle = eventInfo.Title,
+                EventDate = eventInfo.StartTime,
+                EventLocation = eventInfo.Location,
+                Items = registrations.Select(r => new CertificateIssueItem
+                {
+                    UserId = r.UserId,
+                    FullName = r.User?.FullName ?? "",
+                    StudentCode = r.User?.StudentCode,
+                    Faculty = r.User?.Faculty,
+                    IsPresent = attendances.Any(a => a.UserId == r.UserId),
+                    AlreadyIssued = existingCertificates.Contains(r.UserId)
+                }).ToList()
+            };
+
+            return View(viewModel);
+        }
+
+        // POST: Admin/EventRegistrations/IssueCertificatesConfirmed
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> IssueCertificatesConfirmed(int eventId)
+        {
+            var eventInfo = await _context.Events.FindAsync(eventId);
+            if (eventInfo == null)
+                return NotFound();
+
+            // Lấy danh sách người đã điểm danh và chưa được cấp chứng nhận
+            var presentAttendances = await _context.Attendances
+                .Where(a => a.EventId == eventId && a.IsPresent == true)
+                .Select(a => a.UserId)
+                .ToListAsync();
+
+            var existingCertificates = await _context.Certificates
+                .Where(c => c.EventId == eventId)
+                .Select(c => c.UserId)
+                .ToListAsync();
+
+            var usersToIssue = presentAttendances
+                .Where(userId => !existingCertificates.Contains(userId))
+                .ToList();
+
+            if (usersToIssue.Count == 0)
+            {
+                TempData["InfoMessage"] = "Không có sinh viên nào cần cấp giấy chứng nhận mới.";
+                return RedirectToAction("IssueCertificates", new { id = eventId });
+            }
+
+            // Tạo giấy chứng nhận
+            foreach (var userId in usersToIssue)
+            {
+                var certificate = new Certificate
+                {
+                    EventId = eventId,
+                    UserId = userId,
+                    CertificateCode = $"VNU-{eventId:D4}-{userId:D5}-{DateTime.Now:yyyyMMdd}",
+                    IssuedAt = DateTime.Now,
+                    Status = "Issued"
+                };
+                _context.Certificates.Add(certificate);
+            }
+
+            await _context.SaveChangesAsync();
+
+            TempData["SuccessMessage"] = $"Đã cấp {usersToIssue.Count} giấy chứng nhận thành công!";
+            return RedirectToAction("IssueCertificates", new { id = eventId });
+        }
     }
 
-    // ✅ Tạo ViewModel cho Attendance
     public class AttendanceViewModel
     {
         public int UserId { get; set; }

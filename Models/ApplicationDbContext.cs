@@ -36,6 +36,8 @@ public partial class ApplicationDbContext : DbContext
 
     public DbSet<EventComment> EventComments { get; set; }
 
+    public virtual DbSet<Certificate> Certificates { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Attendance>(entity =>
@@ -235,10 +237,29 @@ public partial class ApplicationDbContext : DbContext
         .HasForeignKey(c => c.ParentCommentId)
         .OnDelete(DeleteBehavior.NoAction);
 
+        // Certificate entity configuration
+        modelBuilder.Entity<Certificate>(entity =>
+        {
+            entity.HasKey(e => e.CertificateId);
+
+            entity.HasIndex(e => new { e.EventId, e.UserId }).IsUnique();
+
+            entity.Property(e => e.CertificateCode).HasMaxLength(100);
+            entity.Property(e => e.Status).HasMaxLength(50).HasDefaultValue("Issued");
+            entity.Property(e => e.IssuedAt).HasDefaultValueSql("(getdate())").HasColumnType("datetime");
+
+            entity.HasOne(d => d.Event).WithMany(p => p.Certificates)
+                .HasForeignKey(d => d.EventId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne(d => d.User).WithMany(p => p.Certificates)
+                .HasForeignKey(d => d.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
 
         OnModelCreatingPartial(modelBuilder);
     }
-  
+
 
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
 }

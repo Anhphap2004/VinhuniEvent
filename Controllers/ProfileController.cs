@@ -23,6 +23,8 @@ namespace VinhuniEvent.Controllers
                  .ThenInclude(er => er.Event)
              .Include(u => u.Attendances)
                  .ThenInclude(a => a.Event)
+             .Include(u => u.Certificates)
+                 .ThenInclude(c => c.Event)
              .FirstOrDefault(u => u.UserId == userId);
 
             return View(user);

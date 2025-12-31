@@ -12,7 +12,7 @@ public partial class User
 
     public string Email { get; set; } = null!;
 
-    public string? PasswordHash { get; set; } 
+    public string? PasswordHash { get; set; }
 
     public int RoleId { get; set; }
 
@@ -47,5 +47,7 @@ public partial class User
     public virtual ICollection<RoleRequest> RoleRequests { get; set; } = new List<RoleRequest>();
 
     public virtual ICollection<Contact> Contacts { get; set; } = new List<Contact>();
+
+    public virtual ICollection<Certificate> Certificates { get; set; } = new List<Certificate>();
 
 }

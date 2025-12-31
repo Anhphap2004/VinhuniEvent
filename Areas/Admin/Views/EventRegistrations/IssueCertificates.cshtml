@@ -1,0 +1,336 @@
+@model VinhuniEvent.ViewModels.CertificateIssueViewModel
+@{
+    ViewData["Title"] = "Cấp giấy chứng nhận";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+
+    var totalRegistered = Model.Items.Count;
+    var totalPresent = Model.Items.Count(i => i.IsPresent);
+    var totalIssued = Model.Items.Count(i => i.AlreadyIssued);
+    var toIssue = Model.Items.Count(i => i.IsPresent && !i.AlreadyIssued);
+}
+
+<style>
+    .page-header {
+        padding: 1.5rem 0;
+        margin-bottom: 1.5rem;
+        border-bottom: 2px solid #2a5298;
+    }
+
+    .page-title {
+        color: #2a5298;
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin: 0 0 0.3rem 0;
+    }
+
+    .event-name {
+        color: #495057;
+        font-size: 0.95rem;
+        font-weight: 500;
+        margin: 0.3rem 0 0 0;
+    }
+
+    .page-description {
+        color: #6c757d;
+        font-size: 0.9rem;
+        margin: 0.5rem 0 0 0;
+    }
+
+    .stats-card {
+        border: 1px solid #dee2e6;
+        padding: 1rem;
+        background: white;
+        margin-bottom: 1.5rem;
+    }
+
+    .stat-item {
+        text-align: center;
+        padding: 0.3rem;
+    }
+
+    .stat-number {
+        font-size: 1.3rem;
+        font-weight: 700;
+        margin-bottom: 0.2rem;
+    }
+
+    .stat-label {
+        font-size: 0.75rem;
+        color: #6c757d;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+
+    .stat-registered .stat-number {
+        color: #2a5298;
+    }
+
+    .stat-present .stat-number {
+        color: #28a745;
+    }
+
+    .stat-issued .stat-number {
+        color: #17a2b8;
+    }
+
+    .stat-pending .stat-number {
+        color: #ffc107;
+    }
+
+    .action-bar {
+        background: white;
+        border: 1px solid #dee2e6;
+        padding: 1rem 1.5rem;
+        margin-bottom: 1.5rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .btn-issue {
+        background: #28a745;
+        color: white;
+        border: none;
+        padding: 0.6rem 1.2rem;
+        font-size: 0.9rem;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-block;
+        border-radius: 4px;
+    }
+
+    .btn-issue:hover {
+        background: #218838;
+        color: white;
+    }
+
+    .btn-issue:disabled {
+        background: #6c757d;
+        cursor: not-allowed;
+    }
+
+    .btn-back {
+        background: white;
+        color: #495057;
+        border: 1px solid #ddd;
+        padding: 0.5rem 1rem;
+        font-size: 0.9rem;
+        text-decoration: none;
+        border-radius: 4px;
+    }
+
+    .btn-back:hover {
+        background: #f8f9fa;
+        color: #495057;
+    }
+
+    .custom-table {
+        margin: 0;
+        border: 1px solid #dee2e6;
+    }
+
+    .custom-table thead th {
+        background: #f8f9fa;
+        color: #495057;
+        font-weight: 600;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        padding: 0.75rem;
+        border-bottom: 2px solid #dee2e6;
+    }
+
+    .custom-table tbody td {
+        padding: 0.75rem;
+        vertical-align: middle;
+        border-bottom: 1px solid #dee2e6;
+    }
+
+    .custom-table tbody tr:hover {
+        background: #f8f9fa;
+    }
+
+    .badge-present {
+        background: #d4edda;
+        color: #155724;
+        padding: 4px 10px;
+        border-radius: 4px;
+        font-size: 0.8rem;
+        font-weight: 600;
+    }
+
+    .badge-absent {
+        background: #f8d7da;
+        color: #721c24;
+        padding: 4px 10px;
+        border-radius: 4px;
+        font-size: 0.8rem;
+        font-weight: 600;
+    }
+
+    .badge-issued {
+        background: #d1ecf1;
+        color: #0c5460;
+        padding: 4px 10px;
+        border-radius: 4px;
+        font-size: 0.8rem;
+        font-weight: 600;
+    }
+
+    .badge-pending {
+        background: #fff3cd;
+        color: #856404;
+        padding: 4px 10px;
+        border-radius: 4px;
+        font-size: 0.8rem;
+        font-weight: 600;
+    }
+
+    .alert-success-custom {
+        background: #d4edda;
+        border: 1px solid #c3e6cb;
+        color: #155724;
+        padding: 1rem;
+        margin-bottom: 1.5rem;
+        border-radius: 4px;
+    }
+
+    .alert-info-custom {
+        background: #d1ecf1;
+        border: 1px solid #bee5eb;
+        color: #0c5460;
+        padding: 1rem;
+        margin-bottom: 1.5rem;
+        border-radius: 4px;
+    }
+</style>
+
+<div class="page-header">
+    <h1 class="page-title">🏅 Cấp giấy chứng nhận</h1>
+    <p class="event-name">📌 @Model.EventTitle</p>
+    <p class="page-description">
+        📅 @Model.EventDate?.ToString("dd/MM/yyyy HH:mm") | 📍 @Model.EventLocation
+    </p>
+</div>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert-success-custom">
+        ✅ @TempData["SuccessMessage"]
+    </div>
+}
+
+@if (TempData["InfoMessage"] != null)
+{
+    <div class="alert-info-custom">
+        ℹ️ @TempData["InfoMessage"]
+    </div>
+}
+
+<!-- Stats -->
+<div class="stats-card">
+    <div class="row">
+        <div class="col-md-3">
+            <div class="stat-item stat-registered">
+                <div class="stat-number">@totalRegistered</div>
+                <div class="stat-label">Đã đăng ký</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-item stat-present">
+                <div class="stat-number">@totalPresent</div>
+                <div class="stat-label">Đã điểm danh</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-item stat-issued">
+                <div class="stat-number">@totalIssued</div>
+                <div class="stat-label">Đã cấp CN</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-item stat-pending">
+                <div class="stat-number">@toIssue</div>
+                <div class="stat-label">Chờ cấp CN</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Action Bar -->
+<div class="action-bar">
+    <a asp-action="ByEvent" asp-route-id="@Model.EventId" class="btn-back">
+        ← Quay lại danh sách
+    </a>
+
+    @if (toIssue > 0)
+    {
+        <form asp-action="IssueCertificatesConfirmed" method="post" style="margin: 0;">
+            <input type="hidden" name="eventId" value="@Model.EventId" />
+            <button type="submit" class="btn-issue" onclick="return confirm('Xác nhận cấp @toIssue giấy chứng nhận?')">
+                🏅 Cấp @toIssue giấy chứng nhận
+            </button>
+        </form>
+    }
+    else
+    {
+        <button class="btn-issue" disabled>
+            ✓ Đã cấp đủ chứng nhận
+        </button>
+    }
+</div>
+
+<!-- Table -->
+<div class="table-responsive">
+    <table class="table custom-table">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Họ tên</th>
+                <th>Mã SV</th>
+                <th>Khoa</th>
+                <th>Điểm danh</th>
+                <th>Chứng nhận</th>
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                int index = 0;
+            }
+            @foreach (var item in Model.Items.OrderByDescending(i => i.IsPresent).ThenBy(i => i.FullName))
+            {
+                index++;
+                <tr>
+                    <td>@index</td>
+                    <td><strong>@item.FullName</strong></td>
+                    <td>@item.StudentCode</td>
+                    <td>@item.Faculty</td>
+                    <td>
+                        @if (item.IsPresent)
+                        {
+                            <span class="badge-present">✓ Có mặt</span>
+                        }
+                        else
+                        {
+                            <span class="badge-absent">✗ Vắng</span>
+                        }
+                    </td>
+                    <td>
+                        @if (item.AlreadyIssued)
+                        {
+                            <span class="badge-issued">✓ Đã cấp</span>
+                        }
+                        else if (item.IsPresent)
+                        {
+                            <span class="badge-pending">⏳ Chờ cấp</span>
+                        }
+                        else
+                        {
+                            <span style="color: #999;">—</span>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

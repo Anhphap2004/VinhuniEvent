@@ -4,10 +4,16 @@
 @model VinhuniEvent.Models.User
 
 <style>
+    /* Reset font to sans-serif */
+    * {
+        font-family: "Fredoka", "Poppins", sans-serif !important;
+    }
+
     /* BẮT ĐẦU: Style dùng chung từ trang Login */
     .login-container {
         margin: 80px auto;
-        margin-top: 140px; /* Căn chỉnh lại một chút cho form dài */
+        margin-top: 190px;
+        /* Căn chỉnh lại một chút cho form dài */
         background: linear-gradient(180deg, #1B5E96 0%, #174A7A 100%);
         border-radius: 12px;
         box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
@@ -38,11 +44,11 @@
         justify-content: center;
     }
 
-        .logo img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
+    .logo img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
 
     .university-info {
         text-align: left;
@@ -68,7 +74,8 @@
         font-size: 14px;
         font-weight: 500;
         margin-bottom: 8px;
-        display: block; /* Đảm bảo label nằm trên input */
+        display: block;
+        /* Đảm bảo label nằm trên input */
     }
 
     /* Style cho Input và Select giống hệt Login */
@@ -83,21 +90,22 @@
         transition: all 0.3s ease;
     }
 
-        .form-control:focus {
-            background: rgba(255, 255, 255, 0.2);
-            border-color: rgba(255, 255, 255, 0.5);
-            box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.1);
-            color: white;
-            outline: none;
-        }
+    .form-control:focus {
+        background: rgba(255, 255, 255, 0.2);
+        border-color: rgba(255, 255, 255, 0.5);
+        box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.1);
+        color: white;
+        outline: none;
+    }
 
-        .form-control::placeholder {
-            color: rgba(255, 255, 255, 0.6);
-        }
+    .form-control::placeholder {
+        color: rgba(255, 255, 255, 0.6);
+    }
 
     /* Xử lý riêng cho Dropdown Select để option không bị trắng/khó nhìn */
     select.form-control option {
-        background-color: #174A7A; /* Màu nền tối giống theme */
+        background-color: #174A7A;
+        /* Màu nền tối giống theme */
         color: white;
         padding: 10px;
     }
@@ -118,11 +126,11 @@
         margin-top: 20px;
     }
 
-        .btn-register:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-            background: linear-gradient(135deg, #5FA8D3 0%, #3984C5 100%);
-        }
+    .btn-register:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        background: linear-gradient(135deg, #5FA8D3 0%, #3984C5 100%);
+    }
 
     .login-link {
         text-align: center;
@@ -131,17 +139,18 @@
         font-size: 14px;
     }
 
-        .login-link a {
-            color: white;
-            text-decoration: underline;
-            font-weight: 600;
-        }
+    .login-link a {
+        color: white;
+        text-decoration: underline;
+        font-weight: 600;
+    }
 
     /* Grid system đơn giản cho 2 cột */
     .row-custom {
         display: flex;
         flex-wrap: wrap;
-        margin: 0 -10px; /* Âm margin để cân bằng padding */
+        margin: 0 -10px;
+        /* Âm margin để cân bằng padding */
     }
 
     .col-custom {
@@ -174,7 +183,8 @@
         }
 
         .col-custom {
-            flex: 100%; /* Xuống dòng trên mobile */
+            flex: 100%;
+            /* Xuống dòng trên mobile */
         }
 
         .logo-wrapper {
@@ -188,7 +198,8 @@
     }
 </style>
 
-<div style="background-image: url(/main/img/bg-login.jpg); min-height: 100vh; display: flex; align-items: flex-start; justify-content: center;" class="container-fluid">
+<div style="background-image: url(/main/img/bg-login.jpg); min-height: 100vh; display: flex; align-items: flex-start; justify-content: center;"
+    class="container-fluid">
 
     <div class="login-container">
         <div class="logo-section">
@@ -209,7 +220,8 @@
             <div class="row-custom">
                 <div class="col-full">
                     <label class="form-label">Họ và tên</label>
-                    <input type="text" asp-for="FullName" class="form-control" placeholder="Nhập họ và tên đầy đủ" required />
+                    <input type="text" asp-for="FullName" class="form-control" placeholder="Nhập họ và tên đầy đủ"
+                        required />
                     <span asp-validation-for="FullName" class="text-warning small"></span>
                 </div>
             </div>
@@ -217,12 +229,14 @@
             <div class="row-custom">
                 <div class="col-custom">
                     <label class="form-label">Email</label>
-                    <input type="email" asp-for="Email" class="form-control" placeholder="example@vinhuni.edu.vn" required />
+                    <input type="email" asp-for="Email" class="form-control" placeholder="example@vinhuni.edu.vn"
+                        required />
                     <span asp-validation-for="Email" class="text-warning small"></span>
                 </div>
                 <div class="col-custom">
                     <label class="form-label">Mã sinh viên</label>
-                    <input type="text" asp-for="StudentCode" class="form-control" placeholder="Ví dụ: 205D..." required />
+                    <input type="text" asp-for="StudentCode" class="form-control" placeholder="Ví dụ: 205D..."
+                        required />
                     <span asp-validation-for="StudentCode" class="text-warning small"></span>
                 </div>
             </div>
@@ -230,7 +244,8 @@
             <div class="row-custom">
                 <div class="col-full">
                     <label class="form-label">Mật khẩu</label>
-                    <input type="password" asp-for="PasswordHash" class="form-control" placeholder="Nhập mật khẩu bảo mật" required />
+                    <input type="password" asp-for="PasswordHash" class="form-control"
+                        placeholder="Nhập mật khẩu bảo mật" required />
                     <span asp-validation-for="PasswordHash" class="text-warning small"></span>
                 </div>
             </div>
@@ -247,7 +262,8 @@
                         <option value="Sư phạm Tiếng Anh">16. Sư phạm Tiếng Anh</option>
                         <option value="Kinh tế số">24. Kinh tế số</option>
                         <option value="Luật kinh tế">39. Luật kinh tế</option>
-                        <option value="Công nghệ thông tin (Chuyên ngành Trí tuệ nhân tạo)">43. Công nghệ thông tin (AI)</option>
+                        <option value="Công nghệ thông tin (Chuyên ngành Trí tuệ nhân tạo)">43. Công nghệ thông tin (AI)
+                        </option>
                         <option value="Kỹ thuật xây dựng">53. Kỹ thuật Xây dựng</option>
                     </select>
                 </div>

@@ -1,0 +1,135 @@
+@model VinhuniEvent.Models.Contact
+
+@{
+    ViewData["Title"] = "Chi tiết liên hệ";
+}
+
+<div class="page-wrapper">
+    <div class="container-xl">
+        <div class="page-header d-print-none">
+            <div class="row align-items-center">
+                <div class="col">
+                    <h2 class="page-title">
+                        <i class="ti ti-mail-opened" style="font-size: 24px; margin-right: 8px;"></i>
+                        Chi Tiết Liên Hệ
+                    </h2>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="page-body">
+        <div class="container-xl">
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">@Model.Subject</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <label class="form-label">Người gửi</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">
+                                        <i class="ti ti-user" style="font-size: 16px;"></i>
+                                    </span>
+                                    <input type="text" class="form-control" value="@Model.User?.FullName" readonly>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Email</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">
+                                        <i class="ti ti-mail" style="font-size: 16px;"></i>
+                                    </span>
+                                    <input type="email" class="form-control" value="@Model.User?.Email" readonly>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Ngày gửi</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">
+                                        <i class="ti ti-clock" style="font-size: 16px;"></i>
+                                    </span>
+                                    <input type="text" class="form-control"
+                                        value="@Model.CreatedAt.ToString("dd/MM/yyyy HH:mm")" readonly>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Trạng thái</label>
+                                <div>
+                                    @if (Model.IsRead)
+                                    {
+                                        <span class="badge bg-success" style="font-size: 13px; padding: 8px 12px;">
+                                            <i class="ti ti-check" style="margin-right: 4px;"></i>Đã đọc
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-warning text-dark"
+                                            style="font-size: 13px; padding: 8px 12px;">
+                                            <i class="ti ti-alert-circle" style="margin-right: 4px;"></i>Chưa đọc
+                                        </span>
+                                    }
+                                </div>
+                            </div>
+
+                            <hr>
+
+                            <div class="mb-3">
+                                <label class="form-label">Nội dung</label>
+                                <div class="form-control"
+                                    style="min-height: 300px; background-color: #f8f9fa; white-space: pre-wrap; word-wrap: break-word;">
+                                    @Model.Message
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Thao tác</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="d-grid gap-2">
+                                <a asp-action="Index" class="btn btn-secondary">
+                                    <i class="ti ti-arrow-left" style="margin-right: 6px;"></i>
+                                    Quay lại danh sách
+                                </a>
+
+                                <a asp-action="Delete" asp-route-id="@Model.ContactId" class="btn btn-danger">
+                                    <i class="ti ti-trash" style="margin-right: 6px;"></i>
+                                    Xoá liên hệ này
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card mt-3">
+                        <div class="card-header">
+                            <h3 class="card-title">Thông tin người gửi</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-2">
+                                <small class="text-muted">Tên</small>
+                                <div>@Model.User?.FullName</div>
+                            </div>
+                            <div class="mb-2">
+                                <small class="text-muted">Email</small>
+                                <div>@Model.User?.Email</div>
+                            </div>
+                            <div class="mb-2">
+                                <small class="text-muted">Số điện thoại</small>
+                                <div>@(Model.User?.PhoneNumber ?? "N/A")</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
