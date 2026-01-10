@@ -176,7 +176,7 @@ namespace VinhuniEvent.Areas.Admin.Controllers
             ViewBag.EventTitle = eventInfo.Title;
             ViewBag.EventDate = eventInfo.CreatedDate?.ToString("dd/MM/yyyy");
             ViewBag.EventId = id;
-            ViewBag.AttendanceFilter = attendanceFilter; // 👈 Lưu lại để View hiển thị đúng
+            ViewBag.AttendanceFilter = attendanceFilter; 
 
             return View(registrations);
         }

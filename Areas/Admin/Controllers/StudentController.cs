@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using VinhuniEvent.Models;
-using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using System.Threading.Tasks;
+using VinhuniEvent.Filters;
+using VinhuniEvent.Models;
 namespace VinhuniEvent.Areas.Admin.Controllers
-{                    
+{
+    [RoleAuthorize(1)]
     [Area("Admin")]
     public class StudentController : Controller
     {

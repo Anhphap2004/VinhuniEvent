@@ -31,20 +31,16 @@ namespace VinhuniEvent.Controllers
         }
         public async Task<IActionResult> MyQRCode()
         {
-            // --- SỬA ĐỔI: Lấy ID từ SESSION ---
             var userId = HttpContext.Session.GetInt32("UserId");
 
             if (userId == null)
             {
-                // Nếu chưa đăng nhập (Session null) -> Chuyển về trang Login
                 return RedirectToAction("Index", "Login", new { area = "" });
             }
 
-            // Lấy thông tin User từ DB
             var user = await _context.Users.FindAsync(userId.Value);
             if (user == null) return NotFound();
 
-            // Tạo QR Code chứa UserId
             string qrContent = user.UserId.ToString();
 
             using (QRCodeGenerator qrGenerator = new QRCodeGenerator())

@@ -48,23 +48,20 @@ namespace VinhuniEvent.Controllers
         [HttpGet("{slug}-{id}.html")]
         public async Task<IActionResult> Details(string slug, int id)
         {
-            // 1. Lấy UserId từ Session
+
             var userId = HttpContext.Session.GetInt32("UserId");
 
-            // 2. Truyền sang View bằng ViewBag (SỬA LỖI ISession trong View)
             ViewBag.CurrentUserId = userId;
 
-            // 3. Truy vấn Event kèm theo Comment và User (SỬA LỖI KHÔNG HIỆN COMMENT)
             var eventItem = await _context.Events
                 .Include(e => e.Category)
                 .Include(e => e.CreatedByNavigation)
-                // --- Load Comment ---
                 .Include(e => e.EventComments)
-                    .ThenInclude(c => c.User) // Lấy thông tin người bình luận
-                                              // --- Load Replies (Trả lời bình luận) ---
+                    .ThenInclude(c => c.User) 
+                                              
                 .Include(e => e.EventComments)
                     .ThenInclude(c => c.Replies)
-                        .ThenInclude(r => r.User) // Lấy thông tin người trả lời
+                        .ThenInclude(r => r.User)
                 .FirstOrDefaultAsync(e => e.EventId == id && e.IsActive);
 
             if (eventItem == null)
