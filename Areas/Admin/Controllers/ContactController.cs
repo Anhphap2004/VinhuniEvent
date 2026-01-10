@@ -1,9 +1,11 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using VinhuniEvent.Filters;
 using VinhuniEvent.Models;
 
 namespace Vinhuni.Areas.Admin.Controllers
 {
+    [RoleAuthorize(1)]
     [Area("Admin")]
     public class ContactController : Controller
     {
@@ -14,7 +16,7 @@ namespace Vinhuni.Areas.Admin.Controllers
             _context = context;
         }
 
-        // 📌 READ: Danh sách
+        // Danh sách
         public IActionResult Index()
         {
             var contacts = _context.Contacts

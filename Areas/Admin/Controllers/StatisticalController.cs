@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using VinhuniEvent.Filters;
 using VinhuniEvent.Models;
 using VinhuniEvent.ViewModels;
 namespace VinhuniEvent.Areas.Admin.Controllers
 {
+    [RoleAuthorize(1)]
     [Area("Admin")]
     public class StatisticalController : Controller
     {
