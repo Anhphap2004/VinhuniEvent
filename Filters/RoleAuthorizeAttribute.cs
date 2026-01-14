@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using Microsoft.EntityFrameworkCore; // nếu cần truy vấn database
+using Microsoft.EntityFrameworkCore; 
 using VinhuniEvent.Models;
 
 namespace VinhuniEvent.Filters

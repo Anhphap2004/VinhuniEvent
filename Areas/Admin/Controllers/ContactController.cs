@@ -16,7 +16,7 @@ namespace Vinhuni.Areas.Admin.Controllers
             _context = context;
         }
 
-        // 📌 READ: Danh sách
+        // Danh sách
         public IActionResult Index()
         {
             var contacts = _context.Contacts
