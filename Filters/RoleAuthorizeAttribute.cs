@@ -17,23 +17,27 @@ namespace VinhuniEvent.Filters
 
         public override void OnActionExecuting(ActionExecutingContext context)
         {
-            // Lấy UserId từ session
             var userId = context.HttpContext.Session.GetInt32("UserId");
 
+            // 1. Trường hợp chưa đăng nhập
             if (userId == null)
             {
-                // Chưa login -> trả 403
-                context.Result = new StatusCodeResult(403);
+                // Redirect về trang Login
+                context.Result = new RedirectToActionResult("Index", "Login", new { area = "" });
                 return;
             }
 
-            // Lấy DbContext từ RequestServices
             var dbContext = context.HttpContext.RequestServices.GetService<VinhuniEvent.Models.ApplicationDbContext>();
             var user = dbContext?.Users.FirstOrDefault(u => u.UserId == userId.Value);
 
+            // 2. Trường hợp không đủ quyền (RoleId không nằm trong danh sách cho phép)
             if (user == null || !_allowedRoles.Contains(user.RoleId))
             {
-                context.Result = new StatusCodeResult(403);
+                // Trả về trang View 403 đã tạo ở bước 1
+                context.Result = new ViewResult
+                {
+                    ViewName = "~/Views/Shared/AccessDenied.cshtml"
+                };
                 return;
             }
 

@@ -2,6 +2,24 @@
 @{
     ViewData["Title"] = "Quản lý đăng ký sự kiện";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+
+    // Xử lý dữ liệu C# ở đầu trang
+    var groupedEvents = Model
+        .Where(e => e.Event != null)
+        .GroupBy(e => e.Event)
+        .Select(g => new
+        {
+            Event = g.Key,
+            TotalRegistrations = g.Count(),
+            // Logic trạng thái: Nếu thời gian kết thúc sau thời điểm hiện tại là Active
+            IsRunning = g.Key.EndTime > DateTime.Now
+        })
+        .OrderByDescending(x => x.Event.CreatedDate)
+        .ToList();
+
+    int totalEvents = groupedEvents.Count();
+    int activeEvents = groupedEvents.Count(e => e.IsRunning);
+    int totalRegistrations = groupedEvents.Sum(e => e.TotalRegistrations);
 }
 
 <style>
@@ -15,13 +33,12 @@
         color: #2a5298;
         font-size: 1.5rem;
         font-weight: 600;
-        margin: 0 0 0.3rem 0;
+        margin: 0;
     }
 
     .page-description {
         color: #6c757d;
         font-size: 0.9rem;
-        margin: 0;
     }
 
     .filter-box {
@@ -29,6 +46,7 @@
         padding: 1.5rem;
         margin-bottom: 1.5rem;
         background: white;
+        border-radius: 8px;
     }
 
     .filter-label {
@@ -38,158 +56,83 @@
         margin-bottom: 0.5rem;
     }
 
-    .search-input {
-        border: 1px solid #ddd;
-        padding: 0.5rem 0.75rem;
-        font-size: 0.9rem;
-    }
-
-        .search-input:focus {
-            border-color: #2a5298;
-            outline: none;
-            box-shadow: none;
-        }
-
-    .select-filter {
-        border: 1px solid #ddd;
-        padding: 0.5rem 0.75rem;
-        font-size: 0.9rem;
-    }
-
-        .select-filter:focus {
-            border-color: #2a5298;
-            outline: none;
-            box-shadow: none;
-        }
-
-    .btn-reset {
-        background: white;
-        color: #495057;
-        border: 1px solid #ddd;
-        padding: 0.5rem 1rem;
-        font-size: 0.9rem;
-    }
-
-        .btn-reset:hover {
-            background: #f8f9fa;
-            color: #495057;
-            border-color: #ddd;
-        }
-
     .stats-card {
         border: 1px solid #dee2e6;
         padding: 1.2rem;
         background: white;
         margin-bottom: 1.5rem;
-    }
-
-    .stat-item {
-        text-align: center;
-        padding: 0.5rem;
+        border-radius: 8px;
     }
 
     .stat-number {
         font-size: 1.8rem;
         font-weight: 700;
         color: #2a5298;
-        margin-bottom: 0.3rem;
     }
 
     .stat-label {
-        font-size: 0.85rem;
+        font-size: 0.75rem;
         color: #6c757d;
         text-transform: uppercase;
-        font-weight: 600;
+        font-weight: 700;
     }
 
-    .custom-table {
-        margin: 0;
-        border: 1px solid #dee2e6;
+    .custom-table thead th {
+        background: #f8f9fa;
+        color: #495057;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        border-bottom: 2px solid #dee2e6;
     }
-
-        .custom-table thead th {
-            background: #f8f9fa;
-            color: #495057;
-            font-weight: 600;
-            font-size: 0.85rem;
-            text-transform: uppercase;
-            padding: 0.75rem;
-            border-bottom: 2px solid #dee2e6;
-        }
-
-        .custom-table tbody td {
-            padding: 0.75rem;
-            vertical-align: middle;
-            font-size: 0.9rem;
-        }
-
-        .custom-table tbody tr:hover {
-            background: #f8f9fa;
-        }
 
     .event-thumbnail {
-        width: 80px;
-        height: 80px;
+        width: 60px;
+        height: 60px;
         object-fit: cover;
-        border-radius: 8px;
-        border: 2px solid #e3f2fd;
+        border-radius: 6px;
     }
 
     .event-title {
         font-weight: 600;
         color: #2a5298;
         text-decoration: none;
-        display: block;
-        margin-bottom: 0.3rem;
-    }
-
-        .event-title:hover {
-            color: #1a3d7a;
-            text-decoration: underline;
-        }
-
-    .event-meta {
-        font-size: 0.8rem;
-        color: #6c757d;
     }
 
     .badge-active {
         background: #d4edda;
         color: #155724;
-        padding: 0.35rem 0.7rem;
+        padding: 0.3rem 0.6rem;
         border-radius: 4px;
-        font-size: 0.8rem;
+        font-size: 0.75rem;
         font-weight: 600;
     }
 
     .badge-inactive {
         background: #f8d7da;
         color: #721c24;
-        padding: 0.35rem 0.7rem;
+        padding: 0.3rem 0.6rem;
         border-radius: 4px;
-        font-size: 0.8rem;
+        font-size: 0.75rem;
         font-weight: 600;
     }
 
     .participant-count {
         background: #e3f2fd;
         color: #1976d2;
-        padding: 0.4rem 0.8rem;
+        padding: 0.3rem 0.7rem;
         border-radius: 20px;
         font-weight: 600;
         font-size: 0.85rem;
-        display: inline-block;
     }
 
     .action-btn {
-        padding: 0.4rem 0.8rem;
-        font-size: 0.85rem;
-        text-decoration: none;
-        color: #0d6efd;
+        padding: 0.3rem 0.6rem;
+        font-size: 0.8rem;
         border: 1px solid #0d6efd;
+        color: #0d6efd;
         border-radius: 4px;
-        display: inline-block;
-        transition: all 0.2s;
+        text-decoration: none;
+        transition: 0.2s;
     }
 
         .action-btn:hover {
@@ -197,108 +140,72 @@
             color: white;
         }
 
-        .action-btn i {
-            margin-right: 0.3rem;
-        }
-
     .no-result {
         text-align: center;
         padding: 3rem;
-        color: #6c757d;
         display: none;
-    }
-
-    .stt-column {
-        font-weight: 600;
-        color: #6c757d;
     }
 </style>
 
 <div class="container-fluid px-4">
-    <!-- Header -->
     <div class="page-header">
-        <h1 class="page-title">
-            <i class="fa-solid fa-calendar-days me-2"></i>Quản lý đăng ký sự kiện
-        </h1>
-        <p class="page-description">Danh sách tất cả các sự kiện và thông tin chi tiết về số lượng sinh viên đăng ký tham gia.</p>
+        <h1 class="page-title"><i class="fa-solid fa-calendar-check me-2"></i>Quản lý đăng ký sự kiện</h1>
+        <p class="page-description">Theo dõi danh sách và số lượng sinh viên tham gia các hoạt động.</p>
     </div>
 
-    @{
-        var groupedEvents = Model
-        .Where(e => e.Event != null)
-        .GroupBy(e => e.Event)
-        .Select(g => new
-        {
-            Event = g.Key,
-            TotalRegistrations = g.Count()
-        })
-        .ToList();
-
-        int totalEvents = groupedEvents.Count();
-        int activeEvents = groupedEvents.Count(e => e.Event.IsActive == true);
-        int totalRegistrations = groupedEvents.Sum(e => e.TotalRegistrations);
-    }
-
-    <!-- Statistics Cards -->
-    <div class="stats-card">
-        <div class="row">
-            <div class="col-md-4">
-                <div class="stat-item">
-                    <div class="stat-number">@totalEvents</div>
-                    <div class="stat-label">Tổng số sự kiện</div>
-                </div>
+    <div class="stats-card shadow-sm">
+        <div class="row text-center">
+            <div class="col-md-4 border-end">
+                <div class="stat-number">@totalEvents</div>
+                <div class="stat-label">Tổng số sự kiện</div>
+            </div>
+            <div class="col-md-4 border-end">
+                <div class="stat-number text-success">@activeEvents</div>
+                <div class="stat-label">Đang diễn ra</div>
             </div>
             <div class="col-md-4">
-                <div class="stat-item">
-                    <div class="stat-number">@activeEvents</div>
-                    <div class="stat-label">Đang diễn ra</div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="stat-item">
-                    <div class="stat-number">@totalRegistrations</div>
-                    <div class="stat-label">Tổng lượt đăng ký</div>
-                </div>
+                <div class="stat-number text-primary">@totalRegistrations</div>
+                <div class="stat-label">Tổng lượt đăng ký</div>
             </div>
         </div>
     </div>
 
-    <!-- Filter Box -->
-    <div class="filter-box">
-        <div class="row g-3 align-items-end">
-            <div class="col-md-5">
-                <label class="filter-label">Tìm theo Tên sự kiện</label>
-                <input type="text" id="searchEvent" class="form-control search-input"
-                       placeholder="Nhập tên sự kiện..." onkeyup="filterTable()">
+    <div class="filter-box shadow-sm">
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label class="filter-label">Tìm kiếm sự kiện</label>
+                <div class="input-group">
+                    <span class="input-group-text bg-white"><i class="fa-solid fa-magnifying-glass text-muted"></i></span>
+                    <input type="text" id="searchEvent" class="form-control" placeholder="Nhập tên sự kiện hoặc mã..." onkeyup="filterTable()">
+                </div>
             </div>
-            <div class="col-md-4">
-                <label class="filter-label">Trạng thái</label>
-                <select id="filterStatus" class="form-select select-filter" onchange="filterTable()">
+            <div class="col-md-3">
+                <label class="filter-label">Trạng thái thời gian</label>
+                <select id="filterStatus" class="form-select" onchange="filterTable()">
                     <option value="">Tất cả</option>
                     <option value="active">Đang diễn ra</option>
                     <option value="inactive">Đã kết thúc</option>
                 </select>
             </div>
-            <div class="col-md-3">
-                <button onclick="resetFilters()" class="btn btn-reset w-100">
-                    <i class="fa-solid fa-rotate-right me-1"></i> Xóa bộ lọc
+            <div class="col-md-3 d-flex align-items-end">
+                <button onclick="resetFilters()" class="btn btn-outline-secondary w-100">
+                    <i class="fa-solid fa-arrows-rotate me-1"></i> Làm mới bộ lọc
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- Table -->
-    <div class="table-responsive">
-        <table class="table custom-table" id="eventsTable">
+    <div class="table-responsive bg-white shadow-sm rounded">
+        <table class="table table-hover custom-table mb-0" id="eventsTable">
             <thead>
                 <tr>
-                    <th style="width: 5%">STT</th>
-                    <th style="width: 10%">Hình ảnh</th>
-                    <th style="width: 30%">Thông tin sự kiện</th>
-                    <th style="width: 12%">Ngày tổ chức</th>
-                    <th style="width: 13%" class="text-center">Số lượng SV</th>
-                    <th style="width: 12%" class="text-center">Trạng thái</th>
-                    <th style="width: 18%" class="text-center">Hành động</th>
+                    <th class="text-center" style="width: 5%">STT</th>
+                    <th style="width: 10%">Ảnh</th>
+                    <th style="width: 35%">Sự kiện</th>
+                    <th style="width: 15%">Ngày tạo</th>
+                    <th class="text-center" style="width: 10%">Số lượng</th>
+                    <th class="text-center" style="width: 15%">Trạng thái</th>
+                    <th class="text-center" style="width: 10%">Thao tác</th>
                 </tr>
             </thead>
             <tbody id="tableBody">
@@ -308,54 +215,38 @@
                 @foreach (var item in groupedEvents)
                 {
                     var ev = item.Event;
-                    <tr data-status="@(ev?.IsActive == true ? "active" : "inactive")">
-                        <td class="text-center stt-column">@(stt++)</td>
-                        <td class="text-center">
-                            <img src="~/main/img/events/@ev?.Image"
-                                 alt="@ev?.Title"
-                                 class="event-thumbnail"
+                    var statusKey = item.IsRunning ? "active" : "inactive";
+
+                    <tr data-status="@statusKey">
+                        <td class="text-center fw-bold text-muted stt-column">@(stt++)</td>
+                        <td>
+                            <img src="~/main/img/events/@ev.Image" class="event-thumbnail border"
                                  onerror="this.src='/main/img/events/default.jpg'" />
                         </td>
-                        <td class="event-info">
-                            <a asp-action="ByEvent"
-                               asp-route-id="@ev?.EventId"
-                               class="event-title">
-                                @ev?.Title
-                            </a>
-                            <div class="event-meta">
-                                <i class="fa-solid fa-tag me-1"></i>
-                                Mã: <strong>@ev?.EventId</strong>
-                            </div>
+                        <td>
+                            <a asp-action="ByEvent" asp-route-id="@ev.EventId" class="event-title d-block">@ev.Title</a>
+                            <small class="text-muted">Mã: #@ev.EventId</small>
                         </td>
                         <td>
-                            <i class="fa-solid fa-calendar me-1 text-muted"></i>
-                            @ev?.CreatedDate?.ToString("dd/MM/yyyy")
+                            <i class="fa-regular fa-clock me-1 text-muted"></i>
+                            @ev.CreatedDate?.ToString("dd/MM/yyyy")
                         </td>
                         <td class="text-center">
-                            <span class="participant-count">
-                                <i class="fa-solid fa-users me-1"></i>
-                                @item.TotalRegistrations
-                            </span>
+                            <span class="participant-count">@item.TotalRegistrations</span>
                         </td>
                         <td class="text-center">
-                            @if (ev?.IsActive == true)
+                            @if (item.IsRunning)
                             {
-                                <span class="badge-active">
-                                    <i class="fa-solid fa-circle-check me-1"></i>Đang diễn ra
-                                </span>
+                                <span class="badge-active"><i class="fa-solid fa-circle-play me-1"></i>Đang diễn ra</span>
                             }
                             else
                             {
-                                <span class="badge-inactive">
-                                    <i class="fa-solid fa-circle-xmark me-1"></i>Đã kết thúc
-                                </span>
+                                <span class="badge-inactive"><i class="fa-solid fa-circle-stop me-1"></i>Đã kết thúc</span>
                             }
                         </td>
                         <td class="text-center">
-                            <a asp-action="ByEvent"
-                               asp-route-id="@ev?.EventId"
-                               class="action-btn">
-                                <i class="fa-solid fa-eye"></i>Xem chi tiết
+                            <a asp-action="ByEvent" asp-route-id="@ev.EventId" class="action-btn" title="Xem danh sách sinh viên">
+                                <i class="fa-solid fa-users-viewfinder me-1"></i>Chi tiết
                             </a>
                         </td>
                     </tr>
@@ -363,44 +254,40 @@
             </tbody>
         </table>
         <div id="noResult" class="no-result">
-            <i class="fa-solid fa-inbox fa-3x mb-3 text-muted"></i>
-            <p>Không tìm thấy sự kiện nào khớp với từ khóa.</p>
+            <i class="fa-solid fa-magnifying-glass fa-3x mb-3 text-light"></i>
+            <p class="text-muted">Không tìm thấy dữ liệu phù hợp với yêu cầu lọc.</p>
         </div>
     </div>
 </div>
 
 <script>
     function filterTable() {
-        var inputEvent = document.getElementById("searchEvent").value.toLowerCase();
-        var filterStatus = document.getElementById("filterStatus").value;
-        var tableBody = document.getElementById("tableBody");
-        var rows = tableBody.getElementsByTagName("tr");
-        var hasResult = false;
+        const inputEvent = document.getElementById("searchEvent").value.toLowerCase();
+        const filterStatus = document.getElementById("filterStatus").value;
+        const rows = document.querySelectorAll("#tableBody tr");
+        const noResult = document.getElementById("noResult");
 
-        for (var i = 0; i < rows.length; i++) {
-            var eventInfo = rows[i].querySelector(".event-info");
-            var statusAttr = rows[i].getAttribute("data-status");
+        let visibleCount = 1;
+        let hasResult = false;
 
-            if (!eventInfo) continue;
+        rows.forEach(row => {
+            const title = row.querySelector(".event-title").innerText.toLowerCase();
+            const eventId = row.querySelector(".text-muted").innerText.toLowerCase();
+            const status = row.getAttribute("data-status");
 
-            var eventText = eventInfo.textContent || eventInfo.innerText;
-            var matchEvent = eventText.toLowerCase().indexOf(inputEvent) > -1;
-            var matchStatus = filterStatus === "" || statusAttr === filterStatus;
+            const matchText = title.includes(inputEvent) || eventId.includes(inputEvent);
+            const matchStatus = filterStatus === "" || status === filterStatus;
 
-            if (matchEvent && matchStatus) {
-                rows[i].style.display = "";
+            if (matchText && matchStatus) {
+                row.style.display = "";
+                row.querySelector(".stt-column").innerText = visibleCount++;
                 hasResult = true;
             } else {
-                rows[i].style.display = "none";
+                row.style.display = "none";
             }
-        }
+        });
 
-        var noResultDiv = document.getElementById("noResult");
-        if (!hasResult) {
-            noResultDiv.style.display = "block";
-        } else {
-            noResultDiv.style.display = "none";
-        }
+        noResult.style.display = hasResult ? "none" : "block";
     }
 
     function resetFilters() {

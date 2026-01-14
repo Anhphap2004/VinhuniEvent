@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using VinhuniEvent.Filters;
 using VinhuniEvent.Models;
 using VinhuniEvent.ViewModels;
+using VinhuniEvent.Services;
 
 namespace VinhuniEvent.Areas.Admin.Controllers
 {
@@ -16,10 +17,12 @@ namespace VinhuniEvent.Areas.Admin.Controllers
     public class EventRegistrationsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IEmailService _emailService;
 
-        public EventRegistrationsController(ApplicationDbContext context)
+        public EventRegistrationsController(ApplicationDbContext context, IEmailService emailService)
         {
             _context = context;
+            _emailService = emailService;
         }
 
         // GET: Hiển thị màn hình quét QR
@@ -381,6 +384,8 @@ namespace VinhuniEvent.Areas.Admin.Controllers
                 return RedirectToAction("IssueCertificates", new { id = eventId });
             }
 
+            var createdCertificates = new List<Certificate>();
+
             // Tạo giấy chứng nhận
             foreach (var userId in usersToIssue)
             {
@@ -392,10 +397,83 @@ namespace VinhuniEvent.Areas.Admin.Controllers
                     IssuedAt = DateTime.Now,
                     Status = "Issued"
                 };
+                createdCertificates.Add(certificate);
                 _context.Certificates.Add(certificate);
             }
 
             await _context.SaveChangesAsync();
+
+            var issuedUsers = await _context.Users
+                .Where(u => usersToIssue.Contains(u.UserId))
+                .ToListAsync();
+
+            foreach (var user in issuedUsers)
+            {
+                var certificate = createdCertificates.FirstOrDefault(c => c.UserId == user.UserId);
+                if (certificate == null)
+                {
+                    continue;
+                }
+
+                try
+                {
+                    var body = $@"
+<div style='background-color:#f8fafc; padding:50px 10px; font-family:""Segoe UI"",Tahoma,Geneva,Verdana,sans-serif;'>
+    <div style='max-width:650px; margin:0 auto; background-color:#ffffff; border-radius:20px; overflow:hidden; box-shadow:0 15px 35px rgba(0,0,0,0.1); border: 1px solid #e2e8f0;'>
+        
+        <div style='background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%); padding:40px; text-align:center; color:#ffffff;'>
+            <div style='font-size:60px; margin-bottom:10px;'>🏆</div>
+            <h1 style='margin:0; font-size:26px; text-transform:uppercase; letter-spacing:3px; font-weight:800;'>Giấy Chứng Nhận</h1>
+            <p style='opacity:0.9; font-style:italic; margin-top:5px;'>Vinhuni Event vinh danh nỗ lực của bạn</p>
+        </div>
+
+        <div style='padding:40px; text-align:center;'>
+            <p style='font-size:18px; color:#64748b; margin-bottom:5px;'>Chứng nhận này được trao cho</p>
+            <h2 style='font-size:28px; color:#1e293b; margin:0 0 20px 0; font-family:""Georgia"", serif;'>{user.FullName}</h2>
+            
+            <p style='font-size:16px; color:#475569; line-height:1.7; max-width:500px; margin:0 auto;'>
+                Đã hoàn thành xuất sắc các nội dung và yêu cầu trong sự kiện: <br/>
+                <strong style='color:#1e3a8a; font-size:20px;'>{eventInfo.Title}</strong>
+            </p>
+
+            <div style='margin:35px auto; width: fit-content; background-color:#fffbeb; border:1px solid #fde68a; border-radius:12px; padding:20px 40px; text-align:left;'>
+                <table style='border-collapse:collapse; font-size:14px; color:#92400e;'>
+                    <tr>
+                        <td style='padding:5px 10px;'><strong>🆔 Mã số:</strong></td>
+                        <td style='padding:5px 10px;'>{certificate.CertificateCode}</td>
+                    </tr>
+                    <tr>
+                        <td style='padding:5px 10px;'><strong>📅 Ngày cấp:</strong></td>
+                        <td style='padding:5px 10px;'>{DateTime.Now:dd/MM/yyyy}</td>
+                    </tr>
+                    <tr>
+                        <td style='padding:5px 10px;'><strong>📍 Địa điểm:</strong></td>
+                        <td style='padding:5px 10px;'>{eventInfo.Location}</td>
+                    </tr>
+                </table>
+            </div>
+
+            <div style='margin-top:40px;'>
+                <a href='https://yourdomain.com/Certificates/Download/{certificate.CertificateCode}' 
+                   style='background-color:#1e3a8a; color:#ffffff; padding:16px 40px; text-decoration:none; border-radius:50px; font-weight:bold; font-size:16px; display:inline-block; box-shadow:0 4px 12px rgba(30,58,138,0.3);'>
+                   📥 TẢI XUỐNG CHỨNG NHẬN (PDF)
+                </a>
+            </div>
+        </div>
+
+        <div style='background-color:#f1f5f9; padding:25px; text-align:center; color:#64748b; font-size:13px;'>
+            <p style='margin:0;'>Chứng nhận này được cấp bởi hệ thống <strong>Vinhuni Event</strong>.</p>
+            <p style='margin:5px 0;'>Mã chứng nhận có giá trị đối chiếu trên hệ thống quản lý sinh viên của Trường Đại học Vinh.</p>
+        </div>
+    </div>
+</div>";
+                    await _emailService.SendEmailAsync(user.Email, "[Vinhuni Event] Giấy chứng nhận đã được cấp", body);
+                }
+                catch
+                {
+                    // Bỏ qua lỗi gửi email để không ảnh hưởng kết quả cấp chứng nhận
+                }
+            }
 
             TempData["SuccessMessage"] = $"Đã cấp {usersToIssue.Count} giấy chứng nhận thành công!";
             return RedirectToAction("IssueCertificates", new { id = eventId });
