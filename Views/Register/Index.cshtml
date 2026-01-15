@@ -12,7 +12,7 @@
     /* BẮT ĐẦU: Style dùng chung từ trang Login */
     .login-container {
         margin: 80px auto;
-        margin-top: 190px;
+        margin-top: 150px;
         /* Căn chỉnh lại một chút cho form dài */
         background: linear-gradient(180deg, #1B5E96 0%, #174A7A 100%);
         border-radius: 12px;
@@ -254,17 +254,71 @@
                 <div class="col-custom">
                     <label class="form-label">Ngành học</label>
                     <select asp-for="Major" class="form-control" required>
-                        <option value="" disabled selected>-- Chọn ngành học --</option>
-                        <option value="Quản lý giáo dục">1. Quản lý giáo dục</option>
-                        <option value="Giáo dục Mầm non">2. Giáo dục Mầm non</option>
-                        <option value="Công nghệ thông tin">42. Công nghệ thông tin</option>
-                        <option value="Sư phạm Toán học">7. Sư phạm Toán học</option>
-                        <option value="Sư phạm Tiếng Anh">16. Sư phạm Tiếng Anh</option>
-                        <option value="Kinh tế số">24. Kinh tế số</option>
-                        <option value="Luật kinh tế">39. Luật kinh tế</option>
-                        <option value="Công nghệ thông tin (Chuyên ngành Trí tuệ nhân tạo)">43. Công nghệ thông tin (AI)
-                        </option>
-                        <option value="Kỹ thuật xây dựng">53. Kỹ thuật Xây dựng</option>
+                        <option value="" disabled selected>Chọn ngành học</option>
+                        <option value="Quản lý giáo dục">Quản lý giáo dục</option>
+                        <option value="Giáo dục Mầm non">Giáo dục Mầm non</option>
+                        <option value="Giáo dục Tiểu học">Giáo dục Tiểu học</option>
+                        <option value="Giáo dục Chính trị">Giáo dục Chính trị</option>
+                        <option value="Giáo dục Thể chất">Giáo dục Thể chất</option>
+                        <option value="Giáo dục Quốc phòng - An ninh">Giáo dục Quốc phòng - An ninh</option>
+                        <option value="Sư phạm Toán học">Sư phạm Toán học</option>
+                        <option value="Sư phạm Toán học (lớp tài năng)">Sư phạm Toán học (Tài năng)</option>
+                        <option value="Sư phạm Tin học">Sư phạm Tin học</option>
+                        <option value="Sư phạm Vật lý">Sư phạm Vật lý</option>
+                        <option value="Sư phạm Hoá học">Sư phạm Hoá học</option>
+                        <option value="Sư phạm Sinh học">Sư phạm Sinh học</option>
+                        <option value="Sư phạm Ngữ văn">Sư phạm Ngữ văn</option>
+                        <option value="Sư phạm Lịch sử">Sư phạm Lịch sử</option>
+                        <option value="Sư phạm Địa lý">Sư phạm Địa lý</option>
+                        <option value="Sư phạm Tiếng Anh">Sư phạm Tiếng Anh</option>
+                        <option value="Sư phạm Tiếng Anh (lớp tài năng)">Sư phạm Tiếng Anh (Tài năng)</option>
+                        <option value="Sư phạm khoa học tự nhiên">Sư phạm Khoa học Tự nhiên</option>
+                        <option value="Sư phạm Lịch sử - Địa lí">Sư phạm Lịch sử - Địa lí</option>
+                        <option value="Ngôn ngữ Anh">Ngôn ngữ Anh</option>
+                        <option value="Ngôn ngữ Trung Quốc">Ngôn ngữ Trung Quốc</option>
+                        <option value="Quản lý văn hoá">Quản lý văn hoá</option>
+                        <option value="Kinh tế (chuyên ngành: Kinh tế đầu tư và Quản lý kinh tế)">Kinh tế</option>
+                        <option value="Kinh tế số">Kinh tế số</option>
+                        <option value="Chính trị học">Chính trị học</option>
+                        <option value="Quản lý nhà nước">Quản lý nhà nước</option>
+                        <option value="Tâm lý học giáo dục">Tâm lý học giáo dục</option>
+                        <option value="Quốc tế học">Quốc tế học</option>
+                        <option value="Việt Nam học (Chuyên ngành Du lịch)">Việt Nam học (Du lịch)</option>
+                        <option value="Quản trị kinh doanh">Quản trị kinh doanh</option>
+                        <option value="Quản trị kinh doanh (Chương trình có đào tạo bằng tiếng Anh)">Quản trị kinh doanh (Tiếng Anh)</option>
+                        <option value="Thương mại điện tử">Thương mại điện tử</option>
+                        <option value="Tài chính - Ngân hàng (chuyên ngành: Tài chính doanh nghiệp và Ngân hàng thương mại)">Tài chính - Ngân hàng</option>
+                        <option value="Công nghệ tài chính">Công nghệ tài chính</option>
+                        <option value="Kế toán">Kế toán</option>
+                        <option value="Luật">Luật</option>
+                        <option value="Luật hiến pháp và luật hành chính">Luật Hiến pháp/Hành chính</option>
+                        <option value="Luật dân sự và tố tụng dân sự">Luật Dân sự/Tố tụng Dân sự</option>
+                        <option value="Luật kinh tế">Luật kinh tế</option>
+                        <option value="Công nghệ sinh học (Chuyên ngành: Kỹ thuật xét nghiệm y học và Kỹ thuật xử lí ô nhiễm môi trường)">Công nghệ sinh học</option>
+                        <option value="Khoa học máy tính">Khoa học máy tính</option>
+                        <option value="Công nghệ thông tin">Công nghệ thông tin</option>
+                        <option value="Công nghệ thông tin (Chuyên ngành Trí tuệ nhân tạo)">Công nghệ thông tin (AI)</option>
+                        <option value="Công nghệ kỹ thuật ô tô">Công nghệ Kỹ thuật Ô tô</option>
+                        <option value="Công nghệ kỹ thuật nhiệt (Chuyên ngành Điện lạnh)">Công nghệ Kỹ thuật Nhiệt (Điện lạnh)</option>
+                        <option value="Công nghệ kỹ thuật điện, điện tử">Công nghệ Kỹ thuật Điện, Điện tử</option>
+                        <option value="Công nghệ kỹ thuật điện tử - viễn thông (Chuyên ngành Thiết kế vi mạch)">Công nghệ KT Điện tử - Viễn thông (Thiết kế vi mạch)</option>
+                        <option value="Công nghệ kỹ thuật điều khiển và tự động hoá">Công nghệ KT Điều khiển & Tự động hoá</option>
+                        <option value="Kỹ thuật điện tử - viễn thông (Chuyên ngành kỹ thuật điện tử; chuyên ngành kỹ thuật viễn thông)">Kỹ thuật Điện tử - Viễn thông</option>
+                        <option value="Kỹ thuật điều khiển và tự động hoá">Kỹ thuật Điều khiển & Tự động hoá</option>
+                        <option value="Công nghệ thực phẩm">Công nghệ thực phẩm</option>
+                        <option value="Kiến trúc">Kiến trúc</option>
+                        <option value="Kỹ thuật xây dựng (Chuyên ngành: Xây dựng dân dụng và công nghiệp; Kết cấu công trình; Công nghệ kỹ thuật xây dựng)">Kỹ thuật Xây dựng</option>
+                        <option value="Kỹ thuật xây dựng công trình giao thông (Chuyên ngành: Kỹ thuật xây dựng cầu đường; Kỹ thuật xây dựng công trình ngầm; Kỹ thuật hạ tầng đô thị)">Kỹ thuật Xây dựng Công trình Giao thông</option>
+                        <option value="Kinh tế xây dựng (Chuyên ngành: Kinh tế đầu tư xây dựng, Kinh tế vận tải và logistic, Quản lí dự án công trình xây dựng)">Kinh tế Xây dựng</option>
+                        <option value="Chăn nuôi">Chăn nuôi</option>
+                        <option value="Nông học - Chuyên ngành Bảo vệ thực vật">Nông học (Bảo vệ thực vật)</option>
+                        <option value="Khoa học cây trồng">Khoa học cây trồng</option>
+                        <option value="Nuôi trồng thuỷ sản">Nuôi trồng thuỷ sản</option>
+                        <option value="Thú y">Thú y</option>
+                        <option value="Điều dưỡng">Điều dưỡng</option>
+                        <option value="Công tác xã hội">Công tác xã hội</option>
+                        <option value="Quản lý tài nguyên và môi trường">Quản lý Tài nguyên & Môi trường</option>
+                        <option value="Quản lý đất đai (Chuyên ngành: Quản lý phát triển đô thị & bất động sản)">Quản lý Đất đai</option>
                     </select>
                 </div>
                 <div class="col-custom">

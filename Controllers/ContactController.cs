@@ -28,18 +28,16 @@ namespace VinhuniEvent.Controllers
             {
                 if (userId == null)
                 {
-                    TempData["error"] = "Vui lòng đăng nhập trước khi gửi liên hệ 🌿";
+                    TempData["error"] = "Vui lòng đăng nhập trước khi gửi liên hệ ";
                     return RedirectToAction("Index", "Login");
                 }
                           contact.UserId = userId.Value;
                 _context.Contacts.Add(contact);
                 await _context.SaveChangesAsync();
 
-                TempData["success"] = "Gửi liên hệ thành công 💌";
+                TempData["success"] = "Gửi liên hệ thành công ";
                 return RedirectToAction(nameof(Index));
             }
-
-            // Nếu lỗi → quay lại form
             return View("Index", contact);
         }
     }

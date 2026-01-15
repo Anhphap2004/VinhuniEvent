@@ -52,79 +52,125 @@
         text-decoration: none;
     }
 
+    /* --- Styles mới cho Profile Card gọn đẹp --- */
     .profile-card {
         background: white;
-        border-radius: 10px;
-        padding: 35px;
+        border-radius: 16px;
+        padding: 30px;
         margin-bottom: 25px;
-        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.05); /* Bóng đổ mềm mại hơn */
+        display: flex; /* Dùng Flexbox để chia cột */
+        align-items: center;
+        gap: 40px;
     }
 
-    .profile-header-section {
+    /* Cột trái: Avatar & Tên */
+    .profile-left {
         text-align: center;
-        padding-bottom: 25px;
-        border-bottom: 2px solid #f0f0f0;
-        margin-bottom: 25px;
+        min-width: 220px;
+        border-right: 1px solid #f0f0f0;
+        padding-right: 40px;
     }
 
     .user-avatar {
-        width: 110px;
-        height: 110px;
+        width: 120px;
+        height: 120px;
         background: linear-gradient(135deg, var(--tet-red), var(--tet-gold));
         color: white;
         border-radius: 50%;
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        font-size: 42px;
-        font-weight: 600;
-        margin-bottom: 18px;
-        box-shadow: 0 8px 24px rgba(211, 47, 47, 0.3);
+        font-size: 48px;
+        font-weight: 700;
+        margin-bottom: 15px;
+        box-shadow: 0 5px 15px rgba(211, 47, 47, 0.2);
     }
 
-    .profile-header-section h1 {
-        font-size: 26px;
-        margin-bottom: 8px;
+    .user-name {
+        font-size: 22px;
+        font-weight: 700;
         color: #2c3e50;
+        margin-bottom: 5px;
+    }
+
+    .user-code {
+        display: inline-block;
+        background: #FEF3F3;
+        color: var(--tet-red);
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 13px;
         font-weight: 600;
     }
 
-    .profile-header-section p {
-        color: #7f8c8d;
-        font-size: 16px;
-        margin: 0;
+    /* Cột phải: Lưới thông tin chi tiết */
+    .profile-right {
+        flex-grow: 1;
+        display: grid;
+        grid-template-columns: 1fr 1fr; /* Chia 2 cột đều nhau */
+        gap: 25px;
     }
 
-    .info-row {
+    .info-item {
         display: flex;
-        flex-wrap: wrap;
-        margin: 0 -10px;
+        align-items: flex-start;
+        gap: 15px;
     }
 
-    .info-col {
-        flex: 0 0 50%;
-        max-width: 50%;
-        padding: 0 10px;
-        margin-bottom: 20px;
+    .info-icon {
+        width: 40px;
+        height: 40px;
+        background: #FFF9E6;
+        color: var(--tet-gold);
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
     }
 
-    .info-box {
-        padding: 12px 0;
+    .info-content {
+        display: flex;
+        flex-direction: column;
     }
 
-    .info-box-label {
-        font-size: 12px;
-        color: #95a5a6;
-        margin-bottom: 6px;
+    .info-label {
+        font-size: 11px;
         text-transform: uppercase;
-        letter-spacing: 0.8px;
-        font-weight: 500;
+        color: #95a5a6;
+        font-weight: 600;
+        margin-bottom: 4px;
+        letter-spacing: 0.5px;
     }
 
-    .info-box-value {
+    .info-value {
         font-size: 15px;
         color: #2c3e50;
         font-weight: 500;
+    }
+
+    /* Responsive cho điện thoại */
+    @@media (max-width: 768px) {
+        .profile-card {
+            flex-direction: column; /* Xếp chồng dọc */
+            padding: 20px;
+            gap: 20px;
+        }
+
+        .profile-left {
+            border-right: none;
+            border-bottom: 1px solid #f0f0f0;
+            padding-right: 0;
+            padding-bottom: 20px;
+            width: 100%;
+        }
+
+        .profile-right {
+            grid-template-columns: 1fr; /* 1 cột duy nhất */
+            width: 100%;
+            gap: 20px;
+        }
     }
 
     .stats-row {
@@ -417,42 +463,43 @@
 
         <!-- Profile Information -->
         <div class="profile-card">
-            <div class="profile-header-section">
+            <div class="profile-left">
                 <div class="user-avatar">@Model.FullName?.FirstOrDefault()</div>
-                <h1>@Model.FullName</h1>
-                <p>@Model.StudentCode</p>
+                <div class="user-name">@Model.FullName</div>
+                <span class="user-code">SV: @Model.StudentCode</span>
             </div>
 
-            <div class="info-row">
-                <div class="info-col">
-                    <div class="info-box">
-                        <div class="info-box-label">Email</div>
-                        <div class="info-box-value">@Model.Email</div>
+            <div class="profile-right">
+                <div class="info-item">
+                    <div class="info-icon">📧</div>
+                    <div class="info-content">
+                        <span class="info-label">Email liên hệ</span>
+                        <span class="info-value">@Model.Email</span>
                     </div>
                 </div>
-                <div class="info-col">
-                    <div class="info-box">
-                        <div class="info-box-label">Điện thoại</div>
-                        <div class="info-box-value">@(string.IsNullOrEmpty(Model.PhoneNumber) ? "Chưa cập nhật" :
-                                                        Model.PhoneNumber)</div>
+
+                <div class="info-item">
+                    <div class="info-icon">📞</div>
+                    <div class="info-content">
+                        <span class="info-label">Điện thoại</span>
+                        <span class="info-value">@(string.IsNullOrEmpty(Model.PhoneNumber) ? "Chưa cập nhật" : Model.PhoneNumber)</span>
                     </div>
                 </div>
-                <div class="info-col">
-                    <div class="info-box">
-                        <div class="info-box-label">Khoa</div>
-                        <div class="info-box-value">@Model.Faculty</div>
+
+                <div class="info-item">
+                    <div class="info-icon">🎓</div>
+                    <div class="info-content">
+                        <span class="info-label">Khoa & Ngành</span>
+                        <span class="info-value">@Model.Faculty</span>
+                        <span style="font-size: 13px; color: #7f8c8d;">@Model.Major</span>
                     </div>
                 </div>
-                <div class="info-col">
-                    <div class="info-box">
-                        <div class="info-box-label">Ngành</div>
-                        <div class="info-box-value">@Model.Major</div>
-                    </div>
-                </div>
-                <div class="info-col">
-                    <div class="info-box">
-                        <div class="info-box-label">Ngày sinh</div>
-                        <div class="info-box-value">@(Model.BirthDate?.ToString("dd/MM/yyyy") ?? "Chưa cập nhật")</div>
+
+                <div class="info-item">
+                    <div class="info-icon">🎂</div>
+                    <div class="info-content">
+                        <span class="info-label">Ngày sinh</span>
+                        <span class="info-value">@(Model.BirthDate?.ToString("dd/MM/yyyy") ?? "--/--/----")</span>
                     </div>
                 </div>
             </div>
@@ -509,23 +556,35 @@
                             <tr>
                                 <th>Tên sự kiện</th>
                                 <th>Thời gian</th>
-                                <th>Địa điểm</th>
                                 <th>Trạng thái</th>
+                                <th>Ảnh check-in</th> @* Cột này chỉ để upload ảnh lưu niệm *@
                             </tr>
                         </thead>
                         <tbody>
                             @foreach (var r in Model.EventRegistrations)
                             {
+                                var currentImg = Model.Attendances?.FirstOrDefault(a => a.EventId == r.EventId)?.CheckInImage;
                                 <tr>
                                     <td>@r.Event?.Title</td>
-                                    <td>
-                                        @r.Event?.StartTime.ToString("dd/MM/yyyy")
-                                        <span class="time-small">
-                                            @r.Event?.StartTime.ToString("HH:mm") - @r.Event?.EndTime.ToString("HH:mm")
-                                        </span>
-                                    </td>
-                                    <td>@r.Event?.Location</td>
+                                    <td>@r.Event?.StartTime.ToString("dd/MM/yyyy")</td>
                                     <td><span class="status-badge primary">@r.Status</span></td>
+                                    <td>
+                                        @if (!string.IsNullOrEmpty(currentImg))
+                                        {
+                                            <div style="position: relative; display: inline-block;">
+                                                <img src="@currentImg" style="width: 50px; height: 40px; border-radius: 5px; object-fit: cover; border: 2px solid var(--tet-gold);" />
+                                                <button onclick="triggerUpload(@r.EventId)" style="position: absolute; bottom: -5px; right: -5px; border: none; background: var(--tet-red); color: white; border-radius: 50%; width: 20px; height: 20px; font-size: 10px; cursor: pointer;">✎</button>
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <button class="status-badge orange"
+                                                    style="border: none; cursor: pointer; background: #f39c12; color: white;"
+                                                    onclick="triggerUpload(@r.EventId)">
+                                                Checkin
+                                            </button>
+                                        }
+                                    </td>
                                 </tr>
                             }
                         </tbody>
@@ -659,5 +718,40 @@
 
         // Show selected tab content
         document.getElementById(tabId).classList.add('active');
+    }
+
+        const checkInInput = document.createElement('input');
+    checkInInput.type = 'file';
+    checkInInput.accept = 'image/*';
+    checkInInput.capture = 'environment';
+
+       const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.accept = 'image/*';
+    fileInput.capture = 'environment';
+
+    function triggerUpload(eventId) {
+        fileInput.onchange = async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const formData = new FormData();
+            formData.append('eventId', eventId);
+            formData.append('photo', file);
+
+            const res = await fetch('/Profile/CheckInImageOnly', {
+                method: 'POST',
+                body: formData
+            });
+
+            const data = await res.json();
+            if (data.success) {
+                alert("Đã cập nhật hình ảnh!");
+                location.reload();
+            } else {
+                alert(data.message);
+            }
+        };
+        fileInput.click();
     }
 </script>

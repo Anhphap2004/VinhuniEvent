@@ -8,6 +8,7 @@ namespace VinhuniEvent.Services
     {
         private readonly EmailSettings _settings;
 
+        //lấy dữ liệu từ appsettings.json
         public EmailService(IOptions<EmailSettings> options)
         {
             _settings = options.Value;

@@ -240,6 +240,53 @@
             color: #495057;
             border-color: #ddd;
         }
+
+    /* Tùy chỉnh cột Check-in */
+    .checkin-img-wrapper {
+        position: relative;
+        display: inline-block;
+        cursor: pointer;
+    }
+
+    .img-thumbnail-checkin {
+        width: 40px;
+        height: 40px;
+        object-fit: cover;
+        border-radius: 4px;
+        border: 1px solid #dee2e6;
+        transition: transform 0.2s;
+    }
+
+        .img-thumbnail-checkin:hover {
+            transform: scale(1.1);
+            border-color: #2a5298;
+        }
+
+    /* Hiệu ứng zoom ảnh khi hover */
+    .img-zoom-preview {
+        display: none;
+        position: absolute;
+        bottom: 50px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 1000;
+        background: white;
+        padding: 5px;
+        border-radius: 8px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        border: 1px solid #ddd;
+    }
+
+        .img-zoom-preview img {
+            width: 180px;
+            height: auto;
+            border-radius: 4px;
+            display: block;
+        }
+
+    .checkin-img-wrapper:hover .img-zoom-preview {
+        display: block;
+    }
 </style>
 
 <div class="container-fluid px-4">
@@ -302,6 +349,7 @@
                         <th style="width: 25%">Họ và tên</th>
                         <th style="width: 15%">Mã sinh viên</th>
                         <th style="width: 17%" class="text-center">Trạng thái</th>
+                        <th style="width: 17%" class="text-center">Check in</th>
                         <th style="width: 35%" class="text-center">Điểm danh</th>
                     </tr>
                 </thead>
@@ -326,6 +374,24 @@
                                 <span class="status-text @statusClass" id="status-@item.UserId">
                                     @statusText
                                 </span>
+                            </td>
+                            <td class="text-center">
+                                @if (!string.IsNullOrEmpty(item.CheckInImage))
+                                {
+                                    <div class="checkin-img-wrapper">
+                                        <img src="@item.CheckInImage"
+                                             alt="Check-in"
+                                             class="img-thumbnail-checkin"
+                                             onclick="window.open(this.src, '_blank')" />
+                                        <div class="img-zoom-preview">
+                                            <img src="@item.CheckInImage" />
+                                        </div>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <span class="text-muted" style="font-size: 0.8rem; font-style: italic;">Chưa check in</span>
+                                }
                             </td>
                             <td class="text-center">
                                 <button class="btn-present"

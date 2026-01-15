@@ -189,11 +189,7 @@ namespace VinhuniEvent.Areas.Admin.Controllers
         public async Task<IActionResult> Attendance(int eventId)
         {
             var eventInfo = await _context.Events.FindAsync(eventId);
-
-            if (eventInfo == null)
-            {
-                return NotFound();
-            }
+            if (eventInfo == null) return NotFound();
 
             var registrations = await _context.EventRegistrations
                 .Include(r => r.User)
@@ -204,12 +200,16 @@ namespace VinhuniEvent.Areas.Admin.Controllers
                 .Where(a => a.EventId == eventId)
                 .ToListAsync();
 
-            var viewModel = registrations.Select(r => new AttendanceViewModel
-            {
-                UserId = r.UserId,
-                FullName = r.User?.FullName,
-                StudentCode = r.User?.StudentCode,
-                IsPresent = attendances.FirstOrDefault(a => a.UserId == r.UserId)?.IsPresent
+            var viewModel = registrations.Select(r => {
+                var attendanceRecord = attendances.FirstOrDefault(a => a.UserId == r.UserId);
+                return new AttendanceViewModel
+                {
+                    UserId = r.UserId,
+                    FullName = r.User?.FullName,
+                    StudentCode = r.User?.StudentCode,
+                    IsPresent = attendanceRecord?.IsPresent,
+                    CheckInImage = attendanceRecord?.CheckInImage
+                };
             }).ToList();
 
             ViewBag.EventId = eventId;
@@ -486,6 +486,8 @@ namespace VinhuniEvent.Areas.Admin.Controllers
         public string? FullName { get; set; }
         public string? StudentCode { get; set; }
         public bool? IsPresent { get; set; }
+
+        public string? CheckInImage { get; set; }
     }
     public class AttendanceRequest
     {

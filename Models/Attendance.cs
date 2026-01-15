@@ -15,7 +15,10 @@ public partial class Attendance
 
     public bool? IsPresent { get; set; }
 
+    public string? CheckInImage { get; set; }
     public virtual Event? Event { get; set; }
 
     public virtual User? User { get; set; } 
+
+
 }
